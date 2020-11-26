@@ -1,0 +1,110 @@
+/*! 
+
+<br/><br/><br/>
+<center class="mytitle">TMON: UM TOPIC MONITOR</center>
+<center>Copyright (C) 2020</center>
+<br/><br/><br/>
+\mainpage TMON: UM TOPIC MONITOR
+
+\n \section overview Overview
+
+The "tmon" package is an API wrapper around the Ultra Messaging library which
+provides topic-level event monitoring.
+This is intended to work along with the standard UM "automatic monitoring".
+
+Users must add calls to the tmon API to their applications at specific points.
+
+The rest of this page provides a high-level description of the tmon package.
+You can also jump to other pages:
+<ul>
+<li> \ref disclaimers - Please read before using this software.
+<li> \ref releasenotes
+<li> \ref capioverview - Details on the C API.
+<!-- <li> \ref javaapioverview - Details on the Java API. -->
+</ul>
+
+\n \section sourcecode Source Code
+
+The "tmon" package is provided in source code form at
+[Ultra Messaging GitHub](https://github.com/UltraMessaging).
+
+Note that tmon is not officially part of the UM product family.
+This implementation of tmon should be considered "example" code,
+to be incorporated into the user's application and modified to meet
+the user's individual requirements.
+If those modifications are reasonably general in nature,
+the user is invited to submit "pull" requests on GitHub.
+Informatica will review the proposed changes and will usually accept the
+pull request, incorporating the improvements.
+
+Additionally, Informatica is committed to fixing bugs.
+Please raise issues using the normal GitHub issue tracking functionality,
+or through the normal Informatica support organization.
+
+In other words, although tmon is not officially part of the UM product family,
+Informatical intends to support it.
+However, we don't currently plan to include tmon as part of the product package.
+
+Finally, be aware that that:
+
+* Informatica does not include tmon in its QA testing.
+Note however that tmon includes a reasonably extensive automated self-test.
+
+* Informatica does not guarantee that future UM development will
+be compatible with tmon.
+
+Naturally, the amount of effort we invest in tmon will be proportional to
+the level of user interest.
+If you decide to use tmon, please let us know through the support organization!
+We will keep you informed of the package's continued evolution.
+
+
+\n \section features Features
+
+<ul>
+<li>TBD
+</ul>
+
+
+\n \section opportunitiesandlimitations Opportunities and Limitations
+
+<ul>
+<li>Because UM automatic monitoring does not give the application access
+to the internal monitoring context,
+tmon must create its own context.
+This adds an additional context and thread to each application.
+
+<li>TBD
+</ul>
+
+
+\page releasenotes Release Notes
+
+
+\n \section version0_1 Version 0.1
+
+Initial "alpha" release.
+
+Release Date: ???
+
+\page disclaimers Disclaimers
+
+Copyright (c) 2020 Informatica Corporation. All Rights Reserved.
+Permission is granted to licensees to use
+or alter this software for any purpose, including commercial applications,
+according to the terms laid out in the Software License Agreement.
+
+This source code example is provided by Informatica for educational
+and evaluation purposes only.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND INFORMATICA DISCLAIMS ALL WARRANTIES
+EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION, ANY IMPLIED WARRANTIES OF
+NON-INFRINGEMENT, MERCHANTABILITY OR FITNESS FOR A PARTICULAR
+PURPOSE.  INFORMATICA DOES NOT WARRANT THAT USE OF THE SOFTWARE WILL BE
+UNINTERRUPTED OR ERROR-FREE.  INFORMATICA SHALL NOT, UNDER ANY CIRCUMSTANCES,
+BE LIABLE TO LICENSEE FOR LOST PROFITS, CONSEQUENTIAL, INCIDENTAL, SPECIAL OR
+INDIRECT DAMAGES ARISING OUT OF OR RELATED TO THIS AGREEMENT OR THE
+TRANSACTIONS CONTEMPLATED HEREUNDER, EVEN IF INFORMATICA HAS BEEN APPRISED OF
+THE LIKELIHOOD OF SUCH DAMAGES.
+
+*/
