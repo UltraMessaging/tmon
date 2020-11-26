@@ -1,4 +1,14 @@
 # Prerequisites
+x
+x.*
+*.x
+*.pcap
+*.log
+lbmtmon
+tmon_example
+mac/*.cfg
+mac/ip.txt
+
 *.d
 
 # Object files
