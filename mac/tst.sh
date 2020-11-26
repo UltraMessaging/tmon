@@ -1,7 +1,7 @@
 #!/bin/sh
 # tst.sh
 
-rm *.log
+rm -f *.log
 
 ./bld.sh
 if [ $? -ne 0 ]; then exit 1; fi

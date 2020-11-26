@@ -3,13 +3,13 @@
 
 . lbm.sh
 
-gcc -g -Wall -I$LBM_PLATFORM/include -I.. -L$LBM_PLATFORM/lib -llbm -lm -c ../tmon.c
+gcc -g -Wall -I$LBM_PLATFORM/include -I../c -L$LBM_PLATFORM/lib -llbm -lm -c ../c/tmon.c
 if [ $? -ne 0 ]; then exit 1; fi
 
-gcc -g -Wall -I$LBM_PLATFORM/include -I.. -L$LBM_PLATFORM/lib -llbm -lm -o tmon_example tmon.o ../tmon_example.c
+gcc -g -Wall -I$LBM_PLATFORM/include -I../c -L$LBM_PLATFORM/lib -llbm -lm -o tmon_example tmon.o ../c/tmon_example.c
 if [ $? -ne 0 ]; then exit 1; fi
 
-gcc -g -I$LBM_PLATFORM/include -I.. -L$LBM_PLATFORM/lib -llbm -lm -o lbmtmon tmon.o ../lbmtmon.c
+gcc -g -I$LBM_PLATFORM/include -I../c -L$LBM_PLATFORM/lib -llbm -lm -o lbmtmon tmon.o ../c/lbmtmon.c
 if [ $? -ne 0 ]; then exit 1; fi
 
 cp ../*.cfg .
