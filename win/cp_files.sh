@@ -1,11 +1,13 @@
 #!/bin/sh
 # cp_files.sh
 
-if [ ! -d "win" ]; then :
-  echo "Must run win/boxlab.sh from the tmon directory." >&2
-  exit 1
+if [ "$SUBDIR" = "win" ]; then :
+  # Inside "win" directory, go to main directory.
+  cd ..
+  CURDIR=`pwd`
+  SUBDIR=`basename $CURDIR`
 fi
 
-cp tmon_example.c tmon.c tmon.h /cygdrive/c/users/sford/Documents/Visual\ Studio\ 2013/Projects/tmon/tmon_example/
+cp c/tmon_example.c c/tmon.c c/tmon.h /cygdrive/c/users/sford/Documents/Visual\ Studio\ 2013/Projects/tmon/tmon_example/
 
-cp lbmtmon.c tmon.c getopt.c tmon.h monmodopts.h replgetopt.h /cygdrive/c/users/sford/Documents/Visual\ Studio\ 2013/Projects/tmon/lbmtmon/
+cp c/lbmtmon.c c/tmon.c c/getopt.c c/tmon.h c/monmodopts.h c/replgetopt.h /cygdrive/c/users/sford/Documents/Visual\ Studio\ 2013/Projects/tmon/lbmtmon/

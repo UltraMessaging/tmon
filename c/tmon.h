@@ -1,11 +1,10 @@
 /*! \file tmon.h
-  \brief UM Topic Monitor API.
-Please read \ref disclaimers before using this software.
-See \ref overview for introduction and user manual.
-
-See <a href="https://github.com/UltraMessaging/tmon">https://github.com/UltraMessaging/tmon</a>
-for code and documentation.
-
+ * \brief UM Topic Monitor API.
+ *
+ * Project home: <a href="https://github.com/UltraMessaging/tmon">https://github.com/UltraMessaging/tmon</a>
+ *
+ * Please read \ref disclaimers before using this software.
+ * See \ref overview for introduction and user manual.
 */
 
 /*
@@ -51,130 +50,350 @@ extern "C" {
 #define TMON_STR_BUF_LENS 512
 
 /*! \brief Simple, "easy" string object, used internally by tmon.
-
-  Not intended as a supported API.
+ * Not intended as a supported API.
  */
 typedef struct ezstr_s {
+  /*! Malloced buffer for string storage. */
   char *buff;
+  /*! Size of malloced buffer. */
   size_t alloc_size;
+  /*! Array index of string's trailing NULL. Also the number of characters
+   * in the string. */
   size_t null_index;
 } ezstr_t;
   
 
 /*! \brief top-level tmon object.
-
-  Create right after creating the application context.
+ * Created by tmon_create().
+ * Create one of these per application context immediately
+ * *after* creating each context.
+ * Application must not write to fields in this structure.
+ *
+ * Methods: tmon_create(), tmon_rcv_delete().
  */
 typedef struct tmon_s {
   /*! \brief Application UM context. */
   lbm_context_t *app_ctx;
-  /*! \brief Monitoring transport options string.
-
-    Extracted from application context. */
+  /*! \brief Monitoring transport options string, as defined by application's
+   * <a href="https://ultramessaging.github.io/currdoc/doc/Config/grpautomaticmonitoring.html#monitortransportoptscontext">monitor_transport_opts (context)</a>.
+   *
+   * Extracted from application context. */
   char transport_opts[2048];
-  /*! Monitoring configuration file.
-
-    Extracted from application context. */
+  /*! Monitoring application ID, as defined by application's
+   * <a href="https://ultramessaging.github.io/currdoc/doc/Config/grpautomaticmonitoring.html#monitorappidcontext">monitor_appid (context)</a>.
+   *
+   * Extracted from application context. */
   char app_id[TMON_STR_BUF_LENS];
-  char config_file[TMON_STR_BUF_LENS];  /* Monitoring config file. */
-  char topic_str[TMON_STR_BUF_LENS];    /* Topic string for tmon source. */
-  lbm_context_t *ctx;               /* Context for publishing tmon data. */
-  lbm_src_t *src;                   /* Source for publishing tmon data. */
-
-  ezstr_t *header;                 /* String for header. */
+  /*! Monitoring configuration file, as supplied by the "config" setting within the
+   * <a href="https://ultramessaging.github.io/currdoc/doc/Config/grpautomaticmonitoring.html#monitortransportoptscontext">monitor_transport_opts (context)</a>
+   * configuration option.
+   * This setting is optional.
+   *
+   * Extracted from application context. */
+  char config_file[TMON_STR_BUF_LENS];
+  /*! Monitoring topic, as supplied by the "tmontopic" setting within the
+   * <a href="https://ultramessaging.github.io/currdoc/doc/Config/grpautomaticmonitoring.html#monitortransportoptscontext">monitor_transport_opts (context)</a>
+   * configuration option.
+   * This setting is optional and defaults to "/29west/tmon".
+   *
+   * Extracted from application context. */
+  char topic_str[TMON_STR_BUF_LENS];
+  /*! UM context created for sending tmon messages. */
+  lbm_context_t *ctx;
+  /*! UM source created for sending tmon messages. */
+  lbm_src_t *src;
+  /*! String to hold tmon message header information. */
+  ezstr_t *header;
 } tmon_t;
 
 
 /*! \brief tmon receiver monitoring object.
-
-  Create one right *before* creating each app receiver.
+ * Created by tmon_rcv_create().
+ * Create one per application receiver immediately
+ * *before* creating each receiver.
+ * Application must not write to fields in this structure.
+ *
+ * Methods: tmon_rcv_create(), tmon_rcv_delete().
  */
 typedef struct tmon_rcv_s {
-  tmon_t *tmon;              /* Parent tmon object. */
-  char app_topic_str[TMON_STR_BUF_LENS];   /* Topic name for app rcv. */
+  /*! \brief Parent tmon object. */
+  tmon_t *tmon;
+  /*! Topic name for application receiver. */
+  char app_topic_str[TMON_STR_BUF_LENS];
+  /*! Time stamp when this object was created. */
   struct timeval create_time;
-  ezstr_t *mon_msg;              /* String for building monitoring message. */
+  /*! Work buffer for building tmon messages.
+   * This is retained to minimize repeated malloc/free. */
+  ezstr_t *mon_msg;
 } tmon_rcv_t;
 
 
-/* Structure for "tmon_src" object. Create right *before* creating each app
- * source. App should mostly treat it as opaque. */
-typedef struct tmon_src_s {
-  tmon_t *tmon;              /* Parent tmon object. */
-  char app_topic_str[256];   /* Topic name for app receiver to be created. */
+/*! \brief tmon wildcard receiver monitoring object.
+ * Created by tmon_wrcv_create().
+ * Create one per application wildcard receiver immediately
+ * *before* creating each receiver.
+ * Application must not write to fields in this structure.
+ *
+ * Methods: tmon_wrcv_create(), tmon_wrcv_delete().
+ */
+typedef struct tmon_wrcv_s {
+  /*! \brief Parent tmon object. */
+  tmon_t *tmon;
+  /*! Topic pattern for application wildcard receiver. */
+  char app_pattern[TMON_STR_BUF_LENS];
+  /*! Time stamp when this object was created. */
   struct timeval create_time;
-  ezstr_t *mon_msg;         /* String for building monitoring message. */
+  /*! Work buffer for building tmon messages.
+   * This is retained to minimize repeated malloc/free. */
+  ezstr_t *mon_msg;
+} tmon_wrcv_t;
+
+
+/*! \brief tmon source monitoring object.
+ * Created by tmon_src_create().
+ * Create one per application source immediately
+ * *before* creating each source.
+ * Application must not write to fields in this structure.
+ *
+ * Methods: tmon_src_create(), tmon_src_delete().
+ */
+typedef struct tmon_src_s {
+  /*! \brief Parent tmon object. */
+  tmon_t *tmon;
+  /*! Topic name for application source. */
+  char app_topic_str[256];
+  /*! Time stamp when this object was created. */
+  struct timeval create_time;
+  /*! Work buffer for building tmon messages.
+   * This is retained to minimize repeated malloc/free. */
+  ezstr_t *mon_msg;
 } tmon_src_t;
 
 
-/* Structure for "tmon_conn" object. Create inside source notification
- * create callback function (source_notification_function). App should mostly
- * treat it as opaque. */
+/*! \brief tmon connection monitoring object.
+ * Created by tmon_conn_create().
+ * Create one per receiver delivery controller from
+ * inside the
+ * <a href="https://ultramessaging.github.io/currdoc/doc/Config/grpdeliverycontrol.html#sourcenotificationfunctionreceiver">source_notification_function (receiver)</a>
+ * callback.
+ * That callback can return this object as the source-specific clientd.
+ * See \ref clientdatapointers.
+ * Application must not write to fields in this structure.
+ *
+ * Methods: tmon_conn_create(), tmon_conn_delete(), tmon_conn_rcv_event().
+ */
 typedef struct tmon_conn_s {
+  /*! \brief Parent tmon receiver object. */
   tmon_rcv_t *tmon_rcv;
-  char source_str[128];    /* Source string for transport session, incl tidx. */
+  /*! Source string for transport session, plus topic index. */
+  char source_str[128];
+  /*! Time stamp when this object was created. */
   struct timeval create_time;
+  /*! Time stamp when <a href="https://ultramessaging.github.io/currdoc/doc/API/lbm_8h.html#ab5489080adc7157549a9930b30c68425">LBM_MSG_BOS</a>
+   * receiver event was delivered for this connection
+   * (0 if not delivered yet). */
   struct timeval bos_time;
+  /*! Time stamp when most-recent <a href="https://ultramessaging.github.io/currdoc/doc/API/lbm_8h.html#a88920e0a4188081f9a14fc8f76c18578">LBM_MSG_UNRECOVERABLE_LOSS</a>
+   * or <href="https://ultramessaging.github.io/currdoc/doc/API/lbm_8h.html#a6629139aaf902976c8df9de3f37d10db">LBM_MSG_UNRECOVERABLE_LOSS_BURST</a>
+   * receiver event was delivered for this connection
+   * (0 if neither delivered yet). */
   struct timeval loss_time;
+  /*! Total number of received data messages for this connection. */
   long msg_count;
+  /*! Total number of <a href="https://ultramessaging.github.io/currdoc/doc/API/lbm_8h.html#a88920e0a4188081f9a14fc8f76c18578">LBM_MSG_UNRECOVERABLE_LOSS</a>
+   * receiver events delivered for this connection. */
   long unrec_count;
+  /*! Total number of <a href="https://ultramessaging.github.io/currdoc/doc/API/lbm_8h.html#a6629139aaf902976c8df9de3f37d10db">LBM_MSG_UNRECOVERABLE_LOSS_BURST</a>
+   * receiver events delivered for this connection. */
   long burst_count;
-  ezstr_t *mon_msg;       /* String for building monitoring message. */
+  /*! Work buffer for building tmon messages.
+   * This is retained to minimize repeated malloc/free. */
+  ezstr_t *mon_msg;
 } tmon_conn_t;
 
 
 /*! \brief Portable microsecond-precision time stamp.
-
- \param usec Pointer to a struct timeval.
+ *
+ * \param tv Pointer to a struct timeval.
  */
 void tmon_gettimeofday(struct timeval *tv);
 
 /*! \brief Portable, reentrant converter from Posix "time_t" to ascii date/time.
-
-  Unix "time_t" is number of seconds since the Unix Epoch (midnight, 1-Jan-1970).
-
-  \param buffer Byte array at least 27 bytes long.
-    Date/time string will be written here.
-  \param bufsize Actual number of bytes in "buffer".
-  \param cur_time Posix time value to convert.
+ *
+ * "time_t" is number of seconds since the Unix Epoch (midnight, 1-Jan-1970).
+ *
+ * \param buffer Byte array at least 27 bytes long.
+ *   Date/time string will be written here.
+ * \param bufsize Actual number of bytes in "buffer".
+ * \param cur_time Posix time value to convert.
  */
 const char *tmon_ctime(char *buffer, size_t bufsize, time_t cur_time);
 
 /*! \brief Portable, reentrant converter from binary IPv4 address to ascii.
-
-  \param addr 32-bit binary form of IPv4 address,
-  as would be present in struct sockaddr_in.sin_addr.s_addr.
-  \param dst Byte array at least 16 bytes long.
-    Dotted numeric IP address will be written here.
-  \param buf_len Actual size of "dst" buffer.
-  \return pointer to input buffer (returned for convenience).
+ *
+ * \param addr 32-bit binary form of IPv4 address,
+ * as would be present in struct sockaddr_in.sin_addr.s_addr.
+ * \param dst Byte array at least 16 bytes long.
+ *   Dotted numeric IP address will be written here.
+ * \param buf_len Actual size of "dst" buffer.
+ * \return pointer to input buffer (returned for convenience).
  */
 char *tmon_inet_ntop(lbm_uint_t addr, char *dst, size_t buf_len);
 
 /*! \brief Portable microsecond-precision sleep function.
-
-  Note that there is no guarantee of accuracy.
-  Many operating systems do not support sleep times under a millisecond.
-  User of this function should be prepared to experience much longer
-  sleep times than requested.
-
-  \param usec number of microseconds to sleep.
+ *
+ * Note that there is no guarantee of accuracy.
+ * Many operating systems do not support sleep times under a millisecond.
+ * Callers to this function should be prepared to experience much longer
+ * sleep times than requested.
+ *
+ * \param usec number of microseconds to sleep.
  */
 void tmon_usleep(int usec);
 
+/*! \brief Create a tmon object to monitor application topics.
+ * Create one of these per application context immediately
+ * *after* creating each context.
+ *
+ * \param app_ctx Application context.
+ * \returns Topic monitor object.
+ */
 tmon_t *tmon_create(lbm_context_t *app_ctx);
+/*! \brief Delete a tmon object.
+ * Do not delete this object until after all child objects
+ * (\ref tmon_rcv_s, \ref tmon_src_s) are deleted.
+ *
+ * \param tmon Topic monitor object.
+ */
 void tmon_delete(tmon_t *tmon);
 
+/*! \brief Create a tmon receiver object to monitor an application
+ * receiver.
+ * Create one per application receiver immediately
+ * *before* creating each receiver.
+ *
+ * \param tmon Parent topic monitor object.
+ *   This must be the tmon object associated with the same application
+ *   context as the application receiver being created.
+ * \param app_topic_str Topic string assoicated with the application
+ *   receiver being created.
+ * \returns receiver monitor object.
+ */
 tmon_rcv_t *tmon_rcv_create(tmon_t *tmon, char *app_topic_str);
+/*! \brief Delete a tmon receiver object.
+ * Do not delete this object until after all child objects
+ * (\ref tmon_conn_s) are deleted.
+ *
+ * \param tmon_rcv topic receiver monitor object.
+ */
 void tmon_rcv_delete(tmon_rcv_t *tmon_rcv);
+
+/*! \brief Create a tmon wildcard receiver object to monitor an application
+ * receiver.
+ * Create one per application wildcard receiver immediately
+ * *before* creating each receiver.
+ *
+ * \param tmon Parent topic monitor object.
+ *   This must be the tmon object associated with the same application
+ *   context as the application receiver being created.
+ * \param app_topic_str Topic string assoicated with the application
+ *   receiver being created.
+ * \returns wildcard receiver monitor object.
+ */
+tmon_wrcv_t *tmon_wrcv_create(tmon_t *tmon, char *app_topic_str);
+/*! \brief Delete a tmon wildcard receiver object.
+ * Do not delete this object until after all child objects
+ * (\ref tmon_conn_s) are deleted.
+ *
+ * \param tmon_wrcv topic receiver monitor object.
+ */
+void tmon_wrcv_delete(tmon_wrcv_t *tmon_wrcv);
+
+/*! \brief Create a tmon source object to monitor an application
+ * source.
+ * Create one per application source immediately
+ * *before* creating each source.
+ *
+ * \param tmon Parent topic monitor object.
+ *   This must be the tmon object associated with the same application
+ *   context as the application source being created.
+ * \param app_topic_str Topic string assoicated with the application
+ *   source being created.
+ * \returns source monitor object.
+ */
 tmon_src_t *tmon_src_create(tmon_t *tmon, char *app_topic_str);
-void tmon_src_delete(tmon_src_t *tmon_rcv);
+/*! \brief Delete a tmon source object.
+ *
+ * \param tmon_src Topic source monitor object.
+ */
+void tmon_src_delete(tmon_src_t *tmon_src);
 
+/*! \brief Create a tmon receiver connection object to monitor a unique
+ * connection between this application's receiver and a publisher's source.
+ * This should be called inside the
+ * <a href="https://ultramessaging.github.io/currdoc/doc/Config/grpdeliverycontrol.html#sourcenotificationfunctionreceiver">source_notification_function (receiver)</a>
+ * "create" callback.
+ * That callback can return this object as the per-source client data.
+ * See \ref clientdatapointers.
+ *
+ * \param tmon_rcv 
+ *   This must be the tmon object associated with the same application
+ *   context as the application source being created.
+ * \param source_str source string for this connection, including Topic Index.
+ * \returns connection monitor object.
+ *   This should be returned as the per-source client data
+ */
 tmon_conn_t *tmon_conn_create(tmon_rcv_t *tmon_rcv, const char *source_str);
+/*! \brief Delete a tmon connection object.
+ * This should be called inside the
+ * <a href="https://ultramessaging.github.io/currdoc/doc/Config/grpdeliverycontrol.html#sourcenotificationfunctionreceiver">source_notification_function (receiver)</a>
+ * "delete" callback.
+ *
+ * \param tmon_conn tmon connection object.
+ */
 void tmon_conn_delete(tmon_conn_t *tmon_conn);
-void tmon_conn_rcv_event(lbm_msg_t *msg);
+/*! \brief Record a receiver event on a connection.
+ * This should be called inside your receiver callback.
+ *
+ * \param msg UM message object passed to the receiver callback.
+ * \param tmon_conn connection object. This should be available via the
+ *   per-source client data in the "msg" structure.
+ *   See \ref clientdatapointers.
+ */
+void tmon_conn_rcv_event(lbm_msg_t *msg, tmon_conn_t *tmon_conn);
 
+/*! \brief Create a UM context based on a standard UM "transport options"
+ * string.
+ * The configuration file and topic string are extracted from the
+ * transport options and returned to the caller, along with the UM context.
+ * This information is subsequently passed to tmon_create_monrcv().
+ * Delete this context with the standard UM
+ * <a href="https://ultramessaging.github.io/currdoc/doc/API/lbm_8h.html#a962bfceb336c65191ba08497ac70602b">lbm_context_delete()</a> API.
+ *
+ * \param topic_str Pointer to a byte buffer to be filled with the topic string
+ *   taken from the transport options.
+ * \param config_file Pointer to a byte buffer to be filled with the name of
+ *   the configuration file taken from the transport options.
+ * \param buf_lens Size of the topic_str and config_file buffers.
+ * \param transport_opts User specified transport options which are passed
+ *   to the standard UM monitoring software.
+ * \returns UM context.
+ */
 lbm_context_t *tmon_create_context(char *topic_str, char *config_file, int buf_lens, char *transport_opts);
+/*! \brief Create a UM receiver for the tmon data.
+ * Delete this receiver with the standard UM
+ * <a href="https://ultramessaging.github.io/currdoc/doc/API/lbm_8h.html#a8d5e8713f5ae776330b23a1e371f934d">lbm_rcv_delete()</a> API.
+ *
+ * \param ctx UM context returned by tmon_create_context().
+ * \param topic_str UM topic string, returned by tmon_create_context().
+ * \param config_file UM configuration file, returned by tmon_create_context().
+ * \param transport_opts User specified transport options which are passed
+ *   to the standard UM monitoring software.
+ * \param proc User's receiver event callback function.
+ * \param clientd Application data that the user wants UM to pass to the
+ *   receiver callback.
+ * \param evq Optional event queue, if desired, otherwise pass NULL.
+ */
 lbm_rcv_t *tmon_create_monrcv(lbm_context_t *ctx, const char *topic_str, const char *config_file, const char *transport_opts, lbm_rcv_cb_proc proc, void *clientd, lbm_event_queue_t *evq);
 
 #if defined(__cplusplus)

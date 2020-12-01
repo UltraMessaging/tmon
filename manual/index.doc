@@ -2,9 +2,15 @@
 
 <br/><br/><br/>
 <center class="mytitle">TMON: UM TOPIC MONITOR</center>
-<center>Copyright (C) 2020</center>
+<center>Copyright (C) 2020 Informatica</center>
 <br/><br/><br/>
 \mainpage TMON: UM TOPIC MONITOR
+
+Project home:
+https://github.com/UltraMessaging/tmon
+
+See \ref disclaimers for licensing.
+
 
 \n \section overview Overview
 
@@ -14,16 +20,7 @@ This is intended to work along with the standard UM "automatic monitoring".
 
 Users must add calls to the tmon API to their applications at specific points.
 
-The rest of this page provides a high-level description of the tmon package.
-You can also jump to other pages:
-<ul>
-<li> \ref disclaimers - Please read before using this software.
-<li> \ref releasenotes
-<li> \ref capioverview - Details on the C API.
-<!-- <li> \ref javaapioverview - Details on the Java API. -->
-</ul>
-
-\n \section sourcecode Source Code
+\n \section suppliedassourcecode Supplied as Source Code
 
 The "tmon" package is provided in source code form at
 [Ultra Messaging GitHub](https://github.com/UltraMessaging).
@@ -62,8 +59,49 @@ We will keep you informed of the package's continued evolution.
 \n \section features Features
 
 <ul>
-<li>TBD
+<li>Provide information by which a centralized monitoring tool can
+detect connectivity problems such as deafness or loss.
+
+<li>Provide information to identify the producers and consumers of
+topics.
 </ul>
+
+The primary focus of tmon is on applications.
+The application calls tmon APIs to inform the monitoring tool of
+important events, like creation of sources and receivers,
+as well as important events in a receiver's life cycle.
+
+The expectation is that users will write their own monitoring tool
+that receives these events,
+as well as UM's traditional automatic monitoring data,
+to track the health of their sources and receivers.
+This package does not contain sophisticated monitoring and tracking
+functionality.
+Only a simple example is provided that just prints the events and
+monitoring data.
+It is the user's responsibilty to write the code required to draw
+conclusions from the data.
+
+
+\n \section clientdatapointers Client Data Pointers
+
+tbd
+
+
+\n \section examplemonitoringtool Example Monitoring Tool
+
+The supplied example monitoring tool, "lbmtmon.c", is derived from the
+standard UM example monitoring tool,
+<a href="https://ultramessaging.github.io/currdoc/doc/example/lbmmon.c">"lbmmon.c"</a>
+(one of the
+<a href="https://ultramessaging.github.io/currdoc/doc/example/index.html">C example apps</a>).
+
+The "tmon.c" module is primarily focused on the user's applications,
+but does contain a few APIs intended for use by the monitoring tool.
+The purpose is to be able to conform to the standard UM monitoring
+software "transport options" string.
+
+See tmon_create_context() and tmon_create_monrcv().
 
 
 \n \section opportunitiesandlimitations Opportunities and Limitations
@@ -74,8 +112,99 @@ to the internal monitoring context,
 tmon must create its own context.
 This adds an additional context and thread to each application.
 
-<li>TBD
+<li>The simple design of tmon makes it less scalable than a more
+complex design could be.
+In particular, it may not be suited for applications that create many
+thousands of source or receivers in rapid succession.
+A potential enhancement might be a work queue that is rate limited.
+
+<li>Currently only a C version is available.
+Production of Java and/or .NET versions will depend on demand.
+
+<li>The supplied example monitoring tool just prints the received
+events, nothing more.
+There are a lot of interesting things that could be added.
+For example, it could raise alarms if a publisher creates a source but
+subscribers for that topic do not discover or connect within a reasonable
+amount of time.
+
+<li>There is no query capability.
+For example,
+if the monitoring tool is not collecting data for a period of time,
+perhaps due to network failure,
+events reported during that time are lost.
+A potential enhancement might be a query to the application's tmon.
+It could respond with full lists of sources and receivers and their states.
 </ul>
+
+
+\page wireprotocol Wire Protocol
+
+Each message is an ascii string (not null-terminated).
+The first character of a message indicates the type of message.
+
+<pre>
+S - src_create : S,app_id,IP,PID,ctx,tv_sec,tv_usec,tmon_src,topic
+s - src_delete : s,app_id,IP,PID,ctx,tv_sec,tv_usec,tmon_src
+R - rcv_create : R,app_id,IP,PID,ctx,tv_sec,tv_usec,topic,tmon_rcv
+r - rcv_delete : r,app_id,IP,PID,ctx,tv_sec,tv_usec,tmon_rcv
+C - conn_create: C,app_id,IP,PID,ctx,tv_sec,tv_usec,tmon_rcv,conn,src_str
+c - conn_delete: c,app_id,IP,PID,ctx,tv_sec,tv_usec,conn,msg_count,unrec_count,burst_count
+B - BOS        : b,app_id,IP,PID,ctx,tv_sec,tv_usec,conn
+E - EOS        : e,app_id,IP,PID,ctx,tv_sec,tv_usec,conn,msg_count,unrec_count,burst_count
+A - Alarm      : A,app_id,IP,PID,ctx,tv_sec,tv_usec,err_str
+L - loss       : L,app_id,IP,PID,ctx,tv_sec,tv_usec,conn,msg_count,unrec_count,burst_count
+</pre>
+
+
+\page myworkflow My Workflow
+
+I'm Steve Ford, the initial developer of tmon.
+I am a Linux-centric C programmer who does not have a lot of experience with
+Windows or Mac development.
+
+I have a Mac laptop, which is my primary workstation, and a Windows laptop,
+which I only use when I need to (usually via RDP).
+I also use a test lab which contains many servers of various OSes and
+versions.
+(If you see the host name "orion" in some of the scripts,
+that is the name of a Linux host in our test lab that I commonly use.)
+
+This workflow assumes a full install of UM including libaries and
+binaries, including example application executables.
+With Mac and Linux, the "lbm.sh" script sets up PATH and library load
+environment variables.
+With Windows, PATH is assumed to be set up by the install of UM.
+
+My workflow is as follows:
+<ul>
+<li>In a dedicated Mac terminal window, run "mac/labbox.sh",
+which invokes the "[labbox](https://github.com/fordsfords/labbox)" tool,
+which uses "fswatch" and "rsync" to detect changes on my Mac and update
+the Linux lab host "Orion".
+Note that this tool runs continuously.
+<li>Edit source files on Mac. Note that the modified files are automatically
+copied to Orion.
+<li>Build and test in the "mac" directory using "tst.sh".
+<li>In a secure shell window logged into Orion, build and test in the "lin"
+directory using "tst.sh".
+<li>On my Windows laptop, use cygwin to run "boxlab.sh" which use "rsync" to
+update from Orion.
+This script does not automatically detect changes on Orion; I have to
+press return after I make a change to get the update.
+After synchronizing, the script copies source files into the Visual
+Studio project area,
+and also updates test files for the host's IP address.
+<li>Use Visual Studio to build the solution.
+<li>Test in the "win" directory using "tst.sh" (using cygwin).
+</ul>
+
+I'm sure there are better workflows; suggestions are welcome. (-:
+
+Note that most of the scripts in the "win", "lin", and "mac" directories
+are specific to my environment,
+and would require significant rework for you to use.
+I suspect it wouldn't be worth it.
 
 
 \page releasenotes Release Notes
@@ -86,6 +215,7 @@ This adds an additional context and thread to each application.
 Initial "alpha" release.
 
 Release Date: ???
+
 
 \page disclaimers Disclaimers
 

@@ -70,7 +70,7 @@ $(document).ready(function(){initNavTree('structtmon__s.html','');});
 </div><!--header-->
 <div class="contents">
 
-<p>top-level tmon object.  
+<p>top-level tmon object. Created by <a class="el" href="tmon_8h.html#a752435d00883f7ac86a972eaa22ef484" title="Create a tmon object to monitor application topics. Create one of these per application context immed...">tmon_create()</a>. Create one of these per application context immediately <em>after</em> creating each context. Application must not write to fields in this structure.  
  <a href="structtmon__s.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="tmon_8h_source.html">tmon.h</a>&gt;</code></p>
@@ -82,29 +82,24 @@ lbm_context_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el"
 <tr class="memdesc:a5dd756c74ee038eac2a428cb9e0a5bb8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Application UM context. <br /></td></tr>
 <tr class="separator:a5dd756c74ee038eac2a428cb9e0a5bb8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac25b4362d922877d13f370477a7e9622"><td class="memItemLeft" align="right" valign="top">char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtmon__s.html#ac25b4362d922877d13f370477a7e9622">transport_opts</a> [2048]</td></tr>
-<tr class="memdesc:ac25b4362d922877d13f370477a7e9622"><td class="mdescLeft">&#160;</td><td class="mdescRight">Monitoring transport options string.  <a href="#ac25b4362d922877d13f370477a7e9622">More...</a><br /></td></tr>
+<tr class="memdesc:ac25b4362d922877d13f370477a7e9622"><td class="mdescLeft">&#160;</td><td class="mdescRight">Monitoring transport options string, as defined by application's <a href="https://ultramessaging.github.io/currdoc/doc/Config/grpautomaticmonitoring.html#monitortransportoptscontext">monitor_transport_opts (context)</a>.  <a href="#ac25b4362d922877d13f370477a7e9622">More...</a><br /></td></tr>
 <tr class="separator:ac25b4362d922877d13f370477a7e9622"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab38537b0b2a8cdb978886bca75f10266"><td class="memItemLeft" align="right" valign="top">char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtmon__s.html#ab38537b0b2a8cdb978886bca75f10266">app_id</a> [<a class="el" href="tmon_8h.html#a7ca2d2973383b11c628a04169a3d1667">TMON_STR_BUF_LENS</a>]</td></tr>
 <tr class="separator:ab38537b0b2a8cdb978886bca75f10266"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5bb0ac72da66ba02edc11d0c25ceeeb0"><td class="memItemLeft" align="right" valign="top"><a id="a5bb0ac72da66ba02edc11d0c25ceeeb0"></a>
-char&#160;</td><td class="memItemRight" valign="bottom"><b>config_file</b> [<a class="el" href="tmon_8h.html#a7ca2d2973383b11c628a04169a3d1667">TMON_STR_BUF_LENS</a>]</td></tr>
+<tr class="memitem:a5bb0ac72da66ba02edc11d0c25ceeeb0"><td class="memItemLeft" align="right" valign="top">char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtmon__s.html#a5bb0ac72da66ba02edc11d0c25ceeeb0">config_file</a> [<a class="el" href="tmon_8h.html#a7ca2d2973383b11c628a04169a3d1667">TMON_STR_BUF_LENS</a>]</td></tr>
 <tr class="separator:a5bb0ac72da66ba02edc11d0c25ceeeb0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5bc42eca41914b2a3f7def3980123cf9"><td class="memItemLeft" align="right" valign="top"><a id="a5bc42eca41914b2a3f7def3980123cf9"></a>
-char&#160;</td><td class="memItemRight" valign="bottom"><b>topic_str</b> [<a class="el" href="tmon_8h.html#a7ca2d2973383b11c628a04169a3d1667">TMON_STR_BUF_LENS</a>]</td></tr>
+<tr class="memitem:a5bc42eca41914b2a3f7def3980123cf9"><td class="memItemLeft" align="right" valign="top">char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtmon__s.html#a5bc42eca41914b2a3f7def3980123cf9">topic_str</a> [<a class="el" href="tmon_8h.html#a7ca2d2973383b11c628a04169a3d1667">TMON_STR_BUF_LENS</a>]</td></tr>
 <tr class="separator:a5bc42eca41914b2a3f7def3980123cf9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a705c2069ed07f173aad152f244349f9f"><td class="memItemLeft" align="right" valign="top"><a id="a705c2069ed07f173aad152f244349f9f"></a>
-lbm_context_t *&#160;</td><td class="memItemRight" valign="bottom"><b>ctx</b></td></tr>
+<tr class="memitem:a705c2069ed07f173aad152f244349f9f"><td class="memItemLeft" align="right" valign="top">lbm_context_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtmon__s.html#a705c2069ed07f173aad152f244349f9f">ctx</a></td></tr>
 <tr class="separator:a705c2069ed07f173aad152f244349f9f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acb29cbba068bcf3700da4bfad1a14de5"><td class="memItemLeft" align="right" valign="top"><a id="acb29cbba068bcf3700da4bfad1a14de5"></a>
-lbm_src_t *&#160;</td><td class="memItemRight" valign="bottom"><b>src</b></td></tr>
+<tr class="memitem:acb29cbba068bcf3700da4bfad1a14de5"><td class="memItemLeft" align="right" valign="top">lbm_src_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtmon__s.html#acb29cbba068bcf3700da4bfad1a14de5">src</a></td></tr>
 <tr class="separator:acb29cbba068bcf3700da4bfad1a14de5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a662c80c47e97554f023a626debfbb5ae"><td class="memItemLeft" align="right" valign="top"><a id="a662c80c47e97554f023a626debfbb5ae"></a>
-<a class="el" href="tmon_8h.html#aa0008486a47e54986e3928729ed42a23">ezstr_t</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>header</b></td></tr>
+<tr class="memitem:a662c80c47e97554f023a626debfbb5ae"><td class="memItemLeft" align="right" valign="top"><a class="el" href="tmon_8h.html#aa0008486a47e54986e3928729ed42a23">ezstr_t</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtmon__s.html#a662c80c47e97554f023a626debfbb5ae">header</a></td></tr>
 <tr class="separator:a662c80c47e97554f023a626debfbb5ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>top-level tmon object. </p>
-<p>Create right after creating the application context. </p>
+<div class="textblock"><p>top-level tmon object. Created by <a class="el" href="tmon_8h.html#a752435d00883f7ac86a972eaa22ef484" title="Create a tmon object to monitor application topics. Create one of these per application context immed...">tmon_create()</a>. Create one of these per application context immediately <em>after</em> creating each context. Application must not write to fields in this structure. </p>
+<p>Methods: <a class="el" href="tmon_8h.html#a752435d00883f7ac86a972eaa22ef484" title="Create a tmon object to monitor application topics. Create one of these per application context immed...">tmon_create()</a>, <a class="el" href="tmon_8h.html#aa0afa8049a793ad1a3560e20c7670c99" title="Delete a tmon receiver object. Do not delete this object until after all child objects (tmon_conn_s) ...">tmon_rcv_delete()</a>. </p>
 </div><h2 class="groupheader">Field Documentation</h2>
 <a id="ab38537b0b2a8cdb978886bca75f10266"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab38537b0b2a8cdb978886bca75f10266">&#9670;&nbsp;</a></span>app_id</h2>
@@ -117,7 +112,84 @@ lbm_src_t *&#160;</td><td class="memItemRight" valign="bottom"><b>src</b></td></
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Monitoring configuration file.</p>
+<p>Monitoring application ID, as defined by application's <a href="https://ultramessaging.github.io/currdoc/doc/Config/grpautomaticmonitoring.html#monitorappidcontext">monitor_appid (context)</a>.</p>
+<p>Extracted from application context. </p>
+
+</div>
+</div>
+<a id="a5bb0ac72da66ba02edc11d0c25ceeeb0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5bb0ac72da66ba02edc11d0c25ceeeb0">&#9670;&nbsp;</a></span>config_file</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">char tmon_s::config_file[<a class="el" href="tmon_8h.html#a7ca2d2973383b11c628a04169a3d1667">TMON_STR_BUF_LENS</a>]</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Monitoring configuration file, as supplied by the "config" setting within the <a href="https://ultramessaging.github.io/currdoc/doc/Config/grpautomaticmonitoring.html#monitortransportoptscontext">monitor_transport_opts (context)</a> configuration option. This setting is optional.</p>
+<p>Extracted from application context. </p>
+
+</div>
+</div>
+<a id="a705c2069ed07f173aad152f244349f9f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a705c2069ed07f173aad152f244349f9f">&#9670;&nbsp;</a></span>ctx</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">lbm_context_t* tmon_s::ctx</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>UM context created for sending tmon messages. </p>
+
+</div>
+</div>
+<a id="a662c80c47e97554f023a626debfbb5ae"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a662c80c47e97554f023a626debfbb5ae">&#9670;&nbsp;</a></span>header</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="tmon_8h.html#aa0008486a47e54986e3928729ed42a23">ezstr_t</a>* tmon_s::header</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>String to hold tmon message header information. </p>
+
+</div>
+</div>
+<a id="acb29cbba068bcf3700da4bfad1a14de5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acb29cbba068bcf3700da4bfad1a14de5">&#9670;&nbsp;</a></span>src</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">lbm_src_t* tmon_s::src</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>UM source created for sending tmon messages. </p>
+
+</div>
+</div>
+<a id="a5bc42eca41914b2a3f7def3980123cf9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5bc42eca41914b2a3f7def3980123cf9">&#9670;&nbsp;</a></span>topic_str</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">char tmon_s::topic_str[<a class="el" href="tmon_8h.html#a7ca2d2973383b11c628a04169a3d1667">TMON_STR_BUF_LENS</a>]</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Monitoring topic, as supplied by the "tmontopic" setting within the <a href="https://ultramessaging.github.io/currdoc/doc/Config/grpautomaticmonitoring.html#monitortransportoptscontext">monitor_transport_opts (context)</a> configuration option. This setting is optional and defaults to "/29west/tmon".</p>
 <p>Extracted from application context. </p>
 
 </div>
@@ -134,7 +206,7 @@ lbm_src_t *&#160;</td><td class="memItemRight" valign="bottom"><b>src</b></td></
       </table>
 </div><div class="memdoc">
 
-<p>Monitoring transport options string. </p>
+<p>Monitoring transport options string, as defined by application's <a href="https://ultramessaging.github.io/currdoc/doc/Config/grpautomaticmonitoring.html#monitortransportoptscontext">monitor_transport_opts (context)</a>. </p>
 <p>Extracted from application context. </p>
 
 </div>

@@ -3,7 +3,9 @@
 
 . lbm.sh
 
-gcc -g -Wall -I$LBM_PLATFORM/include -I../c -L$LBM_PLATFORM/lib -llbm -lm -c ../c/tmon.c
+rm tmon.o tmon_example lbmtmon
+
+gcc -g -Wall -I$LBM_PLATFORM/include -I../c -c ../c/tmon.c
 if [ $? -ne 0 ]; then exit 1; fi
 
 gcc -g -Wall -I$LBM_PLATFORM/include -I../c -L$LBM_PLATFORM/lib -llbm -lm -o tmon_example tmon.o ../c/tmon_example.c
@@ -18,4 +20,4 @@ cp ../*.cfg .
 IP=`ifconfig | sed -n -e '/ 10\.[0-9]*\.[0-9]*\.[0-9]*/d; / 127\.0\.0\.1/d; s/.*inet \([0-9]*\.[0-9]*\.[0-9]*\.[0-9]*\).*/\1/p'`
 echo "$IP" >ip.txt
 
-sed -i '' -e "s/interface [0-9]*\.[0-9]*\.[0-9]*\.[0-9]*/interface $IP/;s/daemon [0-9]*\.[0-9]*\.[0-9]*\.[0-9]*/daemon $IP/; s/epoll/select/" *.cfg
+sed -i.bak -e "s/interface [0-9]*\.[0-9]*\.[0-9]*\.[0-9]*/interface $IP/;s/daemon [0-9]*\.[0-9]*\.[0-9]*\.[0-9]*/daemon $IP/; s/epoll/select/" *.cfg

@@ -25,9 +25,13 @@ var NAVTREE =
 [
   [ "tmon: UM Topic Monitor", "index.html", [
     [ "Overview", "index.html#overview", null ],
-    [ "Source Code", "index.html#sourcecode", null ],
+    [ "Supplied as Source Code", "index.html#suppliedassourcecode", null ],
     [ "Features", "index.html#features", null ],
+    [ "Client Data Pointers", "index.html#clientdatapointers", null ],
+    [ "Example Monitoring Tool", "index.html#examplemonitoringtool", null ],
     [ "Opportunities and Limitations", "index.html#opportunitiesandlimitations", null ],
+    [ "Wire Protocol", "wireprotocol.html", null ],
+    [ "My Workflow", "myworkflow.html", null ],
     [ "Release Notes", "releasenotes.html", [
       [ "Version 0.1", "releasenotes.html#version0_1", null ]
     ] ],

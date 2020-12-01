@@ -69,22 +69,74 @@ $(document).ready(function(){initNavTree('structtmon__src__s.html','');});
 <div class="title">tmon_src_s Struct Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>tmon source monitoring object. Created by <a class="el" href="tmon_8h.html#abb03db684e0061fd19cd7ba8d7fd8540" title="Create a tmon source object to monitor an application source. Create one per application source immed...">tmon_src_create()</a>. Create one per application source immediately <em>before</em> creating each source. Application must not write to fields in this structure.  
+ <a href="structtmon__src__s.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="tmon_8h_source.html">tmon.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Data Fields</h2></td></tr>
 <tr class="memitem:a52264f253f074f3f1ebff41726a6c425"><td class="memItemLeft" align="right" valign="top"><a id="a52264f253f074f3f1ebff41726a6c425"></a>
-<a class="el" href="tmon_8h.html#a6ebbbb5c33a5781b9f676c59315ef45e">tmon_t</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>tmon</b></td></tr>
+<a class="el" href="tmon_8h.html#a6ebbbb5c33a5781b9f676c59315ef45e">tmon_t</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtmon__src__s.html#a52264f253f074f3f1ebff41726a6c425">tmon</a></td></tr>
+<tr class="memdesc:a52264f253f074f3f1ebff41726a6c425"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parent tmon object. <br /></td></tr>
 <tr class="separator:a52264f253f074f3f1ebff41726a6c425"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab35a18c4d06bf6b80e825517d287cb8e"><td class="memItemLeft" align="right" valign="top"><a id="ab35a18c4d06bf6b80e825517d287cb8e"></a>
-char&#160;</td><td class="memItemRight" valign="bottom"><b>app_topic_str</b> [256]</td></tr>
+<tr class="memitem:ab35a18c4d06bf6b80e825517d287cb8e"><td class="memItemLeft" align="right" valign="top">char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtmon__src__s.html#ab35a18c4d06bf6b80e825517d287cb8e">app_topic_str</a> [256]</td></tr>
 <tr class="separator:ab35a18c4d06bf6b80e825517d287cb8e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac6150d55482eea1601803323dfe11371"><td class="memItemLeft" align="right" valign="top"><a id="ac6150d55482eea1601803323dfe11371"></a>
-struct timeval&#160;</td><td class="memItemRight" valign="bottom"><b>create_time</b></td></tr>
+<tr class="memitem:ac6150d55482eea1601803323dfe11371"><td class="memItemLeft" align="right" valign="top">struct timeval&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtmon__src__s.html#ac6150d55482eea1601803323dfe11371">create_time</a></td></tr>
 <tr class="separator:ac6150d55482eea1601803323dfe11371"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a37d179685e3fb5ce85dd93379b4d1e47"><td class="memItemLeft" align="right" valign="top"><a id="a37d179685e3fb5ce85dd93379b4d1e47"></a>
-<a class="el" href="tmon_8h.html#aa0008486a47e54986e3928729ed42a23">ezstr_t</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>mon_msg</b></td></tr>
+<tr class="memitem:a37d179685e3fb5ce85dd93379b4d1e47"><td class="memItemLeft" align="right" valign="top"><a class="el" href="tmon_8h.html#aa0008486a47e54986e3928729ed42a23">ezstr_t</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtmon__src__s.html#a37d179685e3fb5ce85dd93379b4d1e47">mon_msg</a></td></tr>
 <tr class="separator:a37d179685e3fb5ce85dd93379b4d1e47"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>tmon source monitoring object. Created by <a class="el" href="tmon_8h.html#abb03db684e0061fd19cd7ba8d7fd8540" title="Create a tmon source object to monitor an application source. Create one per application source immed...">tmon_src_create()</a>. Create one per application source immediately <em>before</em> creating each source. Application must not write to fields in this structure. </p>
+<p>Methods: <a class="el" href="tmon_8h.html#abb03db684e0061fd19cd7ba8d7fd8540" title="Create a tmon source object to monitor an application source. Create one per application source immed...">tmon_src_create()</a>, <a class="el" href="tmon_8h.html#aa3d416665f06258cd9c0c759a2a8b271" title="Delete a tmon source object.">tmon_src_delete()</a>. </p>
+</div><h2 class="groupheader">Field Documentation</h2>
+<a id="ab35a18c4d06bf6b80e825517d287cb8e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab35a18c4d06bf6b80e825517d287cb8e">&#9670;&nbsp;</a></span>app_topic_str</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">char tmon_src_s::app_topic_str[256]</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Topic name for application source. </p>
+
+</div>
+</div>
+<a id="ac6150d55482eea1601803323dfe11371"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac6150d55482eea1601803323dfe11371">&#9670;&nbsp;</a></span>create_time</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">struct timeval tmon_src_s::create_time</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Time stamp when this object was created. </p>
+
+</div>
+</div>
+<a id="a37d179685e3fb5ce85dd93379b4d1e47"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a37d179685e3fb5ce85dd93379b4d1e47">&#9670;&nbsp;</a></span>mon_msg</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="tmon_8h.html#aa0008486a47e54986e3928729ed42a23">ezstr_t</a>* tmon_src_s::mon_msg</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Work buffer for building tmon messages. This is retained to minimize repeated malloc/free. </p>
+
+</div>
+</div>
 <hr/>The documentation for this struct was generated from the following file:<ul>
 <li><a class="el" href="tmon_8h_source.html">tmon.h</a></li>
 </ul>

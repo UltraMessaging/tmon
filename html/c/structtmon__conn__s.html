@@ -69,37 +69,159 @@ $(document).ready(function(){initNavTree('structtmon__conn__s.html','');});
 <div class="title">tmon_conn_s Struct Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>tmon connection monitoring object. Created by <a class="el" href="tmon_8h.html#a1bcd235ecc04d3dbf8c61713ad1a3ac7" title="Create a tmon receiver connection object to monitor a unique connection between this application&#39;s re...">tmon_conn_create()</a>. Create one per receiver delivery controller from inside the <a href="https://ultramessaging.github.io/currdoc/doc/Config/grpdeliverycontrol.html#sourcenotificationfunctionreceiver">source_notification_function (receiver)</a> callback. That callback can return this object as the source-specific clientd. See <a class="elRef" doxygen="/Users/sford/Documents/GitHub/tmon/html/manual.tag:../manual/" href="../manual/index.html#clientdatapointers">Client Data Pointers</a>. Application must not write to fields in this structure.  
+ <a href="structtmon__conn__s.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="tmon_8h_source.html">tmon.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Data Fields</h2></td></tr>
 <tr class="memitem:a3dbe0b52bba4466eb48dcca11b6063d3"><td class="memItemLeft" align="right" valign="top"><a id="a3dbe0b52bba4466eb48dcca11b6063d3"></a>
-<a class="el" href="tmon_8h.html#a3fd849f02596f1e422356f063b57228c">tmon_rcv_t</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>tmon_rcv</b></td></tr>
+<a class="el" href="tmon_8h.html#a3fd849f02596f1e422356f063b57228c">tmon_rcv_t</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtmon__conn__s.html#a3dbe0b52bba4466eb48dcca11b6063d3">tmon_rcv</a></td></tr>
+<tr class="memdesc:a3dbe0b52bba4466eb48dcca11b6063d3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parent tmon receiver object. <br /></td></tr>
 <tr class="separator:a3dbe0b52bba4466eb48dcca11b6063d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6d288b5de800b578ca5e8aea67a26aab"><td class="memItemLeft" align="right" valign="top"><a id="a6d288b5de800b578ca5e8aea67a26aab"></a>
-char&#160;</td><td class="memItemRight" valign="bottom"><b>source_str</b> [128]</td></tr>
+<tr class="memitem:a6d288b5de800b578ca5e8aea67a26aab"><td class="memItemLeft" align="right" valign="top">char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtmon__conn__s.html#a6d288b5de800b578ca5e8aea67a26aab">source_str</a> [128]</td></tr>
 <tr class="separator:a6d288b5de800b578ca5e8aea67a26aab"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7bc80fe8d1d57b6e80defdbf69e32424"><td class="memItemLeft" align="right" valign="top"><a id="a7bc80fe8d1d57b6e80defdbf69e32424"></a>
-struct timeval&#160;</td><td class="memItemRight" valign="bottom"><b>create_time</b></td></tr>
+<tr class="memitem:a7bc80fe8d1d57b6e80defdbf69e32424"><td class="memItemLeft" align="right" valign="top">struct timeval&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtmon__conn__s.html#a7bc80fe8d1d57b6e80defdbf69e32424">create_time</a></td></tr>
 <tr class="separator:a7bc80fe8d1d57b6e80defdbf69e32424"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acd7e13765167815686b24c8241e62d18"><td class="memItemLeft" align="right" valign="top"><a id="acd7e13765167815686b24c8241e62d18"></a>
-struct timeval&#160;</td><td class="memItemRight" valign="bottom"><b>bos_time</b></td></tr>
+<tr class="memitem:acd7e13765167815686b24c8241e62d18"><td class="memItemLeft" align="right" valign="top">struct timeval&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtmon__conn__s.html#acd7e13765167815686b24c8241e62d18">bos_time</a></td></tr>
 <tr class="separator:acd7e13765167815686b24c8241e62d18"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a016211953b392b2a8a374709d2ecf589"><td class="memItemLeft" align="right" valign="top"><a id="a016211953b392b2a8a374709d2ecf589"></a>
-struct timeval&#160;</td><td class="memItemRight" valign="bottom"><b>loss_time</b></td></tr>
+<tr class="memitem:a016211953b392b2a8a374709d2ecf589"><td class="memItemLeft" align="right" valign="top">struct timeval&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtmon__conn__s.html#a016211953b392b2a8a374709d2ecf589">loss_time</a></td></tr>
 <tr class="separator:a016211953b392b2a8a374709d2ecf589"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5f3f274ddacb569930e889a32dc19b1b"><td class="memItemLeft" align="right" valign="top"><a id="a5f3f274ddacb569930e889a32dc19b1b"></a>
-long&#160;</td><td class="memItemRight" valign="bottom"><b>msg_count</b></td></tr>
+<tr class="memitem:a5f3f274ddacb569930e889a32dc19b1b"><td class="memItemLeft" align="right" valign="top">long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtmon__conn__s.html#a5f3f274ddacb569930e889a32dc19b1b">msg_count</a></td></tr>
 <tr class="separator:a5f3f274ddacb569930e889a32dc19b1b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af9042361a825a1b53cd1fa57bfec23f9"><td class="memItemLeft" align="right" valign="top"><a id="af9042361a825a1b53cd1fa57bfec23f9"></a>
-long&#160;</td><td class="memItemRight" valign="bottom"><b>unrec_count</b></td></tr>
+<tr class="memitem:af9042361a825a1b53cd1fa57bfec23f9"><td class="memItemLeft" align="right" valign="top">long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtmon__conn__s.html#af9042361a825a1b53cd1fa57bfec23f9">unrec_count</a></td></tr>
 <tr class="separator:af9042361a825a1b53cd1fa57bfec23f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac9a53fc0fbd166fa8acf49c8ff1efa15"><td class="memItemLeft" align="right" valign="top"><a id="ac9a53fc0fbd166fa8acf49c8ff1efa15"></a>
-long&#160;</td><td class="memItemRight" valign="bottom"><b>burst_count</b></td></tr>
+<tr class="memitem:ac9a53fc0fbd166fa8acf49c8ff1efa15"><td class="memItemLeft" align="right" valign="top">long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtmon__conn__s.html#ac9a53fc0fbd166fa8acf49c8ff1efa15">burst_count</a></td></tr>
 <tr class="separator:ac9a53fc0fbd166fa8acf49c8ff1efa15"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa8ae3c7cb73784cf0a84f0d0cb393654"><td class="memItemLeft" align="right" valign="top"><a id="aa8ae3c7cb73784cf0a84f0d0cb393654"></a>
-<a class="el" href="tmon_8h.html#aa0008486a47e54986e3928729ed42a23">ezstr_t</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>mon_msg</b></td></tr>
+<tr class="memitem:aa8ae3c7cb73784cf0a84f0d0cb393654"><td class="memItemLeft" align="right" valign="top"><a class="el" href="tmon_8h.html#aa0008486a47e54986e3928729ed42a23">ezstr_t</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtmon__conn__s.html#aa8ae3c7cb73784cf0a84f0d0cb393654">mon_msg</a></td></tr>
 <tr class="separator:aa8ae3c7cb73784cf0a84f0d0cb393654"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>tmon connection monitoring object. Created by <a class="el" href="tmon_8h.html#a1bcd235ecc04d3dbf8c61713ad1a3ac7" title="Create a tmon receiver connection object to monitor a unique connection between this application&#39;s re...">tmon_conn_create()</a>. Create one per receiver delivery controller from inside the <a href="https://ultramessaging.github.io/currdoc/doc/Config/grpdeliverycontrol.html#sourcenotificationfunctionreceiver">source_notification_function (receiver)</a> callback. That callback can return this object as the source-specific clientd. See <a class="elRef" doxygen="/Users/sford/Documents/GitHub/tmon/html/manual.tag:../manual/" href="../manual/index.html#clientdatapointers">Client Data Pointers</a>. Application must not write to fields in this structure. </p>
+<p>Methods: <a class="el" href="tmon_8h.html#a1bcd235ecc04d3dbf8c61713ad1a3ac7" title="Create a tmon receiver connection object to monitor a unique connection between this application&#39;s re...">tmon_conn_create()</a>, <a class="el" href="tmon_8h.html#a90c529737495dadd30030db2f32f71ab" title="Delete a tmon connection object. This should be called inside the source_notification_function (recei...">tmon_conn_delete()</a>, <a class="el" href="tmon_8h.html#afbb5b7f5b09fd4e961c1b4944d11ea7f" title="Record a receiver event on a connection. This should be called inside your receiver callback.">tmon_conn_rcv_event()</a>. </p>
+</div><h2 class="groupheader">Field Documentation</h2>
+<a id="acd7e13765167815686b24c8241e62d18"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acd7e13765167815686b24c8241e62d18">&#9670;&nbsp;</a></span>bos_time</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">struct timeval tmon_conn_s::bos_time</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Time stamp when <a href="https://ultramessaging.github.io/currdoc/doc/API/lbm_8h.html#ab5489080adc7157549a9930b30c68425">LBM_MSG_BOS</a> receiver event was delivered for this connection (0 if not delivered yet). </p>
+
+</div>
+</div>
+<a id="ac9a53fc0fbd166fa8acf49c8ff1efa15"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac9a53fc0fbd166fa8acf49c8ff1efa15">&#9670;&nbsp;</a></span>burst_count</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">long tmon_conn_s::burst_count</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Total number of <a href="https://ultramessaging.github.io/currdoc/doc/API/lbm_8h.html#a6629139aaf902976c8df9de3f37d10db">LBM_MSG_UNRECOVERABLE_LOSS_BURST</a> receiver events delivered for this connection. </p>
+
+</div>
+</div>
+<a id="a7bc80fe8d1d57b6e80defdbf69e32424"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7bc80fe8d1d57b6e80defdbf69e32424">&#9670;&nbsp;</a></span>create_time</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">struct timeval tmon_conn_s::create_time</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Time stamp when this object was created. </p>
+
+</div>
+</div>
+<a id="a016211953b392b2a8a374709d2ecf589"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a016211953b392b2a8a374709d2ecf589">&#9670;&nbsp;</a></span>loss_time</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">struct timeval tmon_conn_s::loss_time</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Time stamp when most-recent <a href="https://ultramessaging.github.io/currdoc/doc/API/lbm_8h.html#a88920e0a4188081f9a14fc8f76c18578">LBM_MSG_UNRECOVERABLE_LOSS</a> or &lt;href="https://ultramessaging.github.io/currdoc/doc/API/lbm_8h.html#a6629139aaf902976c8df9de3f37d10db"&gt;LBM_MSG_UNRECOVERABLE_LOSS_BURST receiver event was delivered for this connection (0 if neither delivered yet). </p>
+
+</div>
+</div>
+<a id="aa8ae3c7cb73784cf0a84f0d0cb393654"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa8ae3c7cb73784cf0a84f0d0cb393654">&#9670;&nbsp;</a></span>mon_msg</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="tmon_8h.html#aa0008486a47e54986e3928729ed42a23">ezstr_t</a>* tmon_conn_s::mon_msg</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Work buffer for building tmon messages. This is retained to minimize repeated malloc/free. </p>
+
+</div>
+</div>
+<a id="a5f3f274ddacb569930e889a32dc19b1b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5f3f274ddacb569930e889a32dc19b1b">&#9670;&nbsp;</a></span>msg_count</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">long tmon_conn_s::msg_count</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Total number of received data messages for this connection. </p>
+
+</div>
+</div>
+<a id="a6d288b5de800b578ca5e8aea67a26aab"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6d288b5de800b578ca5e8aea67a26aab">&#9670;&nbsp;</a></span>source_str</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">char tmon_conn_s::source_str[128]</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Source string for transport session, plus topic index. </p>
+
+</div>
+</div>
+<a id="af9042361a825a1b53cd1fa57bfec23f9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af9042361a825a1b53cd1fa57bfec23f9">&#9670;&nbsp;</a></span>unrec_count</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">long tmon_conn_s::unrec_count</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Total number of <a href="https://ultramessaging.github.io/currdoc/doc/API/lbm_8h.html#a88920e0a4188081f9a14fc8f76c18578">LBM_MSG_UNRECOVERABLE_LOSS</a> receiver events delivered for this connection. </p>
+
+</div>
+</div>
 <hr/>The documentation for this struct was generated from the following file:<ul>
 <li><a class="el" href="tmon_8h_source.html">tmon.h</a></li>
 </ul>

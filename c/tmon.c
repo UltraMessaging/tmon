@@ -1,4 +1,4 @@
-/* tmon.c - Rate Limiter module.
+/* tmon.c - UM Topic Monitor
  * Project home: https://github.com/UltraMessaging/tmon
  *
  * Copyright (c) 2020 Informatica Corporation. All Rights Reserved.
@@ -372,7 +372,7 @@ lbm_context_t *tmon_create_context(char *topic_str, char *config_file,
   /* Step through options in monitor_transport_opts to find topic and config. */
   opt_p = transport_opts;
   while ((opt_p = tmon_next_pair(opt_p, key, sizeof(key), value, sizeof(value))) != NULL) {
-    if (strcasecmp(key, "topic") == 0) {
+    if (strcasecmp(key, "tmontopic") == 0) {
       strncpy(topic_str, value, buf_lens);
     }
     else if (strcasecmp(key, "config") == 0) {
@@ -492,7 +492,7 @@ lbm_rcv_t *tmon_create_monrcv(lbm_context_t *ctx, const char *topic_str,
 
 static void tmon_init_header(tmon_t *tmon)
 {
-  char work_str[256];
+  char work_str[TMON_STR_BUF_LENS+1];
 
   /* app_id, IP, PID, app_ctx */
 
@@ -546,6 +546,7 @@ tmon_t *tmon_create(lbm_context_t *app_ctx)
 
 void tmon_delete(tmon_t *tmon)
 {
+  LBMCHK(lbm_src_flush(tmon->src));  /* flush out batching queue. */
   LBMCHK(lbm_src_delete(tmon->src));
   LBMCHK(lbm_context_delete(tmon->ctx));
   ezstr_delete(tmon->header);
@@ -557,7 +558,7 @@ void tmon_delete(tmon_t *tmon)
 tmon_rcv_t *tmon_rcv_create(tmon_t *tmon, char *app_topic_str)
 {
   tmon_rcv_t *tmon_rcv;
-  char work_str[512];
+  char work_str[TMON_STR_BUF_LENS+1];
 
   tmon_rcv = (tmon_rcv_t *)malloc(sizeof(tmon_rcv_t));
   NULLCHK(tmon_rcv);
@@ -573,14 +574,14 @@ tmon_rcv_t *tmon_rcv_create(tmon_t *tmon, char *app_topic_str)
   ezstr_clear(tmon_rcv->mon_msg);
   ezstr_append(tmon_rcv->mon_msg, "R,");
   ezstr_append(tmon_rcv->mon_msg, tmon->header->buff);
-  sprintf(work_str, ",%lx,%ld,%ld,%s", (unsigned long)tmon_rcv,
-    tmon_rcv->create_time.tv_sec, tmon_rcv->create_time.tv_usec,
-    tmon_rcv->app_topic_str);
+  sprintf(work_str, ",%ld,%ld,%lx,%s",
+    tmon_rcv->create_time.tv_sec, (long)tmon_rcv->create_time.tv_usec,
+    (unsigned long)tmon_rcv, tmon_rcv->app_topic_str);
   ezstr_append(tmon_rcv->mon_msg, work_str);
 
   /* Send it. */
   LBMCHK(lbm_src_send(tmon->src, tmon_rcv->mon_msg->buff,
-    tmon_rcv->mon_msg->null_index + 1, 0));
+    tmon_rcv->mon_msg->null_index, 0));
 
   return tmon_rcv;
 }  /* tmon_rcv_create */
@@ -591,7 +592,7 @@ void tmon_rcv_delete(tmon_rcv_t *tmon_rcv)
 {
   tmon_t *tmon;
   struct timeval delete_time;
-  char work_str[256];
+  char work_str[TMON_STR_BUF_LENS+1];
 
   tmon = tmon_rcv->tmon;
   NULLCHK(tmon);
@@ -602,13 +603,13 @@ void tmon_rcv_delete(tmon_rcv_t *tmon_rcv)
   ezstr_clear(tmon_rcv->mon_msg);
   ezstr_append(tmon_rcv->mon_msg, "r,");
   ezstr_append(tmon_rcv->mon_msg, tmon->header->buff);
-  sprintf(work_str, ",%lx,%ld,%ld", (unsigned long)tmon_rcv,
-    delete_time.tv_sec, delete_time.tv_usec);
+  sprintf(work_str, ",%ld,%ld,%lx",
+    delete_time.tv_sec, (long)delete_time.tv_usec, (unsigned long)tmon_rcv);
   ezstr_append(tmon_rcv->mon_msg, work_str);
 
   /* Send it. */
   LBMCHK(lbm_src_send(tmon->src, tmon_rcv->mon_msg->buff,
-    tmon_rcv->mon_msg->null_index + 1, 0));
+    tmon_rcv->mon_msg->null_index, 0));
 
   ezstr_delete(tmon_rcv->mon_msg);
 
@@ -616,10 +617,73 @@ void tmon_rcv_delete(tmon_rcv_t *tmon_rcv)
 }  /* tmon_rcv_delete */
 
 
+/* Call this right before creating a UM receiver object. */
+tmon_wrcv_t *tmon_wrcv_create(tmon_t *tmon, char *app_pattern)
+{
+  tmon_wrcv_t *tmon_wrcv;
+  char work_str[TMON_STR_BUF_LENS+1];
+
+  tmon_wrcv = (tmon_wrcv_t *)malloc(sizeof(tmon_wrcv_t));
+  NULLCHK(tmon_wrcv);
+
+  tmon_wrcv->mon_msg = ezstr_create();
+  NULLCHK(tmon_wrcv->mon_msg);
+  tmon_wrcv->tmon = tmon;
+  strncpy(tmon_wrcv->app_pattern, app_pattern,
+    sizeof(tmon_wrcv->app_pattern));
+  tmon_gettimeofday(&tmon_wrcv->create_time);
+
+  /* Prepare monitoring message. */
+  ezstr_clear(tmon_wrcv->mon_msg);
+  ezstr_append(tmon_wrcv->mon_msg, "W,");
+  ezstr_append(tmon_wrcv->mon_msg, tmon->header->buff);
+  sprintf(work_str, ",%ld,%ld,%lx,%s",
+    tmon_wrcv->create_time.tv_sec, (long)tmon_wrcv->create_time.tv_usec,
+    (unsigned long)tmon_wrcv, tmon_wrcv->app_pattern);
+  ezstr_append(tmon_wrcv->mon_msg, work_str);
+
+  /* Send it. */
+  LBMCHK(lbm_src_send(tmon->src, tmon_wrcv->mon_msg->buff,
+    tmon_wrcv->mon_msg->null_index, 0));
+
+  return tmon_wrcv;
+}  /* tmon_wrcv_create */
+
+
+/* Call this right after deleting a UM receiver object. */
+void tmon_wrcv_delete(tmon_wrcv_t *tmon_wrcv)
+{
+  tmon_t *tmon;
+  struct timeval delete_time;
+  char work_str[TMON_STR_BUF_LENS+1];
+
+  tmon = tmon_wrcv->tmon;
+  NULLCHK(tmon);
+
+  tmon_gettimeofday(&delete_time);
+
+  /* Prepare monitoring message. */
+  ezstr_clear(tmon_wrcv->mon_msg);
+  ezstr_append(tmon_wrcv->mon_msg, "w,");
+  ezstr_append(tmon_wrcv->mon_msg, tmon->header->buff);
+  sprintf(work_str, ",%ld,%ld,%lx",
+    delete_time.tv_sec, (long)delete_time.tv_usec, (unsigned long)tmon_wrcv);
+  ezstr_append(tmon_wrcv->mon_msg, work_str);
+
+  /* Send it. */
+  LBMCHK(lbm_src_send(tmon->src, tmon_wrcv->mon_msg->buff,
+    tmon_wrcv->mon_msg->null_index, 0));
+
+  ezstr_delete(tmon_wrcv->mon_msg);
+
+  free(tmon_wrcv);
+}  /* tmon_wrcv_delete */
+
+
 tmon_src_t *tmon_src_create(tmon_t *tmon, char *app_topic_str)
 {
   tmon_src_t *tmon_src;
-  char work_str[512];
+  char work_str[TMON_STR_BUF_LENS+1];
 
   tmon_src = (tmon_src_t *)malloc(sizeof(tmon_src_t));
   NULLCHK(tmon_src);
@@ -635,14 +699,14 @@ tmon_src_t *tmon_src_create(tmon_t *tmon, char *app_topic_str)
   ezstr_clear(tmon_src->mon_msg);
   ezstr_append(tmon_src->mon_msg, "S,");
   ezstr_append(tmon_src->mon_msg, tmon->header->buff);
-  sprintf(work_str, ",%lx,%ld,%ld,%s", (unsigned long)tmon_src,
-    tmon_src->create_time.tv_sec, tmon_src->create_time.tv_usec,
-    tmon_src->app_topic_str);
+  sprintf(work_str, ",%ld,%ld,%lx,%s",
+    tmon_src->create_time.tv_sec, (long)tmon_src->create_time.tv_usec,
+    (unsigned long)tmon_src, tmon_src->app_topic_str);
   ezstr_append(tmon_src->mon_msg, work_str);
 
   /* Send it. */
   LBMCHK(lbm_src_send(tmon->src, tmon_src->mon_msg->buff,
-    tmon_src->mon_msg->null_index + 1, 0));
+    tmon_src->mon_msg->null_index, 0));
 
   return tmon_src;
 }  /* tmon_src_create */
@@ -652,7 +716,7 @@ void tmon_src_delete(tmon_src_t *tmon_src)
 {
   tmon_t *tmon;
   struct timeval delete_time;
-  char work_str[256];
+  char work_str[TMON_STR_BUF_LENS+1];
 
   tmon = tmon_src->tmon;
   NULLCHK(tmon);
@@ -663,13 +727,13 @@ void tmon_src_delete(tmon_src_t *tmon_src)
   ezstr_clear(tmon_src->mon_msg);
   ezstr_append(tmon_src->mon_msg, "s,");
   ezstr_append(tmon_src->mon_msg, tmon->header->buff);
-  sprintf(work_str, ",%lx,%ld,%ld", (unsigned long)tmon_src,
-    delete_time.tv_sec, delete_time.tv_usec);
+  sprintf(work_str, ",%ld,%ld,%lx",
+    delete_time.tv_sec, (long)delete_time.tv_usec, (unsigned long)tmon_src);
   ezstr_append(tmon_src->mon_msg, work_str);
 
   /* Send it. */
   LBMCHK(lbm_src_send(tmon->src, tmon_src->mon_msg->buff,
-    tmon_src->mon_msg->null_index + 1, 0));
+    tmon_src->mon_msg->null_index, 0));
 
   ezstr_delete(tmon_src->mon_msg);
 
@@ -681,7 +745,7 @@ tmon_conn_t *tmon_conn_create(tmon_rcv_t *tmon_rcv, const char *source_str)
 {
   tmon_conn_t *tmon_conn;
   tmon_t *tmon;
-  char work_str[512];
+  char work_str[TMON_STR_BUF_LENS+1];
 
   tmon = tmon_rcv->tmon;
   NULLCHK(tmon);
@@ -707,15 +771,14 @@ tmon_conn_t *tmon_conn_create(tmon_rcv_t *tmon_rcv, const char *source_str)
   ezstr_clear(tmon_conn->mon_msg);
   ezstr_append(tmon_conn->mon_msg, "C,");
   ezstr_append(tmon_conn->mon_msg, tmon->header->buff);
-  sprintf(work_str, ",%lx,%lx,%ld,%ld,%s", (unsigned long)tmon_conn,
-    (unsigned long)tmon_rcv,
-    tmon_conn->create_time.tv_sec, tmon_conn->create_time.tv_usec,
-    tmon_conn->source_str);
+  sprintf(work_str, ",%ld,%ld,%lx,%lx,%s",
+    tmon_conn->create_time.tv_sec, (long)tmon_conn->create_time.tv_usec,
+    (unsigned long)tmon_rcv, (unsigned long)tmon_conn, tmon_conn->source_str);
   ezstr_append(tmon_conn->mon_msg, work_str);
 
   /* Send it. */
   LBMCHK(lbm_src_send(tmon->src, tmon_conn->mon_msg->buff,
-    tmon_conn->mon_msg->null_index + 1, 0));
+    tmon_conn->mon_msg->null_index, 0));
 
   return tmon_conn;
 }  /* tmon_conn_create */
@@ -726,7 +789,7 @@ void tmon_conn_delete(tmon_conn_t *tmon_conn)
   tmon_rcv_t *tmon_rcv;
   tmon_t *tmon;
   struct timeval delete_time;
-  char work_str[256];
+  char work_str[TMON_STR_BUF_LENS+1];
 
   NULLCHK(tmon_conn);
   tmon_rcv = tmon_conn->tmon_rcv;
@@ -740,14 +803,14 @@ void tmon_conn_delete(tmon_conn_t *tmon_conn)
   ezstr_clear(tmon_conn->mon_msg);
   ezstr_append(tmon_conn->mon_msg, "c,");
   ezstr_append(tmon_conn->mon_msg, tmon->header->buff);
-  sprintf(work_str, ",%lx,%ld,%ld,%ld,%ld,%ld", (unsigned long)tmon_conn,
-    delete_time.tv_sec, delete_time.tv_usec, tmon_conn->msg_count,
-    tmon_conn->unrec_count, tmon_conn->burst_count);
+  sprintf(work_str, ",%ld,%ld,%lx,%ld,%ld,%ld",
+    delete_time.tv_sec, (long)delete_time.tv_usec, (unsigned long)tmon_conn,
+    tmon_conn->msg_count, tmon_conn->unrec_count, tmon_conn->burst_count);
   ezstr_append(tmon_conn->mon_msg, work_str);
 
   /* Send it. */
   LBMCHK(lbm_src_send(tmon->src, tmon_conn->mon_msg->buff,
-    tmon_conn->mon_msg->null_index + 1, 0));
+    tmon_conn->mon_msg->null_index, 0));
 
   ezstr_delete(tmon_conn->mon_msg);
 
@@ -755,14 +818,13 @@ void tmon_conn_delete(tmon_conn_t *tmon_conn)
 }  /* tmon_conn_delete */
 
 
-void tmon_conn_bos(tmon_conn_t *tmon_conn)
+void tmon_conn_bos(tmon_conn_t *tmon_conn, char *topic_str)
 {
   tmon_rcv_t *tmon_rcv;
   tmon_t *tmon;
   struct timeval event_time;
-  char work_str[256];
+  char work_str[TMON_STR_BUF_LENS+1];
 
-  NULLCHK(tmon_conn);
   tmon_rcv = tmon_conn->tmon_rcv;
   NULLCHK(tmon_rcv);
   tmon = tmon_rcv->tmon;
@@ -772,27 +834,27 @@ void tmon_conn_bos(tmon_conn_t *tmon_conn)
   ezstr_clear(tmon_conn->mon_msg);
   ezstr_append(tmon_conn->mon_msg, "B,");
   ezstr_append(tmon_conn->mon_msg, tmon->header->buff);
-  sprintf(work_str, ",%lx,%ld,%ld", (unsigned long)tmon_conn,
-    event_time.tv_sec, event_time.tv_usec);
+  sprintf(work_str, ",%ld,%ld,%lx,%s",
+    event_time.tv_sec, (long)event_time.tv_usec, (unsigned long)tmon_conn,
+    topic_str);
   ezstr_append(tmon_conn->mon_msg, work_str);
 
   /* Send it. */
   LBMCHK(lbm_src_send(tmon->src, tmon_conn->mon_msg->buff,
-    tmon_conn->mon_msg->null_index + 1, 0));
+    tmon_conn->mon_msg->null_index, 0));
 
   /* Remember that BOS happened. */
   tmon_conn->bos_time = event_time;
 }  /* tmon_conn_bos */
 
 
-void tmon_conn_eos(tmon_conn_t *tmon_conn)
+void tmon_conn_eos(tmon_conn_t *tmon_conn, char *topic_str)
 {
   tmon_rcv_t *tmon_rcv;
   tmon_t *tmon;
   struct timeval event_time;
-  char work_str[256];
+  char work_str[TMON_STR_BUF_LENS+1];
 
-  NULLCHK(tmon_conn);
   tmon_rcv = tmon_conn->tmon_rcv;
   NULLCHK(tmon_rcv);
   tmon = tmon_rcv->tmon;
@@ -802,14 +864,15 @@ void tmon_conn_eos(tmon_conn_t *tmon_conn)
   ezstr_clear(tmon_conn->mon_msg);
   ezstr_append(tmon_conn->mon_msg, "E,");
   ezstr_append(tmon_conn->mon_msg, tmon->header->buff);
-  sprintf(work_str, ",%lx,%ld,%ld,%ld,%ld,%ld", (unsigned long)tmon_conn,
-    event_time.tv_sec, event_time.tv_usec, tmon_conn->msg_count,
-    tmon_conn->unrec_count, tmon_conn->burst_count);
+  sprintf(work_str, ",%ld,%ld,%lx,%ld,%ld,%ld,%s",
+    event_time.tv_sec, (long)event_time.tv_usec, (unsigned long)tmon_conn,
+    tmon_conn->msg_count, tmon_conn->unrec_count, tmon_conn->burst_count,
+    topic_str);
   ezstr_append(tmon_conn->mon_msg, work_str);
 
   /* Send it. */
   LBMCHK(lbm_src_send(tmon->src, tmon_conn->mon_msg->buff,
-    tmon_conn->mon_msg->null_index + 1, 0));
+    tmon_conn->mon_msg->null_index, 0));
 
   if (tmon_conn->bos_time.tv_sec == 0) {
     /* Alert! EOS without BOS. */
@@ -817,7 +880,7 @@ void tmon_conn_eos(tmon_conn_t *tmon_conn)
     ezstr_append(tmon_conn->mon_msg, "A,");
     ezstr_append(tmon_conn->mon_msg, tmon->header->buff);
     sprintf(work_str, ",%ld,%ld,",
-      event_time.tv_sec, event_time.tv_usec);
+      event_time.tv_sec, (long)event_time.tv_usec);
     ezstr_append(tmon_conn->mon_msg, work_str);
 
     sprintf(work_str, "EOS without BOS, topic='%s', source_str='%s'",
@@ -826,7 +889,7 @@ void tmon_conn_eos(tmon_conn_t *tmon_conn)
 
     /* Send it. */
     LBMCHK(lbm_src_send(tmon->src, tmon_conn->mon_msg->buff,
-      tmon_conn->mon_msg->null_index + 1, 0));
+      tmon_conn->mon_msg->null_index, 0));
   }
 }  /* tmon_conn_eos */
 
@@ -836,7 +899,7 @@ void tmon_conn_loss(tmon_conn_t *tmon_conn)
   tmon_rcv_t *tmon_rcv;
   tmon_t *tmon;
   struct timeval event_time;
-  char work_str[256];
+  char work_str[TMON_STR_BUF_LENS+1];
 
   tmon_rcv = tmon_conn->tmon_rcv;
   NULLCHK(tmon_rcv);
@@ -852,47 +915,41 @@ void tmon_conn_loss(tmon_conn_t *tmon_conn)
     ezstr_clear(tmon_conn->mon_msg);
     ezstr_append(tmon_conn->mon_msg, "L,");
     ezstr_append(tmon_conn->mon_msg, tmon->header->buff);
-    sprintf(work_str, ",%lx,%ld,%ld,%ld,%ld,%ld", (unsigned long)tmon_conn,
-      event_time.tv_sec, event_time.tv_usec, tmon_conn->msg_count,
-      tmon_conn->unrec_count, tmon_conn->burst_count);
+    sprintf(work_str, ",%ld,%ld,%lx,%ld,%ld,%ld",
+      event_time.tv_sec, (long)event_time.tv_usec, (unsigned long)tmon_conn,
+      tmon_conn->msg_count, tmon_conn->unrec_count, tmon_conn->burst_count);
     ezstr_append(tmon_conn->mon_msg, work_str);
 
     /* Send it. */
     LBMCHK(lbm_src_send(tmon->src, tmon_conn->mon_msg->buff,
-      tmon_conn->mon_msg->null_index + 1, 0));
+      tmon_conn->mon_msg->null_index, 0));
   }
 }  /* tmon_conn_loss */
 
 
-void tmon_conn_rcv_event(lbm_msg_t *msg)
+void tmon_conn_rcv_event(lbm_msg_t *msg, tmon_conn_t *tmon_conn)
 {
-  tmon_conn_t *tmon_conn;
+  NULLCHK(tmon_conn);
 
   switch (msg->type) {
   case LBM_MSG_DATA:
-    tmon_conn = (tmon_conn_t *)msg->source_clientd;
-    NULLCHK(tmon_conn);
     tmon_conn->msg_count ++;
     break;
 
   case LBM_MSG_BOS:
-    tmon_conn_bos((tmon_conn_t *)msg->source_clientd);
+    tmon_conn_bos(tmon_conn, msg->topic_name);
     break;
 
   case LBM_MSG_EOS:
-    tmon_conn_eos((tmon_conn_t *)msg->source_clientd);
+    tmon_conn_eos(tmon_conn, msg->topic_name);
     break;
 
   case LBM_MSG_UNRECOVERABLE_LOSS:
-    tmon_conn = (tmon_conn_t *)msg->source_clientd;
-    NULLCHK(tmon_conn);
     tmon_conn->unrec_count ++;
     tmon_conn_loss(tmon_conn);
     break;
 
   case LBM_MSG_UNRECOVERABLE_LOSS_BURST:
-    tmon_conn = (tmon_conn_t *)msg->source_clientd;
-    NULLCHK(tmon_conn);
     tmon_conn->burst_count ++;
     tmon_conn_loss(tmon_conn);
     break;

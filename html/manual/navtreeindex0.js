@@ -1,12 +1,16 @@
 var NAVTREEINDEX0 =
 {
-"disclaimers.html":[5],
+"disclaimers.html":[9],
 "index.html":[],
+"index.html#clientdatapointers":[3],
+"index.html#examplemonitoringtool":[4],
 "index.html#features":[2],
-"index.html#opportunitiesandlimitations":[3],
+"index.html#opportunitiesandlimitations":[5],
 "index.html#overview":[0],
-"index.html#sourcecode":[1],
+"index.html#suppliedassourcecode":[1],
+"myworkflow.html":[7],
 "pages.html":[],
-"releasenotes.html":[4],
-"releasenotes.html#version0_1":[4,0]
+"releasenotes.html":[8],
+"releasenotes.html#version0_1":[8,0],
+"wireprotocol.html":[6]
 };

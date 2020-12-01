@@ -1,24 +1,35 @@
 #!/bin/sh
-# tst.sh
+# tst_alarm.sh
 
-./fix.sh
-rm -f *.log
+rm *.log
+
+./bld.sh
+if [ $? -ne 0 ]; then exit 1; fi
+IP=`cat ip.txt`
+
+. ./lbm.sh
 
 date
 
-./win_lbmrd.bat &
+lbmrd -i $IP -p 12030 -L lbmrd.log -r 8388608 &
+LBMRD_PID=$!
 
-./win_lbmtmon.bat &
+# For lbmtmon, use the same transport options in the config file.
+TOPTS=`sed -n <application.cfg 's/context monitor_transport_opts //p'`
+./lbmtmon --transport-opts="$TOPTS" >lbmtmon.log &
+LBMMON_PID=$!
 
 # Receive raw monitoring messages
-./win_lbmwrcv.bat &
+lbmwrcv -c mon.cfg -E -v -v "/29west/.*" >lbmwrcv.log &
+LBMRCV_PID=$!
 
-./win_tmon_example.bat
+LBTRM_SRC_LOSS_RATE=100 ./tmon_example application.cfg >tmon_example.log
+RCV_STATS_PID=$!
 
 sleep 8
 
-taskkill /F /IM lbmtmon.exe
-taskkill /F /IM lbmrd.exe
+kill $LBMMON_PID
+kill $LBMRD_PID
 
 wait
 
@@ -64,9 +75,10 @@ then echo "Check 7: ok" >>tst.log
 else echo "Check 7: FAIL" >>tst.log
 fi
 
+# This one is reversed; there must *not* be a BOS message.
 if egrep "^BOS" lbmtmon.log >/dev/null
-then echo "Check 8: ok" >>tst.log
-else echo "Check 8: FAIL" >>tst.log
+then echo "Check 8: FAIL" >>tst.log
+else echo "Check 8: ok" >>tst.log
 fi
 
 if egrep "^Conn delete" lbmtmon.log >/dev/null
@@ -89,10 +101,20 @@ then echo "Check 12: ok" >>tst.log
 else echo "Check 12: FAIL" >>tst.log
 fi
 
+if egrep "^Alarm" lbmtmon.log >/dev/null
+then echo "Check 13: ok" >>tst.log
+else echo "Check 13: FAIL" >>tst.log
+fi
+
+if egrep "EOS without BOS, topic='src1'" lbmtmon.log >/dev/null
+then echo "Check 14: ok" >>tst.log
+else echo "Check 14: FAIL" >>tst.log
+fi
+
 # We *don't* want to see this string.
 if egrep "^Unrecognized" lbmtmon.log >/dev/null
-then echo "Check 13: FAIL" >>tst.log
-else echo "Check 13: ok" >>tst.log
+then echo "Check 15: FAIL" >>tst.log
+else echo "Check 15: ok" >>tst.log
 fi
 
 OKS=`egrep ": ok" tst.log | wc -l`

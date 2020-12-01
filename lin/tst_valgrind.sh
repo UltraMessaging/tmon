@@ -11,4 +11,4 @@ IP=`cat ip.txt`
 
 date
 
-valgrind --leak-check=full ./tmon_example sford.cfg
+valgrind --leak-check=full ./tmon_example application.cfg

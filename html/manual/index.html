@@ -60,30 +60,22 @@ $(document).ready(function(){initNavTree('index.html','');});
 <div class="textblock"><p><br />
 <br />
 <br />
- </p><center class="mytitle">TMON: UM TOPIC MONITOR</center> <center>Copyright (C) 2020</center><p> <br />
+ </p><center class="mytitle">TMON: UM TOPIC MONITOR</center> <center>Copyright (C) 2020 Informatica</center><p> <br />
 <br />
 <br />
 </p>
+<p>Project home: <a href="https://github.com/UltraMessaging/tmon">https://github.com/UltraMessaging/tmon</a></p>
+<p>See <a class="el" href="disclaimers.html">Disclaimers</a> for licensing.</p>
 <p><br />
  </p>
 <h1><a class="anchor" id="overview"></a>
 Overview</h1>
 <p>The "tmon" package is an API wrapper around the Ultra Messaging library which provides topic-level event monitoring. This is intended to work along with the standard UM "automatic monitoring".</p>
 <p>Users must add calls to the tmon API to their applications at specific points.</p>
-<p>The rest of this page provides a high-level description of the CT package. You can also jump to other pages: </p><ul>
-<li>
-<a class="el" href="disclaimers.html">Disclaimers</a> - Please read before using this software. </li>
-<li>
-<a class="el" href="releasenotes.html">Release Notes</a> </li>
-<li>
-<p class="startli"><a class="elRef" doxygen="/Users/sford/Documents/GitHub/tmon/html/c.tag:../c/" href="../c/index.html#capioverview">C API Overview</a> - Details on the C API.</p>
-<p class="endli"></p>
-</li>
-</ul>
 <p><br />
  </p>
-<h1><a class="anchor" id="sourcecode"></a>
-Source Code</h1>
+<h1><a class="anchor" id="suppliedassourcecode"></a>
+Supplied as Source Code</h1>
 <p>The "tmon" package is provided in source code form at <a href="https://github.com/UltraMessaging">Ultra Messaging GitHub</a>.</p>
 <p>Note that tmon is not officially part of the UM product family. This implementation of tmon should be considered "example" code, to be incorporated into the user's application and modified to meet the user's individual requirements. If those modifications are reasonably general in nature, the user is invited to submit "pull" requests on GitHub. Informatica will review the proposed changes and will usually accept the pull request, incorporating the improvements.</p>
 <p>Additionally, Informatica is committed to fixing bugs. Please raise issues using the normal GitHub issue tracking functionality, or through the normal Informatica support organization.</p>
@@ -98,8 +90,26 @@ Source Code</h1>
 Features</h1>
 <ul>
 <li>
-TBD </li>
+<p class="startli">Provide information by which a centralized monitoring tool can detect connectivity problems such as deafness or loss.</p>
+<p class="endli"></p>
+</li>
+<li>
+Provide information to identify the producers and consumers of topics. </li>
 </ul>
+<p>The primary focus of tmon is on applications. The application calls tmon APIs to inform the monitoring tool of important events, like creation of sources and receivers, as well as important events in a receiver's life cycle.</p>
+<p>The expectation is that users will write their own monitoring tool that receives these events, as well as UM's traditional automatic monitoring data, to track the health of their sources and receivers. This package does not contain sophisticated monitoring and tracking functionality. Only a simple example is provided that just prints the events and monitoring data. It is the user's responsibilty to write the code required to draw conclusions from the data.</p>
+<p><br />
+ </p>
+<h1><a class="anchor" id="clientdatapointers"></a>
+Client Data Pointers</h1>
+<p>tbd</p>
+<p><br />
+ </p>
+<h1><a class="anchor" id="examplemonitoringtool"></a>
+Example Monitoring Tool</h1>
+<p>The supplied example monitoring tool, "lbmtmon.c", is derived from the standard UM example monitoring tool, <a href="https://ultramessaging.github.io/currdoc/doc/example/lbmmon.c">"lbmmon.c"</a> (one of the <a href="https://ultramessaging.github.io/currdoc/doc/example/index.html">C example apps</a>).</p>
+<p>The "tmon.c" module is primarily focused on the user's applications, but does contain a few APIs intended for use by the monitoring tool. The purpose is to be able to conform to the standard UM monitoring software "transport options" string.</p>
+<p>See <a class="elRef" doxygen="/Users/sford/Documents/GitHub/tmon/html/c.tag:../c/" href="../c/tmon_8h.html#ab09d9c9ed73960a763b4fdd1b55fbc35">tmon_create_context()</a> and <a class="elRef" doxygen="/Users/sford/Documents/GitHub/tmon/html/c.tag:../c/" href="../c/tmon_8h.html#a1040837000444f89cd161168df0f872e">tmon_create_monrcv()</a>.</p>
 <p><br />
  </p>
 <h1><a class="anchor" id="opportunitiesandlimitations"></a>
@@ -110,7 +120,19 @@ Opportunities and Limitations</h1>
 <p class="endli"></p>
 </li>
 <li>
-TBD </li>
+<p class="startli">The simple design of tmon makes it less scalable than a more complex design could be. In particular, it may not be suited for applications that create many thousands of source or receivers in rapid succession. A potential enhancement might be a work queue that is rate limited.</p>
+<p class="endli"></p>
+</li>
+<li>
+<p class="startli">Currently only a C version is available. Production of Java and/or .NET versions will depend on demand.</p>
+<p class="endli"></p>
+</li>
+<li>
+<p class="startli">The supplied example monitoring tool just prints the received events, nothing more. There are a lot of interesting things that could be added. For example, it could raise alarms if a publisher creates a source but subscribers for that topic do not discover or connect within a reasonable amount of time.</p>
+<p class="endli"></p>
+</li>
+<li>
+There is no query capability. For example, if the monitoring tool is not collecting data for a period of time, perhaps due to network failure, events reported during that time are lost. A potential enhancement might be a query to the application's tmon. It could respond with full lists of sources and receivers and their states. </li>
 </ul>
 </div></div><!-- PageDoc -->
 </div><!-- contents -->

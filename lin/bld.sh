@@ -11,6 +11,8 @@ fi
 
 . $HOME/lbm.sh
 
+rm tmon.o tmon_example lbmtmon
+
 gcc -g -Wall -I$LBM_PLATFORM/include -I../c -L$LBM_PLATFORM/lib -llbm -lm -c ../c/tmon.c
 if [ $? -ne 0 ]; then exit 1; fi
 
@@ -26,4 +28,4 @@ cp ../*.cfg .
 IP=`ifconfig | sed -n -e 's/.*inet \(10\.29\.3\.[0-9]*\).*/\1/p'`
 echo "$IP" >ip.txt
 
-sed -i'' -e "s/interface [0-9]*\.[0-9]*\.[0-9]*\.[0-9]*/interface $IP/;s/daemon [0-9]*\.[0-9]*\.[0-9]*\.[0-9]*/daemon $IP/" *.cfg
+sed -i.bak -e "s/interface [0-9]*\.[0-9]*\.[0-9]*\.[0-9]*/interface $IP/;s/daemon [0-9]*\.[0-9]*\.[0-9]*\.[0-9]*/daemon $IP/" *.cfg

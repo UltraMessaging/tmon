@@ -70,27 +70,69 @@ $(document).ready(function(){initNavTree('structezstr__s.html','');});
 </div><!--header-->
 <div class="contents">
 
-<p>Simple, "easy" string object, used internally by tmon.  
+<p>Simple, "easy" string object, used internally by tmon. Not intended as a supported API.  
  <a href="structezstr__s.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="tmon_8h_source.html">tmon.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Data Fields</h2></td></tr>
-<tr class="memitem:a99600147d393376018a7cbcc2e401a88"><td class="memItemLeft" align="right" valign="top"><a id="a99600147d393376018a7cbcc2e401a88"></a>
-char *&#160;</td><td class="memItemRight" valign="bottom"><b>buff</b></td></tr>
+<tr class="memitem:a99600147d393376018a7cbcc2e401a88"><td class="memItemLeft" align="right" valign="top">char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structezstr__s.html#a99600147d393376018a7cbcc2e401a88">buff</a></td></tr>
 <tr class="separator:a99600147d393376018a7cbcc2e401a88"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a792932ce184623ef534d676969e63bcb"><td class="memItemLeft" align="right" valign="top"><a id="a792932ce184623ef534d676969e63bcb"></a>
-size_t&#160;</td><td class="memItemRight" valign="bottom"><b>alloc_size</b></td></tr>
+<tr class="memitem:a792932ce184623ef534d676969e63bcb"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structezstr__s.html#a792932ce184623ef534d676969e63bcb">alloc_size</a></td></tr>
 <tr class="separator:a792932ce184623ef534d676969e63bcb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2113f194816bdf96447ccb9d0b60e79b"><td class="memItemLeft" align="right" valign="top"><a id="a2113f194816bdf96447ccb9d0b60e79b"></a>
-size_t&#160;</td><td class="memItemRight" valign="bottom"><b>null_index</b></td></tr>
+<tr class="memitem:a2113f194816bdf96447ccb9d0b60e79b"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structezstr__s.html#a2113f194816bdf96447ccb9d0b60e79b">null_index</a></td></tr>
 <tr class="separator:a2113f194816bdf96447ccb9d0b60e79b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Simple, "easy" string object, used internally by tmon. </p>
-<p>Not intended as a supported API. </p>
-</div><hr/>The documentation for this struct was generated from the following file:<ul>
+<div class="textblock"><p>Simple, "easy" string object, used internally by tmon. Not intended as a supported API. </p>
+</div><h2 class="groupheader">Field Documentation</h2>
+<a id="a792932ce184623ef534d676969e63bcb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a792932ce184623ef534d676969e63bcb">&#9670;&nbsp;</a></span>alloc_size</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t ezstr_s::alloc_size</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Size of malloced buffer. </p>
+
+</div>
+</div>
+<a id="a99600147d393376018a7cbcc2e401a88"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a99600147d393376018a7cbcc2e401a88">&#9670;&nbsp;</a></span>buff</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">char* ezstr_s::buff</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Malloced buffer for string storage. </p>
+
+</div>
+</div>
+<a id="a2113f194816bdf96447ccb9d0b60e79b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2113f194816bdf96447ccb9d0b60e79b">&#9670;&nbsp;</a></span>null_index</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t ezstr_s::null_index</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Array index of string's trailing NULL. Also the number of characters in the string. </p>
+
+</div>
+</div>
+<hr/>The documentation for this struct was generated from the following file:<ul>
 <li><a class="el" href="tmon_8h_source.html">tmon.h</a></li>
 </ul>
 </div><!-- contents -->
