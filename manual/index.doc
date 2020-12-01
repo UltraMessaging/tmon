@@ -22,7 +22,7 @@ Users must add calls to the tmon API to their applications at specific points.
 
 \n \section suppliedassourcecode Supplied as Source Code
 
-The "tmon" package is provided in source code form at
+The "tmon" package is provided in source code form at the
 [Ultra Messaging GitHub](https://github.com/UltraMessaging).
 
 Note that tmon is not officially part of the UM product family.
@@ -43,12 +43,13 @@ Informatical intends to support it.
 However, we don't currently plan to include tmon as part of the product package.
 
 Finally, be aware that that:
-
-* Informatica does not include tmon in its QA testing.
+<ul>
+<li>Informatica does not include tmon in its QA testing.
 Note however that tmon includes a reasonably extensive automated self-test.
 
-* Informatica does not guarantee that future UM development will
+<li>Informatica does not guarantee that future UM development will
 be compatible with tmon.
+</ul>
 
 Naturally, the amount of effort we invest in tmon will be proportional to
 the level of user interest.
@@ -104,7 +105,7 @@ software "transport options" string.
 See tmon_create_context() and tmon_create_monrcv().
 
 
-\n \section opportunitiesandlimitations Opportunities and Limitations
+\n \section limitationsandopportunities  Limitations and Opportunities
 
 <ul>
 <li>Because UM automatic monitoring does not give the application access
@@ -135,6 +136,12 @@ perhaps due to network failure,
 events reported during that time are lost.
 A potential enhancement might be a query to the application's tmon.
 It could respond with full lists of sources and receivers and their states.
+
+<li>With wildcard receivers, it is not possible to know what topic is
+active when a connection object is created.
+It is not until the BOS or EOS event that the topic is known for that
+connection.
+(With regular receivers, the topic is known when the receiver is created.)
 </ul>
 
 
@@ -146,12 +153,14 @@ The first character of a message indicates the type of message.
 <pre>
 S - src_create : S,app_id,IP,PID,ctx,tv_sec,tv_usec,tmon_src,topic
 s - src_delete : s,app_id,IP,PID,ctx,tv_sec,tv_usec,tmon_src
-R - rcv_create : R,app_id,IP,PID,ctx,tv_sec,tv_usec,topic,tmon_rcv
+R - rcv_create : R,app_id,IP,PID,ctx,tv_sec,tv_usec,tmon_rcv,topic
 r - rcv_delete : r,app_id,IP,PID,ctx,tv_sec,tv_usec,tmon_rcv
+W - wrcv_create: W,app_id,IP,PID,ctx,tv_sec,tv_usec,tmon_rcv,pattern
+w - wrcv_delete: w,app_id,IP,PID,ctx,tv_sec,tv_usec,tmon_rcv
 C - conn_create: C,app_id,IP,PID,ctx,tv_sec,tv_usec,tmon_rcv,conn,src_str
 c - conn_delete: c,app_id,IP,PID,ctx,tv_sec,tv_usec,conn,msg_count,unrec_count,burst_count
-B - BOS        : b,app_id,IP,PID,ctx,tv_sec,tv_usec,conn
-E - EOS        : e,app_id,IP,PID,ctx,tv_sec,tv_usec,conn,msg_count,unrec_count,burst_count
+B - BOS        : b,app_id,IP,PID,ctx,tv_sec,tv_usec,conn,topic
+E - EOS        : e,app_id,IP,PID,ctx,tv_sec,tv_usec,conn,msg_count,unrec_count,burst_count,topic
 A - Alarm      : A,app_id,IP,PID,ctx,tv_sec,tv_usec,err_str
 L - loss       : L,app_id,IP,PID,ctx,tv_sec,tv_usec,conn,msg_count,unrec_count,burst_count
 </pre>
