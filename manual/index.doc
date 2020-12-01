@@ -11,8 +11,9 @@ https://github.com/UltraMessaging/tmon
 
 See \ref disclaimers for licensing.
 
+Next up: \ref overview
 
-\n \section overview Overview
+\page overview Overview
 
 The "tmon" package is an API wrapper around the Ultra Messaging library which
 provides topic-level event monitoring.
@@ -144,6 +145,43 @@ connection.
 (With regular receivers, the topic is known when the receiver is created.)
 </ul>
 
+
+\page customization Customization
+
+As mentioned in the \ref overview, Informatica's expectation is that users
+will modify the tmon package for their own needs.
+
+\n \section \errorhandling Error Handling
+
+Every major software project has its own error handling conventions.
+The Ultra Messaging convention,
+returning an integer status in every function call,
+can lead to significant clutter in the source code.
+Since the purpose of this code is to provide an educational example,
+the addition of unnecessary clutter works against its goals.
+
+The tmon package relies on a much simpler error handling convention:
+printing to "stderr" and invoking a set of macros that print information
+useful to the programmer and calling "exit(1)", which terminates the process.
+Those macros are:
+<ul>
+<li>NULLCHK
+<li>ASSRT
+<li>FAILCHK
+<li>LBMCHK
+</ul>
+
+It is generally preferable for production-ready applications to NOT exit
+the process, but instead to simply log a warning and maybe disable the topic
+monitoring function.
+Adding this behavior would not be difficult,
+but it would clutter the code, obscuring its design,
+and degrading its educational value.
+
+The user is advised to search the source code for "stderr" and the
+above macro names.
+These are the places where the user's own error handling conventions
+would need to be inserted.
 
 \page wireprotocol Wire Protocol
 
