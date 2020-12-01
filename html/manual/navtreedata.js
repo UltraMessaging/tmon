@@ -24,12 +24,14 @@ for the JavaScript code in this file
 var NAVTREE =
 [
   [ "tmon: UM Topic Monitor", "index.html", [
-    [ "Overview", "index.html#overview", null ],
-    [ "Supplied as Source Code", "index.html#suppliedassourcecode", null ],
-    [ "Features", "index.html#features", null ],
-    [ "Client Data Pointers", "index.html#clientdatapointers", null ],
-    [ "Example Monitoring Tool", "index.html#examplemonitoringtool", null ],
-    [ "Opportunities and Limitations", "index.html#opportunitiesandlimitations", null ],
+    [ "Overview", "overview.html", [
+      [ "Supplied as Source Code", "overview.html#suppliedassourcecode", null ],
+      [ "Features", "overview.html#features", null ],
+      [ "Client Data Pointers", "overview.html#clientdatapointers", null ],
+      [ "Example Monitoring Tool", "overview.html#examplemonitoringtool", null ],
+      [ "Customization", "overview.html#customization", null ],
+      [ "Limitations and Opportunities", "overview.html#limitationsandopportunities", null ]
+    ] ],
     [ "Wire Protocol", "wireprotocol.html", null ],
     [ "My Workflow", "myworkflow.html", null ],
     [ "Release Notes", "releasenotes.html", [

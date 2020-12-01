@@ -1,6 +1,17 @@
 <?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
 <tagfile>
   <compound kind="page">
+    <name>overview</name>
+    <title>Overview</title>
+    <filename>overview</filename>
+    <docanchor file="overview" title="Supplied as Source Code">suppliedassourcecode</docanchor>
+    <docanchor file="overview" title="Features">features</docanchor>
+    <docanchor file="overview" title="Client Data Pointers">clientdatapointers</docanchor>
+    <docanchor file="overview" title="Example Monitoring Tool">examplemonitoringtool</docanchor>
+    <docanchor file="overview" title="Customization">customization</docanchor>
+    <docanchor file="overview" title="Limitations and Opportunities">limitationsandopportunities</docanchor>
+  </compound>
+  <compound kind="page">
     <name>wireprotocol</name>
     <title>Wire Protocol</title>
     <filename>wireprotocol</filename>
@@ -25,11 +36,5 @@
     <name>index</name>
     <title>TMON: UM TOPIC MONITOR</title>
     <filename>index</filename>
-    <docanchor file="index" title="Overview">overview</docanchor>
-    <docanchor file="index" title="Supplied as Source Code">suppliedassourcecode</docanchor>
-    <docanchor file="index" title="Features">features</docanchor>
-    <docanchor file="index" title="Client Data Pointers">clientdatapointers</docanchor>
-    <docanchor file="index" title="Example Monitoring Tool">examplemonitoringtool</docanchor>
-    <docanchor file="index" title="Opportunities and Limitations">opportunitiesandlimitations</docanchor>
   </compound>
 </tagfile>

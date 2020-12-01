@@ -15,7 +15,7 @@ Next up: \ref overview
 
 \page overview Overview
 
-The "tmon" package is an API wrapper around the Ultra Messaging library which
+The "tmon" package is an API wrapper around the Ultra Messaging library that
 provides topic-level event monitoring.
 This is intended to work along with the standard UM "automatic monitoring".
 
@@ -28,25 +28,25 @@ The "tmon" package is provided in source code form at the
 
 Note that tmon is not officially part of the UM product family.
 This implementation of tmon should be considered "example" code,
-to be incorporated into the user's application and modified to meet
-the user's individual requirements.
-If those modifications are reasonably general in nature,
+to be incorporated into users' application and modified to meet
+each user's local requirements.
+If those modifications are reasonably general,
 the user is invited to submit "pull" requests on GitHub.
 Informatica will review the proposed changes and will usually accept the
 pull request, incorporating the improvements.
 
 Additionally, Informatica is committed to fixing bugs.
-Please raise issues using the normal GitHub issue tracking functionality,
+Please raise issues using the standard GitHub issue tracking functionality,
 or through the normal Informatica support organization.
 
 In other words, although tmon is not officially part of the UM product family,
 Informatical intends to support it.
 However, we don't currently plan to include tmon as part of the product package.
 
-Finally, be aware that that:
+Finally, be aware that:
 <ul>
 <li>Informatica does not include tmon in its QA testing.
-Note however that tmon includes a reasonably extensive automated self-test.
+Note, however, that tmon includes a basic automated self-test.
 
 <li>Informatica does not guarantee that future UM development will
 be compatible with tmon.
@@ -70,10 +70,10 @@ topics.
 
 The primary focus of tmon is on applications.
 The application calls tmon APIs to inform the monitoring tool of
-important events, like creation of sources and receivers,
+significant events, like the creation of sources and receivers,
 as well as important events in a receiver's life cycle.
 
-The expectation is that users will write their own monitoring tool
+The expectation is that users will write their own monitoring tools
 that receives these events,
 as well as UM's traditional automatic monitoring data,
 to track the health of their sources and receivers.
@@ -81,7 +81,7 @@ This package does not contain sophisticated monitoring and tracking
 functionality.
 Only a simple example is provided that just prints the events and
 monitoring data.
-It is the user's responsibilty to write the code required to draw
+It is the user's responsibility to write the code required to draw
 conclusions from the data.
 
 
@@ -117,15 +117,15 @@ This adds an additional context and thread to each application.
 <li>The simple design of tmon makes it less scalable than a more
 complex design could be.
 In particular, it may not be suited for applications that create many
-thousands of source or receivers in rapid succession.
+thousands of sources or receivers in rapid succession.
 A potential enhancement might be a work queue that is rate limited.
 
-<li>Currently only a C version is available.
-Production of Java and/or .NET versions will depend on demand.
+<li>Currently, only a C version is available.
+Production of Java or .NET versions will depend on demand.
 
 <li>The supplied example monitoring tool just prints the received
 events, nothing more.
-There are a lot of interesting things that could be added.
+Many valuable functions could be added.
 For example, it could raise alarms if a publisher creates a source but
 subscribers for that topic do not discover or connect within a reasonable
 amount of time.
@@ -134,7 +134,11 @@ amount of time.
 For example,
 if the monitoring tool is not collecting data for a period of time,
 perhaps due to network failure,
-events reported during that time are lost.
+tmon events reported during that period are lost.
+This is not a significant problem for standard UM monitoring data
+since it is generally cumulative.
+But lost tmon events generally cannot be reconstructed by subsequent
+data.
 A potential enhancement might be a query to the application's tmon.
 It could respond with full lists of sources and receivers and their states.
 
@@ -148,7 +152,7 @@ connection.
 
 \page customization Customization
 
-As mentioned in the \ref overview, Informatica's expectation is that users
+As mentioned in the \ref overview, Informatica expects that users
 will modify the tmon package for their own needs.
 
 \n \section \errorhandling Error Handling
@@ -172,20 +176,20 @@ Those macros are:
 </ul>
 
 It is generally preferable for production-ready applications to NOT exit
-the process, but instead to simply log a warning and maybe disable the topic
+the process, but instead to log a warning and maybe disable the topic
 monitoring function.
 Adding this behavior would not be difficult,
 but it would clutter the code, obscuring its design,
 and degrading its educational value.
 
-The user is advised to search the source code for "stderr" and the
+We advise the user to search the source code for "stderr" and the
 above macro names.
-These are the places where the user's own error handling conventions
+These are the places where the user's local error handling conventions
 would need to be inserted.
 
 \page wireprotocol Wire Protocol
 
-Each message is an ascii string (not null-terminated).
+Each message is an ASCII string (not null-terminated).
 The first character of a message indicates the type of message.
 
 <pre>
@@ -210,15 +214,15 @@ I'm Steve Ford, the initial developer of tmon.
 I am a Linux-centric C programmer who does not have a lot of experience with
 Windows or Mac development.
 
-I have a Mac laptop, which is my primary workstation, and a Windows laptop,
+I have a Mac laptop, my primary workstation, and a Windows laptop,
 which I only use when I need to (usually via RDP).
-I also use a test lab which contains many servers of various OSes and
+I also use a test lab that contains many servers of various OSes and
 versions.
-(If you see the host name "orion" in some of the scripts,
+(If you see the hostname "orion" in some of the scripts,
 that is the name of a Linux host in our test lab that I commonly use.)
 
-This workflow assumes a full install of UM including libaries and
-binaries, including example application executables.
+This workflow assumes a full install of UM, including libraries,
+binaries, and example application executables.
 With Mac and Linux, the "lbm.sh" script sets up PATH and library load
 environment variables.
 With Windows, PATH is assumed to be set up by the install of UM.
@@ -235,7 +239,7 @@ copied to Orion.
 <li>Build and test in the "mac" directory using "tst.sh".
 <li>In a secure shell window logged into Orion, build and test in the "lin"
 directory using "tst.sh".
-<li>On my Windows laptop, use cygwin to run "boxlab.sh" which use "rsync" to
+<li>On my Windows laptop, use Cygwin to run "boxlab.sh" which use "rsync" to
 update from Orion.
 This script does not automatically detect changes on Orion; I have to
 press return after I make a change to get the update.
@@ -243,13 +247,13 @@ After synchronizing, the script copies source files into the Visual
 Studio project area,
 and also updates test files for the host's IP address.
 <li>Use Visual Studio to build the solution.
-<li>Test in the "win" directory using "tst.sh" (using cygwin).
+<li>Test in the "win" directory using "tst.sh" (using Cygwin).
 </ul>
 
 I'm sure there are better workflows; suggestions are welcome. (-:
 
 Note that most of the scripts in the "win", "lin", and "mac" directories
-are specific to my environment,
+are specific to my environment
 and would require significant rework for you to use.
 I suspect it wouldn't be worth it.
 
