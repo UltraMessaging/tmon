@@ -63,15 +63,15 @@ typedef struct ezstr_s {
 } ezstr_t;
   
 
-/*! \brief top-level tmon object.
- * Created by tmon_create().
+/*! \brief tmon context monitoring object.
+ * Created by tmon_ctx_create().
  * Create one of these per application context immediately
  * *after* creating each context.
  * Application must not write to fields in this structure.
  *
- * Methods: tmon_create(), tmon_rcv_delete().
+ * Methods: tmon_ctx_create(), tmon_ctx_delete().
  */
-typedef struct tmon_s {
+typedef struct tmon_ctx_s {
   /*! \brief Application UM context. */
   lbm_context_t *app_ctx;
   /*! \brief Monitoring transport options string, as defined by application's
@@ -104,10 +104,10 @@ typedef struct tmon_s {
   lbm_src_t *src;
   /*! String to hold tmon message header information. */
   ezstr_t *header;
-} tmon_t;
+} tmon_ctx_t;
 
 
-/*! \brief tmon receiver monitoring object.
+/*! \brief tmon receiver or wildcard receiver monitoring object.
  * Created by tmon_rcv_create().
  * Create one per application receiver immediately
  * *before* creating each receiver.
@@ -116,9 +116,11 @@ typedef struct tmon_s {
  * Methods: tmon_rcv_create(), tmon_rcv_delete().
  */
 typedef struct tmon_rcv_s {
-  /*! \brief Parent tmon object. */
-  tmon_t *tmon;
-  /*! Topic name for application receiver. */
+  /*! \brief Parent tmon context monitoring object. */
+  tmon_ctx_t *tmon_ctx;
+  /*! Receiver type (1=topic, 2=wildcard). */
+  int rcv_type;
+  /*! Topic name or pattern for application receiver. */
   char app_topic_str[TMON_STR_BUF_LENS];
   /*! Time stamp when this object was created. */
   struct timeval create_time;
@@ -126,27 +128,6 @@ typedef struct tmon_rcv_s {
    * This is retained to minimize repeated malloc/free. */
   ezstr_t *mon_msg;
 } tmon_rcv_t;
-
-
-/*! \brief tmon wildcard receiver monitoring object.
- * Created by tmon_wrcv_create().
- * Create one per application wildcard receiver immediately
- * *before* creating each receiver.
- * Application must not write to fields in this structure.
- *
- * Methods: tmon_wrcv_create(), tmon_wrcv_delete().
- */
-typedef struct tmon_wrcv_s {
-  /*! \brief Parent tmon object. */
-  tmon_t *tmon;
-  /*! Topic pattern for application wildcard receiver. */
-  char app_pattern[TMON_STR_BUF_LENS];
-  /*! Time stamp when this object was created. */
-  struct timeval create_time;
-  /*! Work buffer for building tmon messages.
-   * This is retained to minimize repeated malloc/free. */
-  ezstr_t *mon_msg;
-} tmon_wrcv_t;
 
 
 /*! \brief tmon source monitoring object.
@@ -158,8 +139,8 @@ typedef struct tmon_wrcv_s {
  * Methods: tmon_src_create(), tmon_src_delete().
  */
 typedef struct tmon_src_s {
-  /*! \brief Parent tmon object. */
-  tmon_t *tmon;
+  /*! \brief Parent tmon context monitoring object. */
+  tmon_ctx_t *tmon_ctx;
   /*! Topic name for application source. */
   char app_topic_str[256];
   /*! Time stamp when this object was created. */
@@ -183,7 +164,7 @@ typedef struct tmon_src_s {
  * Methods: tmon_conn_create(), tmon_conn_delete(), tmon_conn_rcv_event().
  */
 typedef struct tmon_conn_s {
-  /*! \brief Parent tmon receiver object. */
+  /*! \brief Parent tmon receiver monitoring object. */
   tmon_rcv_t *tmon_rcv;
   /*! Source string for transport session, plus topic index. */
   char source_str[128];
@@ -251,100 +232,92 @@ char *tmon_inet_ntop(lbm_uint_t addr, char *dst, size_t buf_len);
  */
 void tmon_usleep(int usec);
 
-/*! \brief Create a tmon object to monitor application topics.
+/*! \brief Create a tmon context monitoring object,
+ * associated with an application UM context.
  * Create one of these per application context immediately
  * *after* creating each context.
  *
  * \param app_ctx Application context.
- * \returns Topic monitor object.
+ * \returns tmon context monitoring object.
  */
-tmon_t *tmon_create(lbm_context_t *app_ctx);
-/*! \brief Delete a tmon object.
+tmon_ctx_t *tmon_ctx_create(lbm_context_t *app_ctx);
+
+/*! \brief Delete a tmon_ctx object.
  * Do not delete this object until after all child objects
  * (\ref tmon_rcv_s, \ref tmon_src_s) are deleted.
  *
- * \param tmon Topic monitor object.
+ * \param tmon_ctx tmon context monitoring object.
  */
-void tmon_delete(tmon_t *tmon);
+void tmon_ctx_delete(tmon_ctx_t *tmon_ctx);
 
-/*! \brief Create a tmon receiver object to monitor an application
- * receiver.
+
+/*! \brief Create a tmon receiver or wildcard receiver monitoring object,
+ * associated with an application UM receiver.
  * Create one per application receiver immediately
  * *before* creating each receiver.
  *
- * \param tmon Parent topic monitor object.
+ * \param tmon_ctx Parent tmon context monitoring object.
  *   This must be the tmon object associated with the same application
  *   context as the application receiver being created.
+ * \param rcv_type Type of UM receiver (1=topic, 2=wildcard).
  * \param app_topic_str Topic string assoicated with the application
  *   receiver being created.
- * \returns receiver monitor object.
+ * \returns tmon receiver monitoring object.
  */
-tmon_rcv_t *tmon_rcv_create(tmon_t *tmon, char *app_topic_str);
-/*! \brief Delete a tmon receiver object.
+tmon_rcv_t *tmon_rcv_create(tmon_ctx_t *tmon_ctx, int rcv_type,
+  char *app_topic_str);
+
+/*! \brief Delete a tmon receiver monitoring object.
  * Do not delete this object until after all child objects
  * (\ref tmon_conn_s) are deleted.
  *
- * \param tmon_rcv topic receiver monitor object.
+ * \param tmon_rcv tmon receiver monitoring object.
  */
 void tmon_rcv_delete(tmon_rcv_t *tmon_rcv);
 
-/*! \brief Create a tmon wildcard receiver object to monitor an application
- * receiver.
- * Create one per application wildcard receiver immediately
- * *before* creating each receiver.
- *
- * \param tmon Parent topic monitor object.
- *   This must be the tmon object associated with the same application
- *   context as the application receiver being created.
- * \param app_topic_str Topic string assoicated with the application
- *   receiver being created.
- * \returns wildcard receiver monitor object.
- */
-tmon_wrcv_t *tmon_wrcv_create(tmon_t *tmon, char *app_topic_str);
-/*! \brief Delete a tmon wildcard receiver object.
- * Do not delete this object until after all child objects
- * (\ref tmon_conn_s) are deleted.
- *
- * \param tmon_wrcv topic receiver monitor object.
- */
-void tmon_wrcv_delete(tmon_wrcv_t *tmon_wrcv);
 
-/*! \brief Create a tmon source object to monitor an application
- * source.
+/*! \brief Create a tmon source monitoring object,
+ * associated with an application UM source.
  * Create one per application source immediately
  * *before* creating each source.
  *
- * \param tmon Parent topic monitor object.
+ * \param tmon_ctx Parent context monitoring object.
  *   This must be the tmon object associated with the same application
  *   context as the application source being created.
  * \param app_topic_str Topic string assoicated with the application
  *   source being created.
- * \returns source monitor object.
+ * \returns tmon source monitoring object.
  */
-tmon_src_t *tmon_src_create(tmon_t *tmon, char *app_topic_str);
-/*! \brief Delete a tmon source object.
+tmon_src_t *tmon_src_create(tmon_ctx_t *tmon_ctx, char *app_topic_str);
+
+/*! \brief Delete a tmon source monitoring object.
  *
- * \param tmon_src Topic source monitor object.
+ * \param tmon_src tmon source monitoring object.
  */
 void tmon_src_delete(tmon_src_t *tmon_src);
 
-/*! \brief Create a tmon receiver connection object to monitor a unique
- * connection between this application's receiver and a publisher's source.
+
+/*! \brief Create a tmon connection monitoring object to monitor an
+ * application UM receiver's
+ * <a href="https://ultramessaging.github.io/currdoc/doc/Design/architecture.html#deliverycontroller">delivery controller</a>.
+ * A delivery controller can be thought of as "connection" between
+ * a source to a topic and a receiver of that same topic.
  * This should be called inside the
  * <a href="https://ultramessaging.github.io/currdoc/doc/Config/grpdeliverycontrol.html#sourcenotificationfunctionreceiver">source_notification_function (receiver)</a>
  * "create" callback.
  * That callback can return this object as the per-source client data.
  * See \ref clientdatapointers.
  *
- * \param tmon_rcv 
+ * \param tmon_rcv tmon receiver monitoring object.
  *   This must be the tmon object associated with the same application
  *   context as the application source being created.
  * \param source_str source string for this connection, including Topic Index.
- * \returns connection monitor object.
+ * \returns tmon connection monitoring object.
  *   This should be returned as the per-source client data
  */
 tmon_conn_t *tmon_conn_create(tmon_rcv_t *tmon_rcv, const char *source_str);
-/*! \brief Delete a tmon connection object.
+
+/*! \brief Delete a tmon connection monitoring object.
  * This should be called inside the
  * <a href="https://ultramessaging.github.io/currdoc/doc/Config/grpdeliverycontrol.html#sourcenotificationfunctionreceiver">source_notification_function (receiver)</a>
  * "delete" callback.
@@ -352,6 +325,7 @@ tmon_conn_t *tmon_conn_create(tmon_rcv_t *tmon_rcv, const char *source_str);
  * \param tmon_conn tmon connection object.
  */
 void tmon_conn_delete(tmon_conn_t *tmon_conn);
+
 /*! \brief Record a receiver event on a connection.
  * This should be called inside your receiver callback.
  *
@@ -380,6 +354,7 @@ void tmon_conn_rcv_event(lbm_msg_t *msg, tmon_conn_t *tmon_conn);
  * \returns UM context.
  */
 lbm_context_t *tmon_create_context(char *topic_str, char *config_file, int buf_lens, char *transport_opts);
+
 /*! \brief Create a UM receiver for the tmon data.
  * Delete this receiver with the standard UM
  * <a href="https://ultramessaging.github.io/currdoc/doc/API/lbm_8h.html#a8d5e8713f5ae776330b23a1e371f934d">lbm_rcv_delete()</a> API.

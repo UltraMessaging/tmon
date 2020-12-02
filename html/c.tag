@@ -5,9 +5,8 @@
     <path>/Users/sford/Documents/GitHub/tmon/c/</path>
     <filename>tmon_8h</filename>
     <class kind="struct">ezstr_s</class>
-    <class kind="struct">tmon_s</class>
+    <class kind="struct">tmon_ctx_s</class>
     <class kind="struct">tmon_rcv_s</class>
-    <class kind="struct">tmon_wrcv_s</class>
     <class kind="struct">tmon_src_s</class>
     <class kind="struct">tmon_conn_s</class>
     <member kind="define">
@@ -25,10 +24,10 @@
       <arglist></arglist>
     </member>
     <member kind="typedef">
-      <type>struct tmon_s</type>
-      <name>tmon_t</name>
+      <type>struct tmon_ctx_s</type>
+      <name>tmon_ctx_t</name>
       <anchorfile>tmon_8h.html</anchorfile>
-      <anchor>a6ebbbb5c33a5781b9f676c59315ef45e</anchor>
+      <anchor>abf674a8c3a416e5135f9b343b0886c8e</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
@@ -36,13 +35,6 @@
       <name>tmon_rcv_t</name>
       <anchorfile>tmon_8h.html</anchorfile>
       <anchor>a3fd849f02596f1e422356f063b57228c</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="typedef">
-      <type>struct tmon_wrcv_s</type>
-      <name>tmon_wrcv_t</name>
-      <anchorfile>tmon_8h.html</anchorfile>
-      <anchor>ad3839fbb9d4b43a154ffa8acdaea2594</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
@@ -88,25 +80,25 @@
       <arglist>(int usec)</arglist>
     </member>
     <member kind="function">
-      <type>tmon_t *</type>
-      <name>tmon_create</name>
+      <type>tmon_ctx_t *</type>
+      <name>tmon_ctx_create</name>
       <anchorfile>tmon_8h.html</anchorfile>
-      <anchor>a752435d00883f7ac86a972eaa22ef484</anchor>
+      <anchor>aed61a720a2e795ea899af4642edad0a6</anchor>
       <arglist>(lbm_context_t *app_ctx)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
-      <name>tmon_delete</name>
+      <name>tmon_ctx_delete</name>
       <anchorfile>tmon_8h.html</anchorfile>
-      <anchor>a3923e731235121ee1a88a4ee1c66781e</anchor>
-      <arglist>(tmon_t *tmon)</arglist>
+      <anchor>ab40619ac905b3b0f3f9c06d399e020ee</anchor>
+      <arglist>(tmon_ctx_t *tmon_ctx)</arglist>
     </member>
     <member kind="function">
       <type>tmon_rcv_t *</type>
       <name>tmon_rcv_create</name>
       <anchorfile>tmon_8h.html</anchorfile>
-      <anchor>a5d4c252eeb8578f396861832a29d302a</anchor>
-      <arglist>(tmon_t *tmon, char *app_topic_str)</arglist>
+      <anchor>a5602a423bea1a50ae9890a6cd5090307</anchor>
+      <arglist>(tmon_ctx_t *tmon_ctx, int rcv_type, char *app_topic_str)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
@@ -116,25 +108,11 @@
       <arglist>(tmon_rcv_t *tmon_rcv)</arglist>
     </member>
     <member kind="function">
-      <type>tmon_wrcv_t *</type>
-      <name>tmon_wrcv_create</name>
-      <anchorfile>tmon_8h.html</anchorfile>
-      <anchor>a0ffb669261dfaf6f4cea94ed76ca6f9d</anchor>
-      <arglist>(tmon_t *tmon, char *app_topic_str)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>tmon_wrcv_delete</name>
-      <anchorfile>tmon_8h.html</anchorfile>
-      <anchor>a2fb703f1481dd4e872079e132d7a09b9</anchor>
-      <arglist>(tmon_wrcv_t *tmon_wrcv)</arglist>
-    </member>
-    <member kind="function">
       <type>tmon_src_t *</type>
       <name>tmon_src_create</name>
       <anchorfile>tmon_8h.html</anchorfile>
-      <anchor>abb03db684e0061fd19cd7ba8d7fd8540</anchor>
-      <arglist>(tmon_t *tmon, char *app_topic_str)</arglist>
+      <anchor>a7a05fb72b16dad515a5ebf0efd295edf</anchor>
+      <arglist>(tmon_ctx_t *tmon_ctx, char *app_topic_str)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
@@ -272,13 +250,80 @@
     </member>
   </compound>
   <compound kind="struct">
+    <name>tmon_ctx_s</name>
+    <filename>structtmon__ctx__s.html</filename>
+    <member kind="variable">
+      <type>lbm_context_t *</type>
+      <name>app_ctx</name>
+      <anchorfile>structtmon__ctx__s.html</anchorfile>
+      <anchor>a7f57aac1846340728146b4e0cd3f728c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>char</type>
+      <name>transport_opts</name>
+      <anchorfile>structtmon__ctx__s.html</anchorfile>
+      <anchor>a499b85c63a78984cf4bdce5ba3751f4a</anchor>
+      <arglist>[2048]</arglist>
+    </member>
+    <member kind="variable">
+      <type>char</type>
+      <name>app_id</name>
+      <anchorfile>structtmon__ctx__s.html</anchorfile>
+      <anchor>a18c9cfdc754a243a45315b9cf6f9ecc1</anchor>
+      <arglist>[TMON_STR_BUF_LENS]</arglist>
+    </member>
+    <member kind="variable">
+      <type>char</type>
+      <name>config_file</name>
+      <anchorfile>structtmon__ctx__s.html</anchorfile>
+      <anchor>aacef6aa4ad1599aa0b9e34d14d363069</anchor>
+      <arglist>[TMON_STR_BUF_LENS]</arglist>
+    </member>
+    <member kind="variable">
+      <type>char</type>
+      <name>topic_str</name>
+      <anchorfile>structtmon__ctx__s.html</anchorfile>
+      <anchor>ae8dfa6d6954bc960d6c3084548373e8f</anchor>
+      <arglist>[TMON_STR_BUF_LENS]</arglist>
+    </member>
+    <member kind="variable">
+      <type>lbm_context_t *</type>
+      <name>ctx</name>
+      <anchorfile>structtmon__ctx__s.html</anchorfile>
+      <anchor>ac1c391ae7d763f69454157aa9ebf3750</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>lbm_src_t *</type>
+      <name>src</name>
+      <anchorfile>structtmon__ctx__s.html</anchorfile>
+      <anchor>ae90a8d0c6f2a45fe34bb678d76d98658</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>ezstr_t *</type>
+      <name>header</name>
+      <anchorfile>structtmon__ctx__s.html</anchorfile>
+      <anchor>a804cab3a967136f9004104e9f5858206</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="struct">
     <name>tmon_rcv_s</name>
     <filename>structtmon__rcv__s.html</filename>
     <member kind="variable">
-      <type>tmon_t *</type>
-      <name>tmon</name>
+      <type>tmon_ctx_t *</type>
+      <name>tmon_ctx</name>
       <anchorfile>structtmon__rcv__s.html</anchorfile>
-      <anchor>af377eb379ab3b40cef1268cd6e41662f</anchor>
+      <anchor>a8e72d87430e972b564bf64c1b15581d8</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>int</type>
+      <name>rcv_type</name>
+      <anchorfile>structtmon__rcv__s.html</anchorfile>
+      <anchor>a7feaa3f22dcf7bacb226d02a88a22ee0</anchor>
       <arglist></arglist>
     </member>
     <member kind="variable">
@@ -304,73 +349,13 @@
     </member>
   </compound>
   <compound kind="struct">
-    <name>tmon_s</name>
-    <filename>structtmon__s.html</filename>
-    <member kind="variable">
-      <type>lbm_context_t *</type>
-      <name>app_ctx</name>
-      <anchorfile>structtmon__s.html</anchorfile>
-      <anchor>a5dd756c74ee038eac2a428cb9e0a5bb8</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>char</type>
-      <name>transport_opts</name>
-      <anchorfile>structtmon__s.html</anchorfile>
-      <anchor>ac25b4362d922877d13f370477a7e9622</anchor>
-      <arglist>[2048]</arglist>
-    </member>
-    <member kind="variable">
-      <type>char</type>
-      <name>app_id</name>
-      <anchorfile>structtmon__s.html</anchorfile>
-      <anchor>ab38537b0b2a8cdb978886bca75f10266</anchor>
-      <arglist>[TMON_STR_BUF_LENS]</arglist>
-    </member>
-    <member kind="variable">
-      <type>char</type>
-      <name>config_file</name>
-      <anchorfile>structtmon__s.html</anchorfile>
-      <anchor>a5bb0ac72da66ba02edc11d0c25ceeeb0</anchor>
-      <arglist>[TMON_STR_BUF_LENS]</arglist>
-    </member>
-    <member kind="variable">
-      <type>char</type>
-      <name>topic_str</name>
-      <anchorfile>structtmon__s.html</anchorfile>
-      <anchor>a5bc42eca41914b2a3f7def3980123cf9</anchor>
-      <arglist>[TMON_STR_BUF_LENS]</arglist>
-    </member>
-    <member kind="variable">
-      <type>lbm_context_t *</type>
-      <name>ctx</name>
-      <anchorfile>structtmon__s.html</anchorfile>
-      <anchor>a705c2069ed07f173aad152f244349f9f</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>lbm_src_t *</type>
-      <name>src</name>
-      <anchorfile>structtmon__s.html</anchorfile>
-      <anchor>acb29cbba068bcf3700da4bfad1a14de5</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>ezstr_t *</type>
-      <name>header</name>
-      <anchorfile>structtmon__s.html</anchorfile>
-      <anchor>a662c80c47e97554f023a626debfbb5ae</anchor>
-      <arglist></arglist>
-    </member>
-  </compound>
-  <compound kind="struct">
     <name>tmon_src_s</name>
     <filename>structtmon__src__s.html</filename>
     <member kind="variable">
-      <type>tmon_t *</type>
-      <name>tmon</name>
+      <type>tmon_ctx_t *</type>
+      <name>tmon_ctx</name>
       <anchorfile>structtmon__src__s.html</anchorfile>
-      <anchor>a52264f253f074f3f1ebff41726a6c425</anchor>
+      <anchor>a5987dcae40b2237685d7116f83a758e6</anchor>
       <arglist></arglist>
     </member>
     <member kind="variable">
@@ -392,38 +377,6 @@
       <name>mon_msg</name>
       <anchorfile>structtmon__src__s.html</anchorfile>
       <anchor>a37d179685e3fb5ce85dd93379b4d1e47</anchor>
-      <arglist></arglist>
-    </member>
-  </compound>
-  <compound kind="struct">
-    <name>tmon_wrcv_s</name>
-    <filename>structtmon__wrcv__s.html</filename>
-    <member kind="variable">
-      <type>tmon_t *</type>
-      <name>tmon</name>
-      <anchorfile>structtmon__wrcv__s.html</anchorfile>
-      <anchor>a71f22e5003fee477ab9f5cc26b669853</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>char</type>
-      <name>app_pattern</name>
-      <anchorfile>structtmon__wrcv__s.html</anchorfile>
-      <anchor>a48b3b61ed583a58a6ce673c36cae9b9b</anchor>
-      <arglist>[TMON_STR_BUF_LENS]</arglist>
-    </member>
-    <member kind="variable">
-      <type>struct timeval</type>
-      <name>create_time</name>
-      <anchorfile>structtmon__wrcv__s.html</anchorfile>
-      <anchor>ae36256a00c0487335f22eb04943bc42e</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>ezstr_t *</type>
-      <name>mon_msg</name>
-      <anchorfile>structtmon__wrcv__s.html</anchorfile>
-      <anchor>aadc8deb3e4767a9c6f1b707c41bc41f4</anchor>
       <arglist></arglist>
     </member>
   </compound>

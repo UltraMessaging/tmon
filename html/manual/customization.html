@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.15"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>tmon: UM Topic Monitor: Wire Protocol</title>
+<title>tmon: UM Topic Monitor: Customization</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -48,30 +48,34 @@
 </div>
 <script type="text/javascript">
 /* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(document).ready(function(){initNavTree('wireprotocol.html','');});
+$(document).ready(function(){initNavTree('customization.html','');});
 /* @license-end */
 </script>
 <div id="doc-content">
 <div class="PageDoc"><div class="header">
   <div class="headertitle">
-<div class="title">Wire Protocol </div>  </div>
+<div class="title">Customization </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p>Each message is an ASCII string (not null-terminated). The first character of a message indicates the type of message.</p>
-<pre>
-S - src_create : S,app_id,IP,PID,ctx,tv_sec,tv_usec,tmon_src,topic
-s - src_delete : s,app_id,IP,PID,ctx,tv_sec,tv_usec,tmon_src
-R - rcv_create : R,app_id,IP,PID,ctx,tv_sec,tv_usec,tmon_rcv,topic
-r - rcv_delete : r,app_id,IP,PID,ctx,tv_sec,tv_usec,tmon_rcv
-W - wrcv_create: W,app_id,IP,PID,ctx,tv_sec,tv_usec,tmon_rcv,pattern
-w - wrcv_delete: w,app_id,IP,PID,ctx,tv_sec,tv_usec,tmon_rcv
-C - conn_create: C,app_id,IP,PID,ctx,tv_sec,tv_usec,tmon_rcv,conn,src_str
-c - conn_delete: c,app_id,IP,PID,ctx,tv_sec,tv_usec,conn,msg_count,unrec_count,burst_count
-B - BOS        : b,app_id,IP,PID,ctx,tv_sec,tv_usec,conn,topic
-E - EOS        : e,app_id,IP,PID,ctx,tv_sec,tv_usec,conn,msg_count,unrec_count,burst_count,topic
-A - Alarm      : A,app_id,IP,PID,ctx,tv_sec,tv_usec,err_str
-L - loss       : L,app_id,IP,PID,ctx,tv_sec,tv_usec,conn,msg_count,unrec_count,burst_count
-</pre> </div></div><!-- PageDoc -->
+<div class="textblock"><p>As mentioned in the <a class="el" href="overview.html">Overview</a>, Informatica expects that users will modify the tmon package for their own needs.</p>
+<p><br />
+ </p>
+<h1><a class="anchor" id="errorhandling"></a>
+Error Handling</h1>
+<p>Every major software project has its own error handling conventions. The Ultra Messaging convention, returning an integer status in every function call, can lead to significant clutter in the source code. Since the purpose of this code is to provide an educational example, the addition of unnecessary clutter works against its goals.</p>
+<p>The tmon package relies on a much simpler error handling convention: printing to "stderr" and invoking a set of macros that print information useful to the programmer and calling "exit(1)", which terminates the process. Those macros are: </p><ul>
+<li>
+NULLCHK </li>
+<li>
+ASSRT </li>
+<li>
+FAILCHK </li>
+<li>
+LBMCHK </li>
+</ul>
+<p>It is generally preferable for production-ready applications to NOT exit the process, but instead to log a warning and maybe disable the topic monitoring function. Adding this behavior would not be difficult, but it would clutter the code, obscuring its design, and degrading its educational value.</p>
+<p>We advise the user to search the source code for "stderr" and the above macro names. These are the places where the user's local error handling conventions would need to be inserted. </p>
+</div></div><!-- PageDoc -->
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- HTML footer for doxygen 1.8.11-->

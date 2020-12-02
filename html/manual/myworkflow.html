@@ -58,8 +58,8 @@ $(document).ready(function(){initNavTree('myworkflow.html','');});
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><p>I'm Steve Ford, the initial developer of tmon. I am a Linux-centric C programmer who does not have a lot of experience with Windows or Mac development.</p>
-<p>I have a Mac laptop, which is my primary workstation, and a Windows laptop, which I only use when I need to (usually via RDP). I also use a test lab which contains many servers of various OSes and versions. (If you see the host name "orion" in some of the scripts, that is the name of a Linux host in our test lab that I commonly use.)</p>
-<p>This workflow assumes a full install of UM including libaries and binaries, including example application executables. With Mac and Linux, the "lbm.sh" script sets up PATH and library load environment variables. With Windows, PATH is assumed to be set up by the install of UM.</p>
+<p>I have a Mac laptop, my primary workstation, and a Windows laptop, which I only use when I need to (usually via RDP). I also use a test lab that contains many servers of various OSes and versions. (If you see the hostname "orion" in some of the scripts, that is the name of a Linux host in our test lab that I commonly use.)</p>
+<p>This workflow assumes a full install of UM, including libraries, binaries, and example application executables. With Mac and Linux, the "lbm.sh" script sets up PATH and library load environment variables. With Windows, PATH is assumed to be set up by the install of UM.</p>
 <p>My workflow is as follows: </p><ul>
 <li>
 In a dedicated Mac terminal window, run "mac/labbox.sh", which invokes the "[labbox](https://github.com/fordsfords/labbox)" tool, which uses "fswatch" and "rsync" to detect changes on my Mac and update the Linux lab host "Orion". Note that this tool runs continuously. </li>
@@ -70,14 +70,14 @@ Build and test in the "mac" directory using "tst.sh". </li>
 <li>
 In a secure shell window logged into Orion, build and test in the "lin" directory using "tst.sh". </li>
 <li>
-On my Windows laptop, use cygwin to run "boxlab.sh" which use "rsync" to update from Orion. This script does not automatically detect changes on Orion; I have to press return after I make a change to get the update. After synchronizing, the script copies source files into the Visual Studio project area, and also updates test files for the host's IP address. </li>
+On my Windows laptop, use Cygwin to run "boxlab.sh" which use "rsync" to update from Orion. This script does not automatically detect changes on Orion; I have to press return after I make a change to get the update. After synchronizing, the script copies source files into the Visual Studio project area, and also updates test files for the host's IP address. </li>
 <li>
 Use Visual Studio to build the solution. </li>
 <li>
-Test in the "win" directory using "tst.sh" (using cygwin). </li>
+Test in the "win" directory using "tst.sh" (using Cygwin). </li>
 </ul>
 <p>I'm sure there are better workflows; suggestions are welcome. (-:</p>
-<p>Note that most of the scripts in the "win", "lin", and "mac" directories are specific to my environment, and would require significant rework for you to use. I suspect it wouldn't be worth it. </p>
+<p>Note that most of the scripts in the "win", "lin", and "mac" directories are specific to my environment and would require significant rework for you to use. I suspect it wouldn't be worth it. </p>
 </div></div><!-- PageDoc -->
 </div><!-- contents -->
 </div><!-- doc-content -->

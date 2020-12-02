@@ -159,11 +159,11 @@ int main(int argc, char **argv)
   lbm_src_t *src2;
   lbm_src_t *src3;
   /* Other */
-  tmon_t *tmon;
+  tmon_ctx_t *tmon_ctx;
   tmon_rcv_t *tmon_rcv1;
   tmon_rcv_t *tmon_rcv3;
   tmon_rcv_t *tmon_rcvx;
-  tmon_wrcv_t *tmon_wrcv2;
+  tmon_rcv_t *tmon_wrcv2;
   tmon_src_t *tmon_src1;
   tmon_src_t *tmon_src2;
   tmon_src_t *tmon_src3;
@@ -202,13 +202,13 @@ int main(int argc, char **argv)
   LBMCHK(lbm_context_attr_delete(ctx_attr));
 
   printf("Creating topic monitor.\n");
-  tmon = tmon_create(ctx);
+  tmon_ctx = tmon_ctx_create(ctx);
 
   printf("Creating wildcard rcv for '^.*3$' (will resolv, rcv msg)\n");
   LBMCHK(lbm_rcv_topic_attr_create_from_xml(&rcv_attr, "tmon_example_ctx", "srcx"));
   src_notif_func.create_func = dc_create_cb;
   src_notif_func.delete_func = dc_delete_cb;
-  src_notif_func.clientd = tmon_wrcv2 = tmon_wrcv_create(tmon, "^.*2$");
+  src_notif_func.clientd = tmon_wrcv2 = tmon_rcv_create(tmon_ctx, 2, "^.*2$");
   LBMCHK(lbm_rcv_topic_attr_setopt(rcv_attr, "source_notification_function", &src_notif_func, sizeof(src_notif_func)));
   LBMCHK(lbm_wildcard_rcv_create(&wrcv2, ctx, "^.*2$", rcv_attr, NULL, app_rcv_callback, tmon_wrcv2, NULL));
   LBMCHK(lbm_rcv_topic_attr_delete(rcv_attr));
@@ -217,7 +217,7 @@ int main(int argc, char **argv)
   LBMCHK(lbm_rcv_topic_attr_create_from_xml(&rcv_attr, "tmon_example_ctx", "src1"));
   src_notif_func.create_func = dc_create_cb;
   src_notif_func.delete_func = dc_delete_cb;
-  src_notif_func.clientd = tmon_rcv1 = tmon_rcv_create(tmon, "src1");
+  src_notif_func.clientd = tmon_rcv1 = tmon_rcv_create(tmon_ctx, 1, "src1");
   LBMCHK(lbm_rcv_topic_attr_setopt(rcv_attr, "source_notification_function", &src_notif_func, sizeof(src_notif_func)));
   LBMCHK(lbm_rcv_topic_lookup(&topic_obj, ctx, "src1", rcv_attr));
   LBMCHK(lbm_rcv_create(&rcv1, ctx, topic_obj, app_rcv_callback, tmon_rcv1, NULL));
@@ -227,7 +227,7 @@ int main(int argc, char **argv)
   LBMCHK(lbm_rcv_topic_attr_create_from_xml(&rcv_attr, "tmon_example_ctx", "src2"));
   src_notif_func.create_func = dc_create_cb;
   src_notif_func.delete_func = dc_delete_cb;
-  src_notif_func.clientd = tmon_rcv3 = tmon_rcv_create(tmon, "src3");
+  src_notif_func.clientd = tmon_rcv3 = tmon_rcv_create(tmon_ctx, 1, "src3");
   LBMCHK(lbm_rcv_topic_attr_setopt(rcv_attr, "source_notification_function", &src_notif_func, sizeof(src_notif_func)));
   LBMCHK(lbm_rcv_topic_lookup(&topic_obj, ctx, "src3", rcv_attr));
   LBMCHK(lbm_rcv_create(&rcv3, ctx, topic_obj, app_rcv_callback, tmon_rcv3, NULL));
@@ -237,28 +237,28 @@ int main(int argc, char **argv)
   LBMCHK(lbm_rcv_topic_attr_create_from_xml(&rcv_attr, "tmon_example_ctx", "srcx"));
   src_notif_func.create_func = dc_create_cb;
   src_notif_func.delete_func = dc_delete_cb;
-  src_notif_func.clientd = tmon_rcvx = tmon_rcv_create(tmon, "srcx");
+  src_notif_func.clientd = tmon_rcvx = tmon_rcv_create(tmon_ctx, 1, "srcx");
   LBMCHK(lbm_rcv_topic_attr_setopt(rcv_attr, "source_notification_function", &src_notif_func, sizeof(src_notif_func)));
   LBMCHK(lbm_rcv_topic_lookup(&topic_obj, ctx, "srcx", rcv_attr));
   LBMCHK(lbm_rcv_create(&rcvx, ctx, topic_obj, app_rcv_callback, tmon_rcvx, NULL));
   LBMCHK(lbm_rcv_topic_attr_delete(rcv_attr));
 
   printf("Creating src for 'src1' (will resolve, send msg)\n");
-  tmon_src1 = tmon_src_create(tmon, "src1");
+  tmon_src1 = tmon_src_create(tmon_ctx, "src1");
   LBMCHK(lbm_src_topic_attr_create_from_xml(&src_attr, "tmon_example_ctx", "src1"));
   LBMCHK(lbm_src_topic_alloc(&topic_obj, ctx, "src1", src_attr));
   LBMCHK(lbm_src_create(&src1, ctx, topic_obj, NULL, NULL, NULL));
   LBMCHK(lbm_src_topic_attr_delete(src_attr));
 
   printf("Creating src for 'src2' (no msg)\n");
-  tmon_src2 = tmon_src_create(tmon, "src2");
+  tmon_src2 = tmon_src_create(tmon_ctx, "src2");
   LBMCHK(lbm_src_topic_attr_create_from_xml(&src_attr, "tmon_example_ctx", "src2"));
   LBMCHK(lbm_src_topic_alloc(&topic_obj, ctx, "src2", src_attr));
   LBMCHK(lbm_src_create(&src2, ctx, topic_obj, NULL, NULL, NULL));
   LBMCHK(lbm_src_topic_attr_delete(src_attr));
 
   printf("Creating src for 'src3' (will resolve, no msg)\n");
-  tmon_src3 = tmon_src_create(tmon, "src3");
+  tmon_src3 = tmon_src_create(tmon_ctx, "src3");
   LBMCHK(lbm_src_topic_attr_create_from_xml(&src_attr, "tmon_example_ctx", "src3"));
   LBMCHK(lbm_src_topic_alloc(&topic_obj, ctx, "src3", src_attr));
   LBMCHK(lbm_src_create(&src3, ctx, topic_obj, NULL, NULL, NULL));
@@ -314,10 +314,10 @@ int main(int argc, char **argv)
   LBMCHK(lbm_rcv_delete(rcvx));
   tmon_rcv_delete(tmon_rcvx);
   LBMCHK(lbm_wildcard_rcv_delete(wrcv2));
-  tmon_wrcv_delete(tmon_wrcv2);
+  tmon_rcv_delete(tmon_wrcv2);
 
-  printf("Deleting tmon.\n");
-  tmon_delete(tmon);
+  printf("Deleting tmon_ctx.\n");
+  tmon_ctx_delete(tmon_ctx);
 
   printf("Deleting context.\n");
   LBMCHK(lbm_context_delete(ctx));

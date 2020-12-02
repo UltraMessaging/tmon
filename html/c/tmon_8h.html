@@ -86,20 +86,17 @@ Data Structures</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structezstr__s.html">ezstr_s</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Simple, "easy" string object, used internally by tmon. Not intended as a supported API.  <a href="structezstr__s.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtmon__s.html">tmon_s</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">top-level tmon object. Created by <a class="el" href="tmon_8h.html#a752435d00883f7ac86a972eaa22ef484" title="Create a tmon object to monitor application topics. Create one of these per application context immed...">tmon_create()</a>. Create one of these per application context immediately <em>after</em> creating each context. Application must not write to fields in this structure.  <a href="structtmon__s.html#details">More...</a><br /></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtmon__ctx__s.html">tmon_ctx_s</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">tmon context monitoring object. Created by <a class="el" href="tmon_8h.html#aed61a720a2e795ea899af4642edad0a6" title="Create a tmon context monitoring object, associated with an application UM context....">tmon_ctx_create()</a>. Create one of these per application context immediately <em>after</em> creating each context. Application must not write to fields in this structure.  <a href="structtmon__ctx__s.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtmon__rcv__s.html">tmon_rcv_s</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">tmon receiver monitoring object. Created by <a class="el" href="tmon_8h.html#a5d4c252eeb8578f396861832a29d302a" title="Create a tmon receiver object to monitor an application receiver. Create one per application receiver...">tmon_rcv_create()</a>. Create one per application receiver immediately <em>before</em> creating each receiver. Application must not write to fields in this structure.  <a href="structtmon__rcv__s.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtmon__wrcv__s.html">tmon_wrcv_s</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">tmon wildcard receiver monitoring object. Created by <a class="el" href="tmon_8h.html#a0ffb669261dfaf6f4cea94ed76ca6f9d" title="Create a tmon wildcard receiver object to monitor an application receiver. Create one per application...">tmon_wrcv_create()</a>. Create one per application wildcard receiver immediately <em>before</em> creating each receiver. Application must not write to fields in this structure.  <a href="structtmon__wrcv__s.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">tmon receiver or wildcard receiver monitoring object. Created by <a class="el" href="tmon_8h.html#a5602a423bea1a50ae9890a6cd5090307" title="Create a tmon receiver or wildcard receiver monitoring object, associated with an application UM rece...">tmon_rcv_create()</a>. Create one per application receiver immediately <em>before</em> creating each receiver. Application must not write to fields in this structure.  <a href="structtmon__rcv__s.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtmon__src__s.html">tmon_src_s</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">tmon source monitoring object. Created by <a class="el" href="tmon_8h.html#abb03db684e0061fd19cd7ba8d7fd8540" title="Create a tmon source object to monitor an application source. Create one per application source immed...">tmon_src_create()</a>. Create one per application source immediately <em>before</em> creating each source. Application must not write to fields in this structure.  <a href="structtmon__src__s.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">tmon source monitoring object. Created by <a class="el" href="tmon_8h.html#a7a05fb72b16dad515a5ebf0efd295edf" title="Create a tmon source monitoring object, associated with an application UM source. Create one per appl...">tmon_src_create()</a>. Create one per application source immediately <em>before</em> creating each source. Application must not write to fields in this structure.  <a href="structtmon__src__s.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtmon__conn__s.html">tmon_conn_s</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">tmon connection monitoring object. Created by <a class="el" href="tmon_8h.html#a1bcd235ecc04d3dbf8c61713ad1a3ac7" title="Create a tmon receiver connection object to monitor a unique connection between this application&#39;s re...">tmon_conn_create()</a>. Create one per receiver delivery controller from inside the <a href="https://ultramessaging.github.io/currdoc/doc/Config/grpdeliverycontrol.html#sourcenotificationfunctionreceiver">source_notification_function (receiver)</a> callback. That callback can return this object as the source-specific clientd. See <a class="elRef" doxygen="/Users/sford/Documents/GitHub/tmon/html/manual.tag:../manual/" href="../manual/overview.html#clientdatapointers">Client Data Pointers</a>. Application must not write to fields in this structure.  <a href="structtmon__conn__s.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">tmon connection monitoring object. Created by <a class="el" href="tmon_8h.html#a1bcd235ecc04d3dbf8c61713ad1a3ac7" title="Create a tmon receiver connection monitoring object to monitor a delivery controller....">tmon_conn_create()</a>. Create one per receiver delivery controller from inside the <a href="https://ultramessaging.github.io/currdoc/doc/Config/grpdeliverycontrol.html#sourcenotificationfunctionreceiver">source_notification_function (receiver)</a> callback. That callback can return this object as the source-specific clientd. See <a class="elRef" doxygen="/Users/sford/Documents/GitHub/tmon/html/manual.tag:../manual/" href="../manual/userguide.html#clientdatapointers">Client Data Pointers</a>. Application must not write to fields in this structure.  <a href="structtmon__conn__s.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
@@ -115,20 +112,17 @@ Typedefs</h2></td></tr>
 typedef struct <a class="el" href="structezstr__s.html">ezstr_s</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="tmon_8h.html#aa0008486a47e54986e3928729ed42a23">ezstr_t</a></td></tr>
 <tr class="memdesc:aa0008486a47e54986e3928729ed42a23"><td class="mdescLeft">&#160;</td><td class="mdescRight">Simple, "easy" string object, used internally by tmon. Not intended as a supported API. <br /></td></tr>
 <tr class="separator:aa0008486a47e54986e3928729ed42a23"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6ebbbb5c33a5781b9f676c59315ef45e"><td class="memItemLeft" align="right" valign="top">typedef struct <a class="el" href="structtmon__s.html">tmon_s</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="tmon_8h.html#a6ebbbb5c33a5781b9f676c59315ef45e">tmon_t</a></td></tr>
-<tr class="memdesc:a6ebbbb5c33a5781b9f676c59315ef45e"><td class="mdescLeft">&#160;</td><td class="mdescRight">top-level tmon object. Created by <a class="el" href="tmon_8h.html#a752435d00883f7ac86a972eaa22ef484" title="Create a tmon object to monitor application topics. Create one of these per application context immed...">tmon_create()</a>. Create one of these per application context immediately <em>after</em> creating each context. Application must not write to fields in this structure.  <a href="#a6ebbbb5c33a5781b9f676c59315ef45e">More...</a><br /></td></tr>
-<tr class="separator:a6ebbbb5c33a5781b9f676c59315ef45e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abf674a8c3a416e5135f9b343b0886c8e"><td class="memItemLeft" align="right" valign="top">typedef struct <a class="el" href="structtmon__ctx__s.html">tmon_ctx_s</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="tmon_8h.html#abf674a8c3a416e5135f9b343b0886c8e">tmon_ctx_t</a></td></tr>
+<tr class="memdesc:abf674a8c3a416e5135f9b343b0886c8e"><td class="mdescLeft">&#160;</td><td class="mdescRight">tmon context monitoring object. Created by <a class="el" href="tmon_8h.html#aed61a720a2e795ea899af4642edad0a6" title="Create a tmon context monitoring object, associated with an application UM context....">tmon_ctx_create()</a>. Create one of these per application context immediately <em>after</em> creating each context. Application must not write to fields in this structure.  <a href="#abf674a8c3a416e5135f9b343b0886c8e">More...</a><br /></td></tr>
+<tr class="separator:abf674a8c3a416e5135f9b343b0886c8e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3fd849f02596f1e422356f063b57228c"><td class="memItemLeft" align="right" valign="top">typedef struct <a class="el" href="structtmon__rcv__s.html">tmon_rcv_s</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="tmon_8h.html#a3fd849f02596f1e422356f063b57228c">tmon_rcv_t</a></td></tr>
-<tr class="memdesc:a3fd849f02596f1e422356f063b57228c"><td class="mdescLeft">&#160;</td><td class="mdescRight">tmon receiver monitoring object. Created by <a class="el" href="tmon_8h.html#a5d4c252eeb8578f396861832a29d302a" title="Create a tmon receiver object to monitor an application receiver. Create one per application receiver...">tmon_rcv_create()</a>. Create one per application receiver immediately <em>before</em> creating each receiver. Application must not write to fields in this structure.  <a href="#a3fd849f02596f1e422356f063b57228c">More...</a><br /></td></tr>
+<tr class="memdesc:a3fd849f02596f1e422356f063b57228c"><td class="mdescLeft">&#160;</td><td class="mdescRight">tmon receiver or wildcard receiver monitoring object. Created by <a class="el" href="tmon_8h.html#a5602a423bea1a50ae9890a6cd5090307" title="Create a tmon receiver or wildcard receiver monitoring object, associated with an application UM rece...">tmon_rcv_create()</a>. Create one per application receiver immediately <em>before</em> creating each receiver. Application must not write to fields in this structure.  <a href="#a3fd849f02596f1e422356f063b57228c">More...</a><br /></td></tr>
 <tr class="separator:a3fd849f02596f1e422356f063b57228c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad3839fbb9d4b43a154ffa8acdaea2594"><td class="memItemLeft" align="right" valign="top">typedef struct <a class="el" href="structtmon__wrcv__s.html">tmon_wrcv_s</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="tmon_8h.html#ad3839fbb9d4b43a154ffa8acdaea2594">tmon_wrcv_t</a></td></tr>
-<tr class="memdesc:ad3839fbb9d4b43a154ffa8acdaea2594"><td class="mdescLeft">&#160;</td><td class="mdescRight">tmon wildcard receiver monitoring object. Created by <a class="el" href="tmon_8h.html#a0ffb669261dfaf6f4cea94ed76ca6f9d" title="Create a tmon wildcard receiver object to monitor an application receiver. Create one per application...">tmon_wrcv_create()</a>. Create one per application wildcard receiver immediately <em>before</em> creating each receiver. Application must not write to fields in this structure.  <a href="#ad3839fbb9d4b43a154ffa8acdaea2594">More...</a><br /></td></tr>
-<tr class="separator:ad3839fbb9d4b43a154ffa8acdaea2594"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab71817970e75cdd4fa5bc6ab9a18992f"><td class="memItemLeft" align="right" valign="top">typedef struct <a class="el" href="structtmon__src__s.html">tmon_src_s</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="tmon_8h.html#ab71817970e75cdd4fa5bc6ab9a18992f">tmon_src_t</a></td></tr>
-<tr class="memdesc:ab71817970e75cdd4fa5bc6ab9a18992f"><td class="mdescLeft">&#160;</td><td class="mdescRight">tmon source monitoring object. Created by <a class="el" href="tmon_8h.html#abb03db684e0061fd19cd7ba8d7fd8540" title="Create a tmon source object to monitor an application source. Create one per application source immed...">tmon_src_create()</a>. Create one per application source immediately <em>before</em> creating each source. Application must not write to fields in this structure.  <a href="#ab71817970e75cdd4fa5bc6ab9a18992f">More...</a><br /></td></tr>
+<tr class="memdesc:ab71817970e75cdd4fa5bc6ab9a18992f"><td class="mdescLeft">&#160;</td><td class="mdescRight">tmon source monitoring object. Created by <a class="el" href="tmon_8h.html#a7a05fb72b16dad515a5ebf0efd295edf" title="Create a tmon source monitoring object, associated with an application UM source. Create one per appl...">tmon_src_create()</a>. Create one per application source immediately <em>before</em> creating each source. Application must not write to fields in this structure.  <a href="#ab71817970e75cdd4fa5bc6ab9a18992f">More...</a><br /></td></tr>
 <tr class="separator:ab71817970e75cdd4fa5bc6ab9a18992f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a49c87df5e1bc16d86b92e06000299aab"><td class="memItemLeft" align="right" valign="top">typedef struct <a class="el" href="structtmon__conn__s.html">tmon_conn_s</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="tmon_8h.html#a49c87df5e1bc16d86b92e06000299aab">tmon_conn_t</a></td></tr>
-<tr class="memdesc:a49c87df5e1bc16d86b92e06000299aab"><td class="mdescLeft">&#160;</td><td class="mdescRight">tmon connection monitoring object. Created by <a class="el" href="tmon_8h.html#a1bcd235ecc04d3dbf8c61713ad1a3ac7" title="Create a tmon receiver connection object to monitor a unique connection between this application&#39;s re...">tmon_conn_create()</a>. Create one per receiver delivery controller from inside the <a href="https://ultramessaging.github.io/currdoc/doc/Config/grpdeliverycontrol.html#sourcenotificationfunctionreceiver">source_notification_function (receiver)</a> callback. That callback can return this object as the source-specific clientd. See <a class="elRef" doxygen="/Users/sford/Documents/GitHub/tmon/html/manual.tag:../manual/" href="../manual/overview.html#clientdatapointers">Client Data Pointers</a>. Application must not write to fields in this structure.  <a href="#a49c87df5e1bc16d86b92e06000299aab">More...</a><br /></td></tr>
+<tr class="memdesc:a49c87df5e1bc16d86b92e06000299aab"><td class="mdescLeft">&#160;</td><td class="mdescRight">tmon connection monitoring object. Created by <a class="el" href="tmon_8h.html#a1bcd235ecc04d3dbf8c61713ad1a3ac7" title="Create a tmon receiver connection monitoring object to monitor a delivery controller....">tmon_conn_create()</a>. Create one per receiver delivery controller from inside the <a href="https://ultramessaging.github.io/currdoc/doc/Config/grpdeliverycontrol.html#sourcenotificationfunctionreceiver">source_notification_function (receiver)</a> callback. That callback can return this object as the source-specific clientd. See <a class="elRef" doxygen="/Users/sford/Documents/GitHub/tmon/html/manual.tag:../manual/" href="../manual/userguide.html#clientdatapointers">Client Data Pointers</a>. Application must not write to fields in this structure.  <a href="#a49c87df5e1bc16d86b92e06000299aab">More...</a><br /></td></tr>
 <tr class="separator:a49c87df5e1bc16d86b92e06000299aab"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
@@ -145,35 +139,29 @@ Functions</h2></td></tr>
 <tr class="memitem:a426744b9073362dd0ecda7433fc1e488"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="tmon_8h.html#a426744b9073362dd0ecda7433fc1e488">tmon_usleep</a> (int usec)</td></tr>
 <tr class="memdesc:a426744b9073362dd0ecda7433fc1e488"><td class="mdescLeft">&#160;</td><td class="mdescRight">Portable microsecond-precision sleep function.  <a href="#a426744b9073362dd0ecda7433fc1e488">More...</a><br /></td></tr>
 <tr class="separator:a426744b9073362dd0ecda7433fc1e488"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a752435d00883f7ac86a972eaa22ef484"><td class="memItemLeft" align="right" valign="top"><a class="el" href="tmon_8h.html#a6ebbbb5c33a5781b9f676c59315ef45e">tmon_t</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="tmon_8h.html#a752435d00883f7ac86a972eaa22ef484">tmon_create</a> (lbm_context_t *app_ctx)</td></tr>
-<tr class="memdesc:a752435d00883f7ac86a972eaa22ef484"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a tmon object to monitor application topics. Create one of these per application context immediately <em>after</em> creating each context.  <a href="#a752435d00883f7ac86a972eaa22ef484">More...</a><br /></td></tr>
-<tr class="separator:a752435d00883f7ac86a972eaa22ef484"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3923e731235121ee1a88a4ee1c66781e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="tmon_8h.html#a3923e731235121ee1a88a4ee1c66781e">tmon_delete</a> (<a class="el" href="tmon_8h.html#a6ebbbb5c33a5781b9f676c59315ef45e">tmon_t</a> *tmon)</td></tr>
-<tr class="memdesc:a3923e731235121ee1a88a4ee1c66781e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Delete a tmon object. Do not delete this object until after all child objects (<a class="el" href="structtmon__rcv__s.html">tmon_rcv_s</a>, <a class="el" href="structtmon__src__s.html">tmon_src_s</a>) are deleted.  <a href="#a3923e731235121ee1a88a4ee1c66781e">More...</a><br /></td></tr>
-<tr class="separator:a3923e731235121ee1a88a4ee1c66781e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5d4c252eeb8578f396861832a29d302a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="tmon_8h.html#a3fd849f02596f1e422356f063b57228c">tmon_rcv_t</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="tmon_8h.html#a5d4c252eeb8578f396861832a29d302a">tmon_rcv_create</a> (<a class="el" href="tmon_8h.html#a6ebbbb5c33a5781b9f676c59315ef45e">tmon_t</a> *tmon, char *app_topic_str)</td></tr>
-<tr class="memdesc:a5d4c252eeb8578f396861832a29d302a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a tmon receiver object to monitor an application receiver. Create one per application receiver immediately <em>before</em> creating each receiver.  <a href="#a5d4c252eeb8578f396861832a29d302a">More...</a><br /></td></tr>
-<tr class="separator:a5d4c252eeb8578f396861832a29d302a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aed61a720a2e795ea899af4642edad0a6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="tmon_8h.html#abf674a8c3a416e5135f9b343b0886c8e">tmon_ctx_t</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="tmon_8h.html#aed61a720a2e795ea899af4642edad0a6">tmon_ctx_create</a> (lbm_context_t *app_ctx)</td></tr>
+<tr class="memdesc:aed61a720a2e795ea899af4642edad0a6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a tmon context monitoring object, associated with an application UM context. Create one of these per application context immediately <em>after</em> creating each context.  <a href="#aed61a720a2e795ea899af4642edad0a6">More...</a><br /></td></tr>
+<tr class="separator:aed61a720a2e795ea899af4642edad0a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab40619ac905b3b0f3f9c06d399e020ee"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="tmon_8h.html#ab40619ac905b3b0f3f9c06d399e020ee">tmon_ctx_delete</a> (<a class="el" href="tmon_8h.html#abf674a8c3a416e5135f9b343b0886c8e">tmon_ctx_t</a> *tmon_ctx)</td></tr>
+<tr class="memdesc:ab40619ac905b3b0f3f9c06d399e020ee"><td class="mdescLeft">&#160;</td><td class="mdescRight">Delete a tmon_ctx object. Do not delete this object until after all child objects (<a class="el" href="structtmon__rcv__s.html">tmon_rcv_s</a>, <a class="el" href="structtmon__src__s.html">tmon_src_s</a>) are deleted.  <a href="#ab40619ac905b3b0f3f9c06d399e020ee">More...</a><br /></td></tr>
+<tr class="separator:ab40619ac905b3b0f3f9c06d399e020ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5602a423bea1a50ae9890a6cd5090307"><td class="memItemLeft" align="right" valign="top"><a class="el" href="tmon_8h.html#a3fd849f02596f1e422356f063b57228c">tmon_rcv_t</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="tmon_8h.html#a5602a423bea1a50ae9890a6cd5090307">tmon_rcv_create</a> (<a class="el" href="tmon_8h.html#abf674a8c3a416e5135f9b343b0886c8e">tmon_ctx_t</a> *tmon_ctx, int rcv_type, char *app_topic_str)</td></tr>
+<tr class="memdesc:a5602a423bea1a50ae9890a6cd5090307"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a tmon receiver or wildcard receiver monitoring object, associated with an application UM receiver. Create one per application receiver immediately <em>before</em> creating each receiver.  <a href="#a5602a423bea1a50ae9890a6cd5090307">More...</a><br /></td></tr>
+<tr class="separator:a5602a423bea1a50ae9890a6cd5090307"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa0afa8049a793ad1a3560e20c7670c99"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="tmon_8h.html#aa0afa8049a793ad1a3560e20c7670c99">tmon_rcv_delete</a> (<a class="el" href="tmon_8h.html#a3fd849f02596f1e422356f063b57228c">tmon_rcv_t</a> *tmon_rcv)</td></tr>
-<tr class="memdesc:aa0afa8049a793ad1a3560e20c7670c99"><td class="mdescLeft">&#160;</td><td class="mdescRight">Delete a tmon receiver object. Do not delete this object until after all child objects (<a class="el" href="structtmon__conn__s.html">tmon_conn_s</a>) are deleted.  <a href="#aa0afa8049a793ad1a3560e20c7670c99">More...</a><br /></td></tr>
+<tr class="memdesc:aa0afa8049a793ad1a3560e20c7670c99"><td class="mdescLeft">&#160;</td><td class="mdescRight">Delete a tmon receiver monitoring object. Do not delete this object until after all child objects (<a class="el" href="structtmon__conn__s.html">tmon_conn_s</a>) are deleted.  <a href="#aa0afa8049a793ad1a3560e20c7670c99">More...</a><br /></td></tr>
 <tr class="separator:aa0afa8049a793ad1a3560e20c7670c99"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0ffb669261dfaf6f4cea94ed76ca6f9d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="tmon_8h.html#ad3839fbb9d4b43a154ffa8acdaea2594">tmon_wrcv_t</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="tmon_8h.html#a0ffb669261dfaf6f4cea94ed76ca6f9d">tmon_wrcv_create</a> (<a class="el" href="tmon_8h.html#a6ebbbb5c33a5781b9f676c59315ef45e">tmon_t</a> *tmon, char *app_topic_str)</td></tr>
-<tr class="memdesc:a0ffb669261dfaf6f4cea94ed76ca6f9d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a tmon wildcard receiver object to monitor an application receiver. Create one per application wildcard receiver immediately <em>before</em> creating each receiver.  <a href="#a0ffb669261dfaf6f4cea94ed76ca6f9d">More...</a><br /></td></tr>
-<tr class="separator:a0ffb669261dfaf6f4cea94ed76ca6f9d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2fb703f1481dd4e872079e132d7a09b9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="tmon_8h.html#a2fb703f1481dd4e872079e132d7a09b9">tmon_wrcv_delete</a> (<a class="el" href="tmon_8h.html#ad3839fbb9d4b43a154ffa8acdaea2594">tmon_wrcv_t</a> *tmon_wrcv)</td></tr>
-<tr class="memdesc:a2fb703f1481dd4e872079e132d7a09b9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Delete a tmon wildcard receiver object. Do not delete this object until after all child objects (<a class="el" href="structtmon__conn__s.html">tmon_conn_s</a>) are deleted.  <a href="#a2fb703f1481dd4e872079e132d7a09b9">More...</a><br /></td></tr>
-<tr class="separator:a2fb703f1481dd4e872079e132d7a09b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abb03db684e0061fd19cd7ba8d7fd8540"><td class="memItemLeft" align="right" valign="top"><a class="el" href="tmon_8h.html#ab71817970e75cdd4fa5bc6ab9a18992f">tmon_src_t</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="tmon_8h.html#abb03db684e0061fd19cd7ba8d7fd8540">tmon_src_create</a> (<a class="el" href="tmon_8h.html#a6ebbbb5c33a5781b9f676c59315ef45e">tmon_t</a> *tmon, char *app_topic_str)</td></tr>
-<tr class="memdesc:abb03db684e0061fd19cd7ba8d7fd8540"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a tmon source object to monitor an application source. Create one per application source immediately <em>before</em> creating each source.  <a href="#abb03db684e0061fd19cd7ba8d7fd8540">More...</a><br /></td></tr>
-<tr class="separator:abb03db684e0061fd19cd7ba8d7fd8540"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7a05fb72b16dad515a5ebf0efd295edf"><td class="memItemLeft" align="right" valign="top"><a class="el" href="tmon_8h.html#ab71817970e75cdd4fa5bc6ab9a18992f">tmon_src_t</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="tmon_8h.html#a7a05fb72b16dad515a5ebf0efd295edf">tmon_src_create</a> (<a class="el" href="tmon_8h.html#abf674a8c3a416e5135f9b343b0886c8e">tmon_ctx_t</a> *tmon_ctx, char *app_topic_str)</td></tr>
+<tr class="memdesc:a7a05fb72b16dad515a5ebf0efd295edf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a tmon source monitoring object, associated with an application UM source. Create one per application source immediately <em>before</em> creating each source.  <a href="#a7a05fb72b16dad515a5ebf0efd295edf">More...</a><br /></td></tr>
+<tr class="separator:a7a05fb72b16dad515a5ebf0efd295edf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa3d416665f06258cd9c0c759a2a8b271"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="tmon_8h.html#aa3d416665f06258cd9c0c759a2a8b271">tmon_src_delete</a> (<a class="el" href="tmon_8h.html#ab71817970e75cdd4fa5bc6ab9a18992f">tmon_src_t</a> *tmon_src)</td></tr>
-<tr class="memdesc:aa3d416665f06258cd9c0c759a2a8b271"><td class="mdescLeft">&#160;</td><td class="mdescRight">Delete a tmon source object.  <a href="#aa3d416665f06258cd9c0c759a2a8b271">More...</a><br /></td></tr>
+<tr class="memdesc:aa3d416665f06258cd9c0c759a2a8b271"><td class="mdescLeft">&#160;</td><td class="mdescRight">Delete a tmon source monitoring object.  <a href="#aa3d416665f06258cd9c0c759a2a8b271">More...</a><br /></td></tr>
 <tr class="separator:aa3d416665f06258cd9c0c759a2a8b271"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1bcd235ecc04d3dbf8c61713ad1a3ac7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="tmon_8h.html#a49c87df5e1bc16d86b92e06000299aab">tmon_conn_t</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="tmon_8h.html#a1bcd235ecc04d3dbf8c61713ad1a3ac7">tmon_conn_create</a> (<a class="el" href="tmon_8h.html#a3fd849f02596f1e422356f063b57228c">tmon_rcv_t</a> *tmon_rcv, const char *source_str)</td></tr>
-<tr class="memdesc:a1bcd235ecc04d3dbf8c61713ad1a3ac7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a tmon receiver connection object to monitor a unique connection between this application's receiver and a publisher's source. This should be called inside the <a href="https://ultramessaging.github.io/currdoc/doc/Config/grpdeliverycontrol.html#sourcenotificationfunctionreceiver">source_notification_function (receiver)</a> "create" callback. That callback can return this object as the per-source client data. See <a class="elRef" doxygen="/Users/sford/Documents/GitHub/tmon/html/manual.tag:../manual/" href="../manual/overview.html#clientdatapointers">Client Data Pointers</a>.  <a href="#a1bcd235ecc04d3dbf8c61713ad1a3ac7">More...</a><br /></td></tr>
+<tr class="memdesc:a1bcd235ecc04d3dbf8c61713ad1a3ac7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a tmon receiver connection monitoring object to monitor a <a href="https://ultramessaging.github.io/currdoc/doc/Design/architecture.html#deliverycontroller">delivery controller</a>. A delivery controller can be thought of as "connection" between a source to a topic and a receiver of that same topic. connection between this application's receiver and a publisher's source. This should be called inside the <a href="https://ultramessaging.github.io/currdoc/doc/Config/grpdeliverycontrol.html#sourcenotificationfunctionreceiver">source_notification_function (receiver)</a> "create" callback. That callback can return this object as the per-source client data. See <a class="elRef" doxygen="/Users/sford/Documents/GitHub/tmon/html/manual.tag:../manual/" href="../manual/userguide.html#clientdatapointers">Client Data Pointers</a>.  <a href="#a1bcd235ecc04d3dbf8c61713ad1a3ac7">More...</a><br /></td></tr>
 <tr class="separator:a1bcd235ecc04d3dbf8c61713ad1a3ac7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a90c529737495dadd30030db2f32f71ab"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="tmon_8h.html#a90c529737495dadd30030db2f32f71ab">tmon_conn_delete</a> (<a class="el" href="tmon_8h.html#a49c87df5e1bc16d86b92e06000299aab">tmon_conn_t</a> *tmon_conn)</td></tr>
-<tr class="memdesc:a90c529737495dadd30030db2f32f71ab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Delete a tmon connection object. This should be called inside the <a href="https://ultramessaging.github.io/currdoc/doc/Config/grpdeliverycontrol.html#sourcenotificationfunctionreceiver">source_notification_function (receiver)</a> "delete" callback.  <a href="#a90c529737495dadd30030db2f32f71ab">More...</a><br /></td></tr>
+<tr class="memdesc:a90c529737495dadd30030db2f32f71ab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Delete a tmon connection monitoring object. This should be called inside the <a href="https://ultramessaging.github.io/currdoc/doc/Config/grpdeliverycontrol.html#sourcenotificationfunctionreceiver">source_notification_function (receiver)</a> "delete" callback.  <a href="#a90c529737495dadd30030db2f32f71ab">More...</a><br /></td></tr>
 <tr class="separator:a90c529737495dadd30030db2f32f71ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afbb5b7f5b09fd4e961c1b4944d11ea7f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="tmon_8h.html#afbb5b7f5b09fd4e961c1b4944d11ea7f">tmon_conn_rcv_event</a> (lbm_msg_t *msg, <a class="el" href="tmon_8h.html#a49c87df5e1bc16d86b92e06000299aab">tmon_conn_t</a> *tmon_conn)</td></tr>
 <tr class="memdesc:afbb5b7f5b09fd4e961c1b4944d11ea7f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Record a receiver event on a connection. This should be called inside your receiver callback.  <a href="#afbb5b7f5b09fd4e961c1b4944d11ea7f">More...</a><br /></td></tr>
@@ -202,8 +190,25 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>tmon connection monitoring object. Created by <a class="el" href="tmon_8h.html#a1bcd235ecc04d3dbf8c61713ad1a3ac7" title="Create a tmon receiver connection object to monitor a unique connection between this application&#39;s re...">tmon_conn_create()</a>. Create one per receiver delivery controller from inside the <a href="https://ultramessaging.github.io/currdoc/doc/Config/grpdeliverycontrol.html#sourcenotificationfunctionreceiver">source_notification_function (receiver)</a> callback. That callback can return this object as the source-specific clientd. See <a class="elRef" doxygen="/Users/sford/Documents/GitHub/tmon/html/manual.tag:../manual/" href="../manual/overview.html#clientdatapointers">Client Data Pointers</a>. Application must not write to fields in this structure. </p>
-<p>Methods: <a class="el" href="tmon_8h.html#a1bcd235ecc04d3dbf8c61713ad1a3ac7" title="Create a tmon receiver connection object to monitor a unique connection between this application&#39;s re...">tmon_conn_create()</a>, <a class="el" href="tmon_8h.html#a90c529737495dadd30030db2f32f71ab" title="Delete a tmon connection object. This should be called inside the source_notification_function (recei...">tmon_conn_delete()</a>, <a class="el" href="tmon_8h.html#afbb5b7f5b09fd4e961c1b4944d11ea7f" title="Record a receiver event on a connection. This should be called inside your receiver callback.">tmon_conn_rcv_event()</a>. </p>
+<p>tmon connection monitoring object. Created by <a class="el" href="tmon_8h.html#a1bcd235ecc04d3dbf8c61713ad1a3ac7" title="Create a tmon receiver connection monitoring object to monitor a delivery controller....">tmon_conn_create()</a>. Create one per receiver delivery controller from inside the <a href="https://ultramessaging.github.io/currdoc/doc/Config/grpdeliverycontrol.html#sourcenotificationfunctionreceiver">source_notification_function (receiver)</a> callback. That callback can return this object as the source-specific clientd. See <a class="elRef" doxygen="/Users/sford/Documents/GitHub/tmon/html/manual.tag:../manual/" href="../manual/userguide.html#clientdatapointers">Client Data Pointers</a>. Application must not write to fields in this structure. </p>
+<p>Methods: <a class="el" href="tmon_8h.html#a1bcd235ecc04d3dbf8c61713ad1a3ac7" title="Create a tmon receiver connection monitoring object to monitor a delivery controller....">tmon_conn_create()</a>, <a class="el" href="tmon_8h.html#a90c529737495dadd30030db2f32f71ab" title="Delete a tmon connection monitoring object. This should be called inside the source_notification_func...">tmon_conn_delete()</a>, <a class="el" href="tmon_8h.html#afbb5b7f5b09fd4e961c1b4944d11ea7f" title="Record a receiver event on a connection. This should be called inside your receiver callback.">tmon_conn_rcv_event()</a>. </p>
+
+</div>
+</div>
+<a id="abf674a8c3a416e5135f9b343b0886c8e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abf674a8c3a416e5135f9b343b0886c8e">&#9670;&nbsp;</a></span>tmon_ctx_t</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef struct <a class="el" href="structtmon__ctx__s.html">tmon_ctx_s</a>  <a class="el" href="tmon_8h.html#abf674a8c3a416e5135f9b343b0886c8e">tmon_ctx_t</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>tmon context monitoring object. Created by <a class="el" href="tmon_8h.html#aed61a720a2e795ea899af4642edad0a6" title="Create a tmon context monitoring object, associated with an application UM context....">tmon_ctx_create()</a>. Create one of these per application context immediately <em>after</em> creating each context. Application must not write to fields in this structure. </p>
+<p>Methods: <a class="el" href="tmon_8h.html#aed61a720a2e795ea899af4642edad0a6" title="Create a tmon context monitoring object, associated with an application UM context....">tmon_ctx_create()</a>, <a class="el" href="tmon_8h.html#ab40619ac905b3b0f3f9c06d399e020ee" title="Delete a tmon_ctx object. Do not delete this object until after all child objects (tmon_rcv_s,...">tmon_ctx_delete()</a>. </p>
 
 </div>
 </div>
@@ -219,8 +224,8 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>tmon receiver monitoring object. Created by <a class="el" href="tmon_8h.html#a5d4c252eeb8578f396861832a29d302a" title="Create a tmon receiver object to monitor an application receiver. Create one per application receiver...">tmon_rcv_create()</a>. Create one per application receiver immediately <em>before</em> creating each receiver. Application must not write to fields in this structure. </p>
-<p>Methods: <a class="el" href="tmon_8h.html#a5d4c252eeb8578f396861832a29d302a" title="Create a tmon receiver object to monitor an application receiver. Create one per application receiver...">tmon_rcv_create()</a>, <a class="el" href="tmon_8h.html#aa0afa8049a793ad1a3560e20c7670c99" title="Delete a tmon receiver object. Do not delete this object until after all child objects (tmon_conn_s) ...">tmon_rcv_delete()</a>. </p>
+<p>tmon receiver or wildcard receiver monitoring object. Created by <a class="el" href="tmon_8h.html#a5602a423bea1a50ae9890a6cd5090307" title="Create a tmon receiver or wildcard receiver monitoring object, associated with an application UM rece...">tmon_rcv_create()</a>. Create one per application receiver immediately <em>before</em> creating each receiver. Application must not write to fields in this structure. </p>
+<p>Methods: <a class="el" href="tmon_8h.html#a5602a423bea1a50ae9890a6cd5090307" title="Create a tmon receiver or wildcard receiver monitoring object, associated with an application UM rece...">tmon_rcv_create()</a>, <a class="el" href="tmon_8h.html#aa0afa8049a793ad1a3560e20c7670c99" title="Delete a tmon receiver monitoring object. Do not delete this object until after all child objects (tm...">tmon_rcv_delete()</a>. </p>
 
 </div>
 </div>
@@ -236,42 +241,8 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>tmon source monitoring object. Created by <a class="el" href="tmon_8h.html#abb03db684e0061fd19cd7ba8d7fd8540" title="Create a tmon source object to monitor an application source. Create one per application source immed...">tmon_src_create()</a>. Create one per application source immediately <em>before</em> creating each source. Application must not write to fields in this structure. </p>
-<p>Methods: <a class="el" href="tmon_8h.html#abb03db684e0061fd19cd7ba8d7fd8540" title="Create a tmon source object to monitor an application source. Create one per application source immed...">tmon_src_create()</a>, <a class="el" href="tmon_8h.html#aa3d416665f06258cd9c0c759a2a8b271" title="Delete a tmon source object.">tmon_src_delete()</a>. </p>
-
-</div>
-</div>
-<a id="a6ebbbb5c33a5781b9f676c59315ef45e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6ebbbb5c33a5781b9f676c59315ef45e">&#9670;&nbsp;</a></span>tmon_t</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">typedef struct <a class="el" href="structtmon__s.html">tmon_s</a>  <a class="el" href="tmon_8h.html#a6ebbbb5c33a5781b9f676c59315ef45e">tmon_t</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>top-level tmon object. Created by <a class="el" href="tmon_8h.html#a752435d00883f7ac86a972eaa22ef484" title="Create a tmon object to monitor application topics. Create one of these per application context immed...">tmon_create()</a>. Create one of these per application context immediately <em>after</em> creating each context. Application must not write to fields in this structure. </p>
-<p>Methods: <a class="el" href="tmon_8h.html#a752435d00883f7ac86a972eaa22ef484" title="Create a tmon object to monitor application topics. Create one of these per application context immed...">tmon_create()</a>, <a class="el" href="tmon_8h.html#aa0afa8049a793ad1a3560e20c7670c99" title="Delete a tmon receiver object. Do not delete this object until after all child objects (tmon_conn_s) ...">tmon_rcv_delete()</a>. </p>
-
-</div>
-</div>
-<a id="ad3839fbb9d4b43a154ffa8acdaea2594"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad3839fbb9d4b43a154ffa8acdaea2594">&#9670;&nbsp;</a></span>tmon_wrcv_t</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">typedef struct <a class="el" href="structtmon__wrcv__s.html">tmon_wrcv_s</a>  <a class="el" href="tmon_8h.html#ad3839fbb9d4b43a154ffa8acdaea2594">tmon_wrcv_t</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>tmon wildcard receiver monitoring object. Created by <a class="el" href="tmon_8h.html#a0ffb669261dfaf6f4cea94ed76ca6f9d" title="Create a tmon wildcard receiver object to monitor an application receiver. Create one per application...">tmon_wrcv_create()</a>. Create one per application wildcard receiver immediately <em>before</em> creating each receiver. Application must not write to fields in this structure. </p>
-<p>Methods: <a class="el" href="tmon_8h.html#a0ffb669261dfaf6f4cea94ed76ca6f9d" title="Create a tmon wildcard receiver object to monitor an application receiver. Create one per application...">tmon_wrcv_create()</a>, <a class="el" href="tmon_8h.html#a2fb703f1481dd4e872079e132d7a09b9" title="Delete a tmon wildcard receiver object. Do not delete this object until after all child objects (tmon...">tmon_wrcv_delete()</a>. </p>
+<p>tmon source monitoring object. Created by <a class="el" href="tmon_8h.html#a7a05fb72b16dad515a5ebf0efd295edf" title="Create a tmon source monitoring object, associated with an application UM source. Create one per appl...">tmon_src_create()</a>. Create one per application source immediately <em>before</em> creating each source. Application must not write to fields in this structure. </p>
+<p>Methods: <a class="el" href="tmon_8h.html#a7a05fb72b16dad515a5ebf0efd295edf" title="Create a tmon source monitoring object, associated with an application UM source. Create one per appl...">tmon_src_create()</a>, <a class="el" href="tmon_8h.html#aa3d416665f06258cd9c0c759a2a8b271" title="Delete a tmon source monitoring object.">tmon_src_delete()</a>. </p>
 
 </div>
 </div>
@@ -302,15 +273,15 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Create a tmon receiver connection object to monitor a unique connection between this application's receiver and a publisher's source. This should be called inside the <a href="https://ultramessaging.github.io/currdoc/doc/Config/grpdeliverycontrol.html#sourcenotificationfunctionreceiver">source_notification_function (receiver)</a> "create" callback. That callback can return this object as the per-source client data. See <a class="elRef" doxygen="/Users/sford/Documents/GitHub/tmon/html/manual.tag:../manual/" href="../manual/overview.html#clientdatapointers">Client Data Pointers</a>. </p>
+<p>Create a tmon receiver connection monitoring object to monitor a <a href="https://ultramessaging.github.io/currdoc/doc/Design/architecture.html#deliverycontroller">delivery controller</a>. A delivery controller can be thought of as "connection" between a source to a topic and a receiver of that same topic. connection between this application's receiver and a publisher's source. This should be called inside the <a href="https://ultramessaging.github.io/currdoc/doc/Config/grpdeliverycontrol.html#sourcenotificationfunctionreceiver">source_notification_function (receiver)</a> "create" callback. That callback can return this object as the per-source client data. See <a class="elRef" doxygen="/Users/sford/Documents/GitHub/tmon/html/manual.tag:../manual/" href="../manual/userguide.html#clientdatapointers">Client Data Pointers</a>. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">tmon_rcv</td><td>This must be the tmon object associated with the same application context as the application source being created. </td></tr>
+    <tr><td class="paramname">tmon_rcv</td><td>tmon receiver monitoring object. This must be the tmon object associated with the same application context as the application source being created. </td></tr>
     <tr><td class="paramname">source_str</td><td>source string for this connection, including Topic Index. </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>connection monitor object. This should be returned as the per-source client data </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>tmon connection monitoring object. This should be returned as the per-source client data </dd></dl>
 
 </div>
 </div>
@@ -330,7 +301,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Delete a tmon connection object. This should be called inside the <a href="https://ultramessaging.github.io/currdoc/doc/Config/grpdeliverycontrol.html#sourcenotificationfunctionreceiver">source_notification_function (receiver)</a> "delete" callback. </p>
+<p>Delete a tmon connection monitoring object. This should be called inside the <a href="https://ultramessaging.github.io/currdoc/doc/Config/grpdeliverycontrol.html#sourcenotificationfunctionreceiver">source_notification_function (receiver)</a> "delete" callback. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">tmon_conn</td><td>tmon connection object. </td></tr>
@@ -370,37 +341,10 @@ Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">msg</td><td>UM message object passed to the receiver callback. </td></tr>
-    <tr><td class="paramname">tmon_conn</td><td>connection object. This should be available via the per-source client data in the "msg" structure. See <a class="elRef" doxygen="/Users/sford/Documents/GitHub/tmon/html/manual.tag:../manual/" href="../manual/overview.html#clientdatapointers">Client Data Pointers</a>. </td></tr>
+    <tr><td class="paramname">tmon_conn</td><td>connection object. This should be available via the per-source client data in the "msg" structure. See <a class="elRef" doxygen="/Users/sford/Documents/GitHub/tmon/html/manual.tag:../manual/" href="../manual/userguide.html#clientdatapointers">Client Data Pointers</a>. </td></tr>
   </table>
   </dd>
 </dl>
-
-</div>
-</div>
-<a id="a752435d00883f7ac86a972eaa22ef484"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a752435d00883f7ac86a972eaa22ef484">&#9670;&nbsp;</a></span>tmon_create()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="tmon_8h.html#a6ebbbb5c33a5781b9f676c59315ef45e">tmon_t</a>* tmon_create </td>
-          <td>(</td>
-          <td class="paramtype">lbm_context_t *&#160;</td>
-          <td class="paramname"><em>app_ctx</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Create a tmon object to monitor application topics. Create one of these per application context immediately <em>after</em> creating each context. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">app_ctx</td><td>Application context. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>Topic monitor object. </dd></dl>
 
 </div>
 </div>
@@ -573,26 +517,53 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a3923e731235121ee1a88a4ee1c66781e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3923e731235121ee1a88a4ee1c66781e">&#9670;&nbsp;</a></span>tmon_delete()</h2>
+<a id="aed61a720a2e795ea899af4642edad0a6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aed61a720a2e795ea899af4642edad0a6">&#9670;&nbsp;</a></span>tmon_ctx_create()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void tmon_delete </td>
+          <td class="memname"><a class="el" href="tmon_8h.html#abf674a8c3a416e5135f9b343b0886c8e">tmon_ctx_t</a>* tmon_ctx_create </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="tmon_8h.html#a6ebbbb5c33a5781b9f676c59315ef45e">tmon_t</a> *&#160;</td>
-          <td class="paramname"><em>tmon</em></td><td>)</td>
+          <td class="paramtype">lbm_context_t *&#160;</td>
+          <td class="paramname"><em>app_ctx</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Delete a tmon object. Do not delete this object until after all child objects (<a class="el" href="structtmon__rcv__s.html">tmon_rcv_s</a>, <a class="el" href="structtmon__src__s.html">tmon_src_s</a>) are deleted. </p>
+<p>Create a tmon context monitoring object, associated with an application UM context. Create one of these per application context immediately <em>after</em> creating each context. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">tmon</td><td>Topic monitor object. </td></tr>
+    <tr><td class="paramname">app_ctx</td><td>Application context. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>tmon context monitoring object. </dd></dl>
+
+</div>
+</div>
+<a id="ab40619ac905b3b0f3f9c06d399e020ee"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab40619ac905b3b0f3f9c06d399e020ee">&#9670;&nbsp;</a></span>tmon_ctx_delete()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tmon_ctx_delete </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="tmon_8h.html#abf674a8c3a416e5135f9b343b0886c8e">tmon_ctx_t</a> *&#160;</td>
+          <td class="paramname"><em>tmon_ctx</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Delete a tmon_ctx object. Do not delete this object until after all child objects (<a class="el" href="structtmon__rcv__s.html">tmon_rcv_s</a>, <a class="el" href="structtmon__src__s.html">tmon_src_s</a>) are deleted. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">tmon_ctx</td><td>tmon context monitoring object. </td></tr>
   </table>
   </dd>
 </dl>
@@ -670,8 +641,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a5d4c252eeb8578f396861832a29d302a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5d4c252eeb8578f396861832a29d302a">&#9670;&nbsp;</a></span>tmon_rcv_create()</h2>
+<a id="a5602a423bea1a50ae9890a6cd5090307"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5602a423bea1a50ae9890a6cd5090307">&#9670;&nbsp;</a></span>tmon_rcv_create()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -679,8 +650,14 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname"><a class="el" href="tmon_8h.html#a3fd849f02596f1e422356f063b57228c">tmon_rcv_t</a>* tmon_rcv_create </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="tmon_8h.html#a6ebbbb5c33a5781b9f676c59315ef45e">tmon_t</a> *&#160;</td>
-          <td class="paramname"><em>tmon</em>, </td>
+          <td class="paramtype"><a class="el" href="tmon_8h.html#abf674a8c3a416e5135f9b343b0886c8e">tmon_ctx_t</a> *&#160;</td>
+          <td class="paramname"><em>tmon_ctx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>rcv_type</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -696,15 +673,16 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Create a tmon receiver object to monitor an application receiver. Create one per application receiver immediately <em>before</em> creating each receiver. </p>
+<p>Create a tmon receiver or wildcard receiver monitoring object, associated with an application UM receiver. Create one per application receiver immediately <em>before</em> creating each receiver. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">tmon</td><td>Parent topic monitor object. This must be the tmon object associated with the same application context as the application receiver being created. </td></tr>
+    <tr><td class="paramname">tmon_ctx</td><td>Parent tmon context monitoring object. This must be the tmon object associated with the same application context as the application receiver being created. </td></tr>
+    <tr><td class="paramname">rcv_type</td><td>Type of UM receiver (1=topic, 2=wildcard). </td></tr>
     <tr><td class="paramname">app_topic_str</td><td>Topic string assoicated with the application receiver being created. </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>receiver monitor object. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>tmon receiver monitoring object. </dd></dl>
 
 </div>
 </div>
@@ -724,18 +702,18 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Delete a tmon receiver object. Do not delete this object until after all child objects (<a class="el" href="structtmon__conn__s.html">tmon_conn_s</a>) are deleted. </p>
+<p>Delete a tmon receiver monitoring object. Do not delete this object until after all child objects (<a class="el" href="structtmon__conn__s.html">tmon_conn_s</a>) are deleted. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">tmon_rcv</td><td>topic receiver monitor object. </td></tr>
+    <tr><td class="paramname">tmon_rcv</td><td>tmon receiver monitoring object. </td></tr>
   </table>
   </dd>
 </dl>
 
 </div>
 </div>
-<a id="abb03db684e0061fd19cd7ba8d7fd8540"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abb03db684e0061fd19cd7ba8d7fd8540">&#9670;&nbsp;</a></span>tmon_src_create()</h2>
+<a id="a7a05fb72b16dad515a5ebf0efd295edf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7a05fb72b16dad515a5ebf0efd295edf">&#9670;&nbsp;</a></span>tmon_src_create()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -743,8 +721,8 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname"><a class="el" href="tmon_8h.html#ab71817970e75cdd4fa5bc6ab9a18992f">tmon_src_t</a>* tmon_src_create </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="tmon_8h.html#a6ebbbb5c33a5781b9f676c59315ef45e">tmon_t</a> *&#160;</td>
-          <td class="paramname"><em>tmon</em>, </td>
+          <td class="paramtype"><a class="el" href="tmon_8h.html#abf674a8c3a416e5135f9b343b0886c8e">tmon_ctx_t</a> *&#160;</td>
+          <td class="paramname"><em>tmon_ctx</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -760,15 +738,15 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Create a tmon source object to monitor an application source. Create one per application source immediately <em>before</em> creating each source. </p>
+<p>Create a tmon source monitoring object, associated with an application UM source. Create one per application source immediately <em>before</em> creating each source. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">tmon</td><td>Parent topic monitor object. This must be the tmon object associated with the same application context as the application source being created. </td></tr>
+    <tr><td class="paramname">tmon_ctx</td><td>Parent context monitoring object. This must be the tmon object associated with the same application context as the application source being created. </td></tr>
     <tr><td class="paramname">app_topic_str</td><td>Topic string assoicated with the application source being created. </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>source monitor object. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>tmon source monitoring object. </dd></dl>
 
 </div>
 </div>
@@ -788,10 +766,10 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Delete a tmon source object. </p>
+<p>Delete a tmon source monitoring object. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">tmon_src</td><td>Topic source monitor object. </td></tr>
+    <tr><td class="paramname">tmon_src</td><td>tmon source monitoring object. </td></tr>
   </table>
   </dd>
 </dl>
@@ -819,70 +797,6 @@ Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">usec</td><td>number of microseconds to sleep. </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="a0ffb669261dfaf6f4cea94ed76ca6f9d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0ffb669261dfaf6f4cea94ed76ca6f9d">&#9670;&nbsp;</a></span>tmon_wrcv_create()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="tmon_8h.html#ad3839fbb9d4b43a154ffa8acdaea2594">tmon_wrcv_t</a>* tmon_wrcv_create </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="tmon_8h.html#a6ebbbb5c33a5781b9f676c59315ef45e">tmon_t</a> *&#160;</td>
-          <td class="paramname"><em>tmon</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">char *&#160;</td>
-          <td class="paramname"><em>app_topic_str</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Create a tmon wildcard receiver object to monitor an application receiver. Create one per application wildcard receiver immediately <em>before</em> creating each receiver. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">tmon</td><td>Parent topic monitor object. This must be the tmon object associated with the same application context as the application receiver being created. </td></tr>
-    <tr><td class="paramname">app_topic_str</td><td>Topic string assoicated with the application receiver being created. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>wildcard receiver monitor object. </dd></dl>
-
-</div>
-</div>
-<a id="a2fb703f1481dd4e872079e132d7a09b9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2fb703f1481dd4e872079e132d7a09b9">&#9670;&nbsp;</a></span>tmon_wrcv_delete()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void tmon_wrcv_delete </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="tmon_8h.html#ad3839fbb9d4b43a154ffa8acdaea2594">tmon_wrcv_t</a> *&#160;</td>
-          <td class="paramname"><em>tmon_wrcv</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Delete a tmon wildcard receiver object. Do not delete this object until after all child objects (<a class="el" href="structtmon__conn__s.html">tmon_conn_s</a>) are deleted. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">tmon_wrcv</td><td>topic receiver monitor object. </td></tr>
   </table>
   </dd>
 </dl>

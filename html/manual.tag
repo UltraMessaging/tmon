@@ -6,10 +6,22 @@
     <filename>overview</filename>
     <docanchor file="overview" title="Supplied as Source Code">suppliedassourcecode</docanchor>
     <docanchor file="overview" title="Features">features</docanchor>
-    <docanchor file="overview" title="Client Data Pointers">clientdatapointers</docanchor>
-    <docanchor file="overview" title="Example Monitoring Tool">examplemonitoringtool</docanchor>
-    <docanchor file="overview" title="Customization">customization</docanchor>
-    <docanchor file="overview" title="Limitations and Opportunities">limitationsandopportunities</docanchor>
+  </compound>
+  <compound kind="page">
+    <name>userguide</name>
+    <title>User Guide</title>
+    <filename>userguide</filename>
+    <docanchor file="userguide" title="User Application APIs">userapplicationapis</docanchor>
+    <docanchor file="userguide" title="Client Data Pointers">clientdatapointers</docanchor>
+    <docanchor file="userguide" title="Monitoring Tool APIs">monitoringtoolapis</docanchor>
+    <docanchor file="userguide" title="Example Monitoring Tool">examplemonitoringtool</docanchor>
+    <docanchor file="userguide" title="Limitations and Opportunities">limitationsandopportunities</docanchor>
+  </compound>
+  <compound kind="page">
+    <name>customization</name>
+    <title>Customization</title>
+    <filename>customization</filename>
+    <docanchor file="customization" title="Error Handling">errorhandling</docanchor>
   </compound>
   <compound kind="page">
     <name>wireprotocol</name>

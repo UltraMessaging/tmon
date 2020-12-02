@@ -68,10 +68,19 @@ detect connectivity problems such as deafness or loss.
 topics.
 </ul>
 
-The primary focus of tmon is on applications.
+The primary focus of the tmon package is on applications.
 The application calls tmon APIs to inform the monitoring tool of
 significant events, like the creation of sources and receivers,
 as well as important events in a receiver's life cycle.
+
+Tmon's event-driven approach is different from the standard
+UM automatic monitoring approach where satistical data
+is accumulated and reported periodically.
+Tmon reports individual events on timeframes driven
+by the occurrence of those events.
+The intent is that both forms of monitoring data are
+valuable to the successful operation and
+troubleshooting of a UM network.
 
 The expectation is that users will write their own monitoring tools
 that receives these events,
@@ -79,18 +88,58 @@ as well as UM's traditional automatic monitoring data,
 to track the health of their sources and receivers.
 This package does not contain sophisticated monitoring and tracking
 functionality.
-Only a simple example is provided that just prints the events and
-monitoring data.
+Only a simple example tool is provided that prints the tmon events
+and traditional UM monitoring data.
 It is the user's responsibility to write the code required to draw
 conclusions from the data.
 
+\page userguide User Guide
 
-\n \section clientdatapointers Client Data Pointers
+There are two sets of APIs in the tmon software:
+user application APIs and monitoring tool APIs.
+The user application APIs let the application
+inform tmon when significant events happen.
+The monitoring tool APIs that assist in the
+reception and parsing of the tmon events
+sent by the application.
+
+\n \section userapplicationapis User Application APIs
+
+There are four types of tmon objects,
+each one of which monitors a corresponding type
+of UM object:
+<ul>
+<li>\ref tmon_ctx_s "tmon_ctx_t" - object associated with
+an application UM context object.
+Typically an application has a single UM context,
+but can sometimes have more than one.
+Applications also create the same number of
+tmon_t objects.
+<li>\ref tmon_src_s "tmon_src_s" - object associated with
+an application UM source object.
+Applications that create source objects under a
+context object,
+also create the same number of tmon_src_t
+objects under the corresponding tmon_t object.
+<li>\ref tmon_rcv_s "tmon_rcv_t" - object associated with
+an application UM receiver or wildcard receiver object.
+Applications that create receiver objects under a
+context object,
+also create the same number of tmon_rcv_t
+objects under the corresponding tmon_t object.
+<li>/ref tmon_conn_s "tmon_conn_t" - object associated with a
+source-to-receiver "connection".
+</ul>
+
+\n \subsection clientdatapointers Client Data Pointers
 
 tbd
 
+\n \section monitoringtoolapis Monitoring Tool APIs
 
-\n \section examplemonitoringtool Example Monitoring Tool
+tbd
+
+\n \subsection examplemonitoringtool Example Monitoring Tool
 
 The supplied example monitoring tool, "lbmtmon.c", is derived from the
 standard UM example monitoring tool,
@@ -98,11 +147,8 @@ standard UM example monitoring tool,
 (one of the
 <a href="https://ultramessaging.github.io/currdoc/doc/example/index.html">C example apps</a>).
 
-The "tmon.c" module is primarily focused on the user's applications,
-but does contain a few APIs intended for use by the monitoring tool.
-The purpose is to be able to conform to the standard UM monitoring
-software "transport options" string.
-
+While the "tmon.c" module is primarily focused on the user's applications,
+it also contains a few APIs intended for use by the monitoring tool.
 See tmon_create_context() and tmon_create_monrcv().
 
 
@@ -155,7 +201,7 @@ connection.
 As mentioned in the \ref overview, Informatica expects that users
 will modify the tmon package for their own needs.
 
-\n \section \errorhandling Error Handling
+\n \section errorhandling Error Handling
 
 Every major software project has its own error handling conventions.
 The Ultra Messaging convention,

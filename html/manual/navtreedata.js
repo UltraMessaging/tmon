@@ -26,11 +26,19 @@ var NAVTREE =
   [ "tmon: UM Topic Monitor", "index.html", [
     [ "Overview", "overview.html", [
       [ "Supplied as Source Code", "overview.html#suppliedassourcecode", null ],
-      [ "Features", "overview.html#features", null ],
-      [ "Client Data Pointers", "overview.html#clientdatapointers", null ],
-      [ "Example Monitoring Tool", "overview.html#examplemonitoringtool", null ],
-      [ "Customization", "overview.html#customization", null ],
-      [ "Limitations and Opportunities", "overview.html#limitationsandopportunities", null ]
+      [ "Features", "overview.html#features", null ]
+    ] ],
+    [ "User Guide", "userguide.html", [
+      [ "User Application APIs", "userguide.html#userapplicationapis", [
+        [ "Client Data Pointers", "userguide.html#clientdatapointers", null ]
+      ] ],
+      [ "Monitoring Tool APIs", "userguide.html#monitoringtoolapis", [
+        [ "Example Monitoring Tool", "userguide.html#examplemonitoringtool", null ]
+      ] ],
+      [ "Limitations and Opportunities", "userguide.html#limitationsandopportunities", null ]
+    ] ],
+    [ "Customization", "customization.html", [
+      [ "Error Handling", "customization.html#errorhandling", null ]
     ] ],
     [ "Wire Protocol", "wireprotocol.html", null ],
     [ "My Workflow", "myworkflow.html", null ],
@@ -43,7 +51,7 @@ var NAVTREE =
 
 var NAVTREEINDEX =
 [
-"disclaimers.html"
+"customization.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

@@ -70,17 +70,19 @@ $(document).ready(function(){initNavTree('structtmon__rcv__s.html','');});
 </div><!--header-->
 <div class="contents">
 
-<p>tmon receiver monitoring object. Created by <a class="el" href="tmon_8h.html#a5d4c252eeb8578f396861832a29d302a" title="Create a tmon receiver object to monitor an application receiver. Create one per application receiver...">tmon_rcv_create()</a>. Create one per application receiver immediately <em>before</em> creating each receiver. Application must not write to fields in this structure.  
+<p>tmon receiver or wildcard receiver monitoring object. Created by <a class="el" href="tmon_8h.html#a5602a423bea1a50ae9890a6cd5090307" title="Create a tmon receiver or wildcard receiver monitoring object, associated with an application UM rece...">tmon_rcv_create()</a>. Create one per application receiver immediately <em>before</em> creating each receiver. Application must not write to fields in this structure.  
  <a href="structtmon__rcv__s.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="tmon_8h_source.html">tmon.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Data Fields</h2></td></tr>
-<tr class="memitem:af377eb379ab3b40cef1268cd6e41662f"><td class="memItemLeft" align="right" valign="top"><a id="af377eb379ab3b40cef1268cd6e41662f"></a>
-<a class="el" href="tmon_8h.html#a6ebbbb5c33a5781b9f676c59315ef45e">tmon_t</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtmon__rcv__s.html#af377eb379ab3b40cef1268cd6e41662f">tmon</a></td></tr>
-<tr class="memdesc:af377eb379ab3b40cef1268cd6e41662f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parent tmon object. <br /></td></tr>
-<tr class="separator:af377eb379ab3b40cef1268cd6e41662f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8e72d87430e972b564bf64c1b15581d8"><td class="memItemLeft" align="right" valign="top"><a id="a8e72d87430e972b564bf64c1b15581d8"></a>
+<a class="el" href="tmon_8h.html#abf674a8c3a416e5135f9b343b0886c8e">tmon_ctx_t</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtmon__rcv__s.html#a8e72d87430e972b564bf64c1b15581d8">tmon_ctx</a></td></tr>
+<tr class="memdesc:a8e72d87430e972b564bf64c1b15581d8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parent tmon context monitoring object. <br /></td></tr>
+<tr class="separator:a8e72d87430e972b564bf64c1b15581d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7feaa3f22dcf7bacb226d02a88a22ee0"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtmon__rcv__s.html#a7feaa3f22dcf7bacb226d02a88a22ee0">rcv_type</a></td></tr>
+<tr class="separator:a7feaa3f22dcf7bacb226d02a88a22ee0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a063382e63c718dfda9fbb39b09e61a4a"><td class="memItemLeft" align="right" valign="top">char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtmon__rcv__s.html#a063382e63c718dfda9fbb39b09e61a4a">app_topic_str</a> [<a class="el" href="tmon_8h.html#a7ca2d2973383b11c628a04169a3d1667">TMON_STR_BUF_LENS</a>]</td></tr>
 <tr class="separator:a063382e63c718dfda9fbb39b09e61a4a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab08e5027f00b5ed028b2b87a7ac02797"><td class="memItemLeft" align="right" valign="top">struct timeval&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtmon__rcv__s.html#ab08e5027f00b5ed028b2b87a7ac02797">create_time</a></td></tr>
@@ -89,8 +91,8 @@ Data Fields</h2></td></tr>
 <tr class="separator:a97b46e77cfe9bb24cb8daae511b2af10"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>tmon receiver monitoring object. Created by <a class="el" href="tmon_8h.html#a5d4c252eeb8578f396861832a29d302a" title="Create a tmon receiver object to monitor an application receiver. Create one per application receiver...">tmon_rcv_create()</a>. Create one per application receiver immediately <em>before</em> creating each receiver. Application must not write to fields in this structure. </p>
-<p>Methods: <a class="el" href="tmon_8h.html#a5d4c252eeb8578f396861832a29d302a" title="Create a tmon receiver object to monitor an application receiver. Create one per application receiver...">tmon_rcv_create()</a>, <a class="el" href="tmon_8h.html#aa0afa8049a793ad1a3560e20c7670c99" title="Delete a tmon receiver object. Do not delete this object until after all child objects (tmon_conn_s) ...">tmon_rcv_delete()</a>. </p>
+<div class="textblock"><p>tmon receiver or wildcard receiver monitoring object. Created by <a class="el" href="tmon_8h.html#a5602a423bea1a50ae9890a6cd5090307" title="Create a tmon receiver or wildcard receiver monitoring object, associated with an application UM rece...">tmon_rcv_create()</a>. Create one per application receiver immediately <em>before</em> creating each receiver. Application must not write to fields in this structure. </p>
+<p>Methods: <a class="el" href="tmon_8h.html#a5602a423bea1a50ae9890a6cd5090307" title="Create a tmon receiver or wildcard receiver monitoring object, associated with an application UM rece...">tmon_rcv_create()</a>, <a class="el" href="tmon_8h.html#aa0afa8049a793ad1a3560e20c7670c99" title="Delete a tmon receiver monitoring object. Do not delete this object until after all child objects (tm...">tmon_rcv_delete()</a>. </p>
 </div><h2 class="groupheader">Field Documentation</h2>
 <a id="a063382e63c718dfda9fbb39b09e61a4a"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a063382e63c718dfda9fbb39b09e61a4a">&#9670;&nbsp;</a></span>app_topic_str</h2>
@@ -103,7 +105,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Topic name for application receiver. </p>
+<p>Topic name or pattern for application receiver. </p>
 
 </div>
 </div>
@@ -134,6 +136,21 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Work buffer for building tmon messages. This is retained to minimize repeated malloc/free. </p>
+
+</div>
+</div>
+<a id="a7feaa3f22dcf7bacb226d02a88a22ee0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7feaa3f22dcf7bacb226d02a88a22ee0">&#9670;&nbsp;</a></span>rcv_type</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int tmon_rcv_s::rcv_type</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Receiver type (1=topic, 2=wildcard). </p>
 
 </div>
 </div>

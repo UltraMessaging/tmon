@@ -602,6 +602,7 @@ void tmon_message_print(lbm_msg_t *msg)
 			unsigned long long tmon_rcv;
 			long tv_sec;
 			long tv_usec;
+			int rcv_type;
 			char topic[TMON_STR_BUF_LENS];
 			int null_ofs = 0;
 			char asc_time[32];
@@ -614,12 +615,13 @@ void tmon_message_print(lbm_msg_t *msg)
 				"%lu,"   /* tv_sec */
 				"%lu,"   /* tv_usec */
 				"%llx,"  /* tmon_rcv */
+				"%d,"    /* rcv_type */
 				"%" STR(TMON_STR_BUF_LENS) "[^\n]" /* topic */
 				"%n",    /* null_ofs */
 				app_id, ip, &pid, &ctx, &tv_sec, &tv_usec, &tmon_rcv,
-				topic, &null_ofs);
+				&rcv_type, topic, &null_ofs);
 			/* See http://blog.geeky-boy.com/2018/09/safe-sscanf-usage.html */
-			if (scanf_rtn != 8 || null_ofs == 0 || msg_c_str[null_ofs] != '\0') {
+			if (scanf_rtn != 9 || null_ofs == 0 || msg_c_str[null_ofs] != '\0') {
 				fprintf(stderr, "scanf_rtn=%d, null_ofs=%d, msg='%s'\n", scanf_rtn, null_ofs, msg_c_str); fflush(stderr);
 			}
 			else {
@@ -630,10 +632,11 @@ void tmon_message_print(lbm_msg_t *msg)
 						"  ctx=%llx\n"
 						"  tmon_rcv=%llx\n"
 						"  time=%s and %ld usec\n"
+						"  rcv_type=%d\n"
 						"  topic=%s\n",
 					app_id, ip, pid, ctx, tmon_rcv,
 					tmon_ctime(asc_time, sizeof(asc_time), tv_sec), tv_usec,
-					topic);
+					rcv_type, topic);
 			}
 		}
 		break;

@@ -3,7 +3,7 @@
 
 . lbm.sh
 
-rm tmon.o tmon_example lbmtmon
+rm -f tmon.o tmon_example lbmtmon
 
 gcc -g -Wall -I$LBM_PLATFORM/include -I../c -c ../c/tmon.c
 if [ $? -ne 0 ]; then exit 1; fi
