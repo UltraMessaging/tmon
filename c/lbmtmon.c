@@ -315,7 +315,6 @@ void rcv_statistics_cb(const void * AttributeBlock, const lbm_rcv_transport_stat
 			printf("\tLBT-SMX datagram bytes received                           : %lu\n", Statistics->transport.lbtsmx.bytes_rcved);
 			printf("\tLBT-SMX LBM messages received                             : %lu\n", Statistics->transport.lbtsmx.lbm_msgs_rcved);
 			printf("\tLBT-SMX LBM messages received with uninteresting topic    : %lu\n", Statistics->transport.lbtsmx.lbm_msgs_no_topic_rcved);
-			printf("\tLBT-SMX LBM requests received                             : %lu\n", Statistics->transport.lbtsmx.lbm_reqs_rcved);
 			break;
 
 		case LBM_TRANSPORT_STAT_LBTRDMA:
