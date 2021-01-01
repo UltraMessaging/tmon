@@ -12,4 +12,5 @@ fi
 
 ROOT=`dirname $CURDIR`
 WORKSPACE=`basename $ROOT`
+export LABBOX_HOST=zeus.29west.com
 labbox backup_exclude/labbox/$WORKSPACE/$SUBDIR

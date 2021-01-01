@@ -1,7 +1,7 @@
 #!/bin/sh
 # bld.sh
 
-. lbm.sh
+. ./lbm.sh
 
 rm -f tmon.o tmon_example lbmtmon
 
@@ -14,6 +14,7 @@ if [ $? -ne 0 ]; then exit 1; fi
 gcc -g -I$LBM_PLATFORM/include -I../c -L$LBM_PLATFORM/lib -llbm -lm -o lbmtmon tmon.o ../c/lbmtmon.c
 if [ $? -ne 0 ]; then exit 1; fi
 
+rm -f *.cfg
 cp ../*.cfg .
 
 # Get 10.29.3 interface address
@@ -21,3 +22,5 @@ IP=`ifconfig | sed -n -e '/ 10\.[0-9]*\.[0-9]*\.[0-9]*/d; / 127\.0\.0\.1/d; s/.*
 echo "$IP" >ip.txt
 
 sed -i.bak -e "s/interface [0-9]*\.[0-9]*\.[0-9]*\.[0-9]*/interface $IP/;s/daemon [0-9]*\.[0-9]*\.[0-9]*\.[0-9]*/daemon $IP/; s/epoll/select/" *.cfg
+
+chmod -w *.cfg

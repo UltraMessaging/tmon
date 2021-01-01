@@ -8,7 +8,12 @@ x.*
 lbmtmon
 tmon_example
 mac/*.cfg
-mac/ip.txt
+mac/cs/Tmon
+lin/cs/Tmon
+win/cs/Tmon
+.DS_Store
+*.dSYM
+ip.txt
 
 *.d
 

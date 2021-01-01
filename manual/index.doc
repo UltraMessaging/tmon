@@ -239,18 +239,21 @@ Each message is an ASCII string (not null-terminated).
 The first character of a message indicates the type of message.
 
 <pre>
-S - src_create : S,app_id,IP,PID,ctx,tv_sec,tv_usec,tmon_src,topic
-s - src_delete : s,app_id,IP,PID,ctx,tv_sec,tv_usec,tmon_src
-R - rcv_create : R,app_id,IP,PID,ctx,tv_sec,tv_usec,tmon_rcv,topic
-r - rcv_delete : r,app_id,IP,PID,ctx,tv_sec,tv_usec,tmon_rcv
-W - wrcv_create: W,app_id,IP,PID,ctx,tv_sec,tv_usec,tmon_rcv,pattern
-w - wrcv_delete: w,app_id,IP,PID,ctx,tv_sec,tv_usec,tmon_rcv
-C - conn_create: C,app_id,IP,PID,ctx,tv_sec,tv_usec,tmon_rcv,conn,src_str
-c - conn_delete: c,app_id,IP,PID,ctx,tv_sec,tv_usec,conn,msg_count,unrec_count,burst_count
-B - BOS        : b,app_id,IP,PID,ctx,tv_sec,tv_usec,conn,topic
-E - EOS        : e,app_id,IP,PID,ctx,tv_sec,tv_usec,conn,msg_count,unrec_count,burst_count,topic
-A - Alarm      : A,app_id,IP,PID,ctx,tv_sec,tv_usec,err_str
-L - loss       : L,app_id,IP,PID,ctx,tv_sec,tv_usec,conn,msg_count,unrec_count,burst_count
+T - tmon_create: T,app_id,IP,PID,tmon_ctx,tv_sec,tv_usec,ctx_name
+t - tmon_delete: T,app_id,IP,PID,tmon_ctx,tv_sec,tv_usec
+R - rcv_create : R,app_id,IP,PID,tmon_ctx,tv_sec,tv_usec,tmon_rcv,topic_name
+r - rcv_delete : r,app_id,IP,PID,tmon_ctx,tv_sec,tv_usec,tmon_rcv
+W - wrcv_create: W,app_id,IP,PID,tmon_ctx,tv_sec,tv_usec,tmon_rcv,topic_pattern
+w - wrcv_delete: w,app_id,IP,PID,tmon_ctx,tv_sec,tv_usec,tmon_rcv
+S - src_create : S,app_id,IP,PID,tmon_ctx,tv_sec,tv_usec,tmon_src,topic_name
+s - src_delete : s,app_id,IP,PID,tmon_ctx,tv_sec,tv_usec,tmon_src
+C - conn_create: C,app_id,IP,PID,tmon_ctx,tv_sec,tv_usec,conn,tmon_rcv,src_str
+c - conn_delete: c,app_id,IP,PID,tmon_ctx,tv_sec,tv_usec,conn,msg_cnt,loss_cnt,burst_cnt,dgrams_lost
+B - BOS        : b,app_id,IP,PID,tmon_ctx,tv_sec,tv_usec,conn,topic_name
+E - EOS        : e,app_id,IP,PID,tmon_ctx,tv_sec,tv_usec,conn,msg_cnt,loss_cnt,burst_cnt,dgrams_lost,topic
+L - loss       : L,app_id,IP,PID,tmon_ctx,tv_sec,tv_usec,conn,sqn
+l - burst_loss : L,app_id,IP,PID,tmon_ctx,tv_sec,tv_usec,conn,sqn,burst_size
+A - Alarm      : A,app_id,IP,PID,tmon_ctx,tv_sec,tv_usec,err_str
 </pre>
 
 

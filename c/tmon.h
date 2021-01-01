@@ -49,6 +49,11 @@ extern "C" {
  */
 #define TMON_STR_BUF_LENS 512
 
+/*! \brief receiver type for regular (non-wildcard).
+ */
+#define TMON_RCV_TYPE_REGULAR 1
+#define TMON_RCV_TYPE_WILDCARD 2
+
 /*! \brief Simple, "easy" string object, used internally by tmon.
  * Not intended as a supported API.
  */
@@ -91,13 +96,20 @@ typedef struct tmon_ctx_s {
    *
    * Extracted from application context. */
   char config_file[TMON_STR_BUF_LENS];
-  /*! Monitoring topic, as supplied by the "tmontopic" setting within the
+  /*! Monitoring topic, as supplied by the "tmon_topic" setting within the
    * <a href="https://ultramessaging.github.io/currdoc/doc/Config/grpautomaticmonitoring.html#monitortransportoptscontext">monitor_transport_opts (context)</a>
    * configuration option.
    * This setting is optional and defaults to "/29west/tmon".
    *
    * Extracted from application context. */
   char topic_str[TMON_STR_BUF_LENS];
+  /*! Suppression time interval in seconds after reporting an
+   * unrecoverable loss or unrecoverable burst loss event before another
+   * report is allowed.
+   * Any loss events during the interval is counted in the stats,
+   * but does not generate a report to the monitoring tool.
+   * Defaults to 1 second. */
+  int tmon_loss_suppress;
   /*! UM context created for sending tmon messages. */
   lbm_context_t *ctx;
   /*! UM source created for sending tmon messages. */
@@ -181,12 +193,13 @@ typedef struct tmon_conn_s {
   struct timeval loss_time;
   /*! Total number of received data messages for this connection. */
   long msg_count;
-  /*! Total number of <a href="https://ultramessaging.github.io/currdoc/doc/API/lbm_8h.html#a88920e0a4188081f9a14fc8f76c18578">LBM_MSG_UNRECOVERABLE_LOSS</a>
-   * receiver events delivered for this connection. */
-  long unrec_count;
-  /*! Total number of <a href="https://ultramessaging.github.io/currdoc/doc/API/lbm_8h.html#a6629139aaf902976c8df9de3f37d10db">LBM_MSG_UNRECOVERABLE_LOSS_BURST</a>
-   * receiver events delivered for this connection. */
-  long burst_count;
+  /*! Sequence number of last successfully-received message.
+   * Used to calculate number of datagrams lost in a burst lost event. */
+  long last_sqn;
+  /*! Total number of loss events delivered for this connection. */
+  long loss_events;
+  /*! Total number of lost datagrams (fragments) for this connection. */
+  long dgrams_lost;
   /*! Work buffer for building tmon messages.
    * This is retained to minimize repeated malloc/free. */
   ezstr_t *mon_msg;
@@ -232,6 +245,11 @@ char *tmon_inet_ntop(lbm_uint_t addr, char *dst, size_t buf_len);
  */
 void tmon_usleep(int usec);
 
+
+void tmon_encode_str(char *dst, char *src);
+
+void tmon_decode_str(char *dst, char *src);
+
 /*! \brief Create a tmon context monitoring object,
  * associated with an application UM context.
  * Create one of these per application context immediately
@@ -259,7 +277,7 @@ void tmon_ctx_delete(tmon_ctx_t *tmon_ctx);
  * \param tmon_ctx Parent tmon context monitoring object.
  *   This must be the tmon object associated with the same application
  *   context as the application receiver being created.
- * \param rcv_type Type of UM receiver (1=topic, 2=wildcard).
+ * \param rcv_type Type of UM receiver: \ref TMON_RCV_TYPE_REGULAR, \ref TMON_RCV_TYPE_WILDCARD
  * \param app_topic_str Topic string assoicated with the application
  *   receiver being created.
  * \returns tmon receiver monitoring object.
@@ -334,10 +352,11 @@ void tmon_conn_delete(tmon_conn_t *tmon_conn);
  *   per-source client data in the "msg" structure.
  *   See \ref clientdatapointers.
  */
-void tmon_conn_rcv_event(lbm_msg_t *msg, tmon_conn_t *tmon_conn);
+void tmon_conn_rcv_event(tmon_conn_t *tmon_conn, lbm_msg_t *msg);
 
 /*! \brief Create a UM context based on a standard UM "transport options"
  * string.
+ * Called by monitoring tool.
  * The configuration file and topic string are extracted from the
  * transport options and returned to the caller, along with the UM context.
  * This information is subsequently passed to tmon_create_monrcv().
@@ -353,15 +372,15 @@ void tmon_conn_rcv_event(lbm_msg_t *msg, tmon_conn_t *tmon_conn);
  *   to the standard UM monitoring software.
  * \returns UM context.
  */
-lbm_context_t *tmon_create_context(char *topic_str, char *config_file, int buf_lens, char *transport_opts);
+lbm_context_t *tmon_create_monctx(char *topic_str, char *config_file, int *tmon_loss_suppress, int buf_lens, char *transport_opts);
 
 /*! \brief Create a UM receiver for the tmon data.
  * Delete this receiver with the standard UM
  * <a href="https://ultramessaging.github.io/currdoc/doc/API/lbm_8h.html#a8d5e8713f5ae776330b23a1e371f934d">lbm_rcv_delete()</a> API.
  *
- * \param ctx UM context returned by tmon_create_context().
- * \param topic_str UM topic string, returned by tmon_create_context().
- * \param config_file UM configuration file, returned by tmon_create_context().
+ * \param ctx UM context returned by tmon_create_monctx().
+ * \param topic_str UM topic string, returned by tmon_create_monctx().
+ * \param config_file UM configuration file, returned by tmon_create_monctx().
  * \param transport_opts User specified transport options which are passed
  *   to the standard UM monitoring software.
  * \param proc User's receiver event callback function.

@@ -17,7 +17,7 @@ WORKSPACE=`basename $ROOT`
 
 ILINE=""
 while [ "$ILINE" != "q" ]; do :
-  rsync -a --exclude "lin" --exclude "x" --exclude "*.o" --exclude "x.*" -zq orion.29west.com:backup_exclude/labbox/$WORKSPACE/$SUBDIR/ ./
+  rsync -a --exclude "lin" --exclude "x" --exclude "*.o" --exclude "x.*" -zq zeus.29west.com:backup_exclude/labbox/$WORKSPACE/$SUBDIR/ ./
 
   ./win/cp_files.sh
 

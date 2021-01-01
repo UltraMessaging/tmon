@@ -44,6 +44,13 @@
 	#include <signal.h>
 	#if defined(__TANDEM)
 		#include <strings.h>
+		#if defined(HAVE_TANDEM_SPT)
+			#include <spthread.h>
+		#else
+			#include <pthread.h>
+		#endif
+	#else
+		#include <pthread.h>
 	#endif
 #endif
 #include "replgetopt.h"
@@ -51,6 +58,21 @@
 #include <lbm/lbmmon.h>
 #include "tmon.h"
 #include "monmodopts.h"
+
+#if defined(_WIN32)
+typedef CRITICAL_SECTION mutex_t;
+#define MUTEX_INIT(m) InitializeCriticalSection(&m)
+#define MUTEX_LOCK(m) EnterCriticalSection(&m)
+#define MUTEX_UNLOCK(m) LeaveCriticalSection(&m)
+#define MUTEX_DELETE(m) DeleteCriticalSection(&m)
+#else
+typedef pthread_mutex_t mutex_t;
+#define MUTEX_INIT(m) pthread_mutex_init(&m,NULL);
+#define MUTEX_LOCK(m) pthread_mutex_lock(&m);
+#define MUTEX_UNLOCK(m) pthread_mutex_unlock(&m);
+#define MUTEX_DELETE(m) pthread_mutex_destroy(&m);
+#endif
+
 
 /* The following macros are used with sscanf.
  * See http://blog.geeky-boy.com/2018/09/safe-sscanf-usage.html */
@@ -110,6 +132,11 @@ const struct option OptionTable[] =
 	{ "format-opts", required_argument, NULL, 1 },
 	{ NULL, 0, NULL, 0 }
 };
+
+/* Prevent the two threads from interleaving output. */
+mutex_t output_lock;
+
+
 int log_callback(int Level, const char * Message, void * ClientData);
 
 void dump_hex_data(const unsigned char * Data, size_t Length)
@@ -217,6 +244,8 @@ const char * translate_pattern_type(lbm_uint8_t Type)
 void rcv_statistics_cb(const void * AttributeBlock, const lbm_rcv_transport_stats_t * Statistics, void * ClientData)
 {
 	lbm_ulong_t source = LBMMON_ATTR_SOURCE_NORMAL;
+
+	MUTEX_LOCK(output_lock);
 
 	if (lbmmon_attr_get_source(AttributeBlock, &source) != 0)
 	{
@@ -326,11 +355,15 @@ void rcv_statistics_cb(const void * AttributeBlock, const lbm_rcv_transport_stat
 			break;
 	}
 	fflush(stdout);
+
+	MUTEX_UNLOCK(output_lock);
 }
 
 void src_statistics_cb(const void * AttributeBlock, const lbm_src_transport_stats_t * Statistics, void * ClientData)
 {
 	lbm_ulong_t source = LBMMON_ATTR_SOURCE_NORMAL;
+
+	MUTEX_LOCK(output_lock);
 
 	if (lbmmon_attr_get_source(AttributeBlock, &source) != 0)
 	{
@@ -402,10 +435,14 @@ void src_statistics_cb(const void * AttributeBlock, const lbm_src_transport_stat
 			break;
 	}
 	fflush(stdout);
+
+	MUTEX_UNLOCK(output_lock);
 }
 
 void evq_statistics_cb(const void * AttributeBlock, const lbm_event_queue_stats_t * Statistics, void * ClientData)
 {
+	MUTEX_LOCK(output_lock);
+
 	print_attributes("Event queue statistics received", AttributeBlock);
 	printf("\tData messages currently enqueued                : %lu\n", Statistics->data_msgs);
 	printf("\tTotal data messages enqueued                    : %lu\n", Statistics->data_msgs_tot);
@@ -465,10 +502,14 @@ void evq_statistics_cb(const void * AttributeBlock, const lbm_event_queue_stats_
 	printf("\tEvent latency mean time                         : %luus\n", Statistics->age_mean);
 	printf("\tEvent latency maximum time                      : %luus\n", Statistics->age_max);
 	fflush(stdout);
+
+	MUTEX_UNLOCK(output_lock);
 }
 
 void ctx_statistics_cb(const void * AttributeBlock, const lbm_context_stats_t * Statistics, void * ClientData)
 {
+	MUTEX_LOCK(output_lock);
+
 	print_attributes("Context statistics received", AttributeBlock);
 	printf("\tTopic resolution datagrams sent                    : %lu\n", Statistics->tr_dgrams_sent);
 	printf("\tTopic resolution datagram bytes sent               : %lu\n", Statistics->tr_bytes_sent);
@@ -490,118 +531,117 @@ void ctx_statistics_cb(const void * AttributeBlock, const lbm_context_stats_t * 
 	printf("\tNumber of duplicate UIM messages dropped           : %lu\n", Statistics->uim_dup_msgs_rcved);
 	printf("\tNumber of UIM messages received without stream info: %lu\n", Statistics->uim_msgs_no_stream_rcved);
 	fflush(stdout);
+
+	MUTEX_UNLOCK(output_lock);
 }
 
 
 void tmon_message_print(lbm_msg_t *msg)
 {
-	char msg_c_str[3*TMON_STR_BUF_LENS + 1];
-    int data_len = msg->len;
+	char msg_c_str[1025 + 1];
+	int data_len = msg->len;
 
 	if (data_len >= sizeof(msg_c_str)) {
-		printf("Error, tmon message too big (%ld), truncating\n", msg->len);
+		fprintf(stderr, "Tmon: Error, tmon message too big (%ld), truncating\n", msg->len);
 		data_len = sizeof(msg_c_str) - 1;
 	}
 	memcpy(msg_c_str, msg->data, data_len);
 	msg_c_str[data_len] = '\0';
 
 	switch (msg_c_str[0]) {
-		case 'S': {
+		case 'T': {
 			int scanf_rtn;
 			char app_id[TMON_STR_BUF_LENS];
 			char ip[TMON_STR_BUF_LENS];
 			unsigned long pid;
-			unsigned long long ctx;
-			unsigned long long tmon_src;
+			unsigned long tmon_ctx;
 			long tv_sec;
 			long tv_usec;
-			char topic[TMON_STR_BUF_LENS];
+			char app_ctx_name[TMON_STR_BUF_LENS];
 			int null_ofs = 0;
 			char asc_time[32];
 
-			scanf_rtn = sscanf(msg_c_str, "S,"
+			scanf_rtn = sscanf(msg_c_str, "T,"
 				"%" STR(TMON_STR_BUF_LENS) "[^,],"  /* app_id */
 				"%" STR(TMON_STR_BUF_LENS) "[^,],"  /* ip */
-				"%lx,"   /* pid */
-				"%llx,"  /* ctx */
+				"%lu,"   /* pid */
+				"%lu,"   /* ctx */
 				"%lu,"   /* tv_sec */
 				"%lu,"   /* tv_usec */
-				"%llx,"  /* tmon_src */
-				"%" STR(TMON_STR_BUF_LENS) "[^\n]" /* topic */
+				"%" STR(TMON_STR_BUF_LENS) "[^\n]" /* app_ctx_name */
 				"%n",    /* null_ofs */
-				app_id, ip, &pid, &ctx, &tv_sec, &tv_usec, &tmon_src,
-				topic, &null_ofs);
+				app_id, ip, &pid, &tmon_ctx, &tv_sec, &tv_usec,
+				app_ctx_name, &null_ofs);
 			/* See http://blog.geeky-boy.com/2018/09/safe-sscanf-usage.html */
-			if (scanf_rtn != 8 || null_ofs == 0 || msg_c_str[null_ofs] != '\0') {
-				fprintf(stderr, "scanf_rtn=%d, null_ofs=%d, msg='%s'\n", scanf_rtn, null_ofs, msg_c_str); fflush(stderr);
+			if (scanf_rtn != 7 || null_ofs == 0 || msg_c_str[null_ofs] != '\0') {
+				fprintf(stderr, "Tmon: Error, scanf_rtn=%d, null_ofs=%d, msg='%s'\n", scanf_rtn, null_ofs, msg_c_str); fflush(stderr);
 			}
 			else {
-				printf("Source create\n"
+				tmon_decode_str(app_id, app_id);
+				tmon_decode_str(app_ctx_name, app_ctx_name);
+				printf("Tmon: context create\n"
 						"  app_id=%s\n"
 						"  ip=%s\n"
-						"  pid=%lx\n"
-						"  ctx=%llx\n"
-						"  tmon_src=%llx\n"
+						"  pid=%lu\n"
+						"  tmon_ctx=%lu\n"
 						"  time=%s and %ld usec\n"
-						"  topic=%s\n",
-					app_id, ip, pid, ctx, tmon_src,
+						"  app_context_name=%s\n",
+					app_id, ip, pid, tmon_ctx,
 					tmon_ctime(asc_time, sizeof(asc_time), tv_sec), tv_usec,
-					topic);
+					app_ctx_name);
 			}
 		}
-		break;
+		break;  /* case 'T' */
 
-		case 's': {
+		case 't': {
 			int scanf_rtn;
 			char app_id[TMON_STR_BUF_LENS];
 			char ip[TMON_STR_BUF_LENS];
 			unsigned long pid;
-			unsigned long long ctx;
-			unsigned long long tmon_src;
+			unsigned long tmon_ctx;
 			long tv_sec;
 			long tv_usec;
-			int null_ofs;
+			char app_ctx_name[TMON_STR_BUF_LENS];
+			int null_ofs = 0;
 			char asc_time[32];
 
-			scanf_rtn = sscanf(msg_c_str, "s,"
+			scanf_rtn = sscanf(msg_c_str, "t,"
 				"%" STR(TMON_STR_BUF_LENS) "[^,],"  /* app_id */
 				"%" STR(TMON_STR_BUF_LENS) "[^,],"  /* ip */
-				"%lx,"   /* pid */
-				"%llx,"  /* ctx */
+				"%lu,"   /* pid */
+				"%lu,"   /* ctx */
 				"%lu,"   /* tv_sec */
-				"%lu,"   /* tv_usec */
-				"%llx"   /* tmon_src */
+				"%lu"    /* tv_usec */
 				"%n",    /* null_ofs */
-				app_id, ip, &pid, &ctx, &tv_sec, &tv_usec, &tmon_src,
+				app_id, ip, &pid, &tmon_ctx, &tv_sec, &tv_usec,
 				&null_ofs);
 			/* See http://blog.geeky-boy.com/2018/09/safe-sscanf-usage.html */
-			if (scanf_rtn != 7 || null_ofs == 0 || msg_c_str[null_ofs] != '\0') {
-				fprintf(stderr, "scanf_rtn=%d, null_ofs=%d, msg='%s'\n", scanf_rtn, null_ofs, msg_c_str); fflush(stderr);
+			if (scanf_rtn != 6 || null_ofs == 0 || msg_c_str[null_ofs] != '\0') {
+				fprintf(stderr, "Tmon: Error, scanf_rtn=%d, null_ofs=%d, msg='%s'\n", scanf_rtn, null_ofs, msg_c_str); fflush(stderr);
 			}
 			else {
-				printf("Source delete\n"
+				tmon_decode_str(app_id, app_id);
+				printf("Tmon: context delete\n"
 						"  app_id=%s\n"
 						"  ip=%s\n"
-						"  pid=%lx\n"
-						"  ctx=%llx\n"
-						"  tmon_src=%llx\n"
+						"  pid=%lu\n"
+						"  tmon_ctx=%lu\n"
 						"  time=%s and %ld usec\n",
-					app_id, ip, pid, ctx, tmon_src,
+					app_id, ip, pid, tmon_ctx,
 					tmon_ctime(asc_time, sizeof(asc_time), tv_sec), tv_usec);
 			}
 		}
-		break;
+		break;  /* case 't' */
 
 		case 'R': {
 			int scanf_rtn;
 			char app_id[TMON_STR_BUF_LENS];
 			char ip[TMON_STR_BUF_LENS];
 			unsigned long pid;
-			unsigned long long ctx;
-			unsigned long long tmon_rcv;
+			unsigned long tmon_ctx;
 			long tv_sec;
 			long tv_usec;
-			int rcv_type;
+			unsigned long tmon_rcv;
 			char topic[TMON_STR_BUF_LENS];
 			int null_ofs = 0;
 			char asc_time[32];
@@ -609,87 +649,88 @@ void tmon_message_print(lbm_msg_t *msg)
 			scanf_rtn = sscanf(msg_c_str, "R,"
 				"%" STR(TMON_STR_BUF_LENS) "[^,],"  /* app_id */
 				"%" STR(TMON_STR_BUF_LENS) "[^,],"  /* ip */
-				"%lx,"   /* pid */
-				"%llx,"  /* ctx */
+				"%lu,"   /* pid */
+				"%lu,"   /* ctx */
 				"%lu,"   /* tv_sec */
 				"%lu,"   /* tv_usec */
-				"%llx,"  /* tmon_rcv */
-				"%d,"    /* rcv_type */
+				"%lu,"   /* tmon_rcv */
 				"%" STR(TMON_STR_BUF_LENS) "[^\n]" /* topic */
 				"%n",    /* null_ofs */
-				app_id, ip, &pid, &ctx, &tv_sec, &tv_usec, &tmon_rcv,
-				&rcv_type, topic, &null_ofs);
+				app_id, ip, &pid, &tmon_ctx, &tv_sec, &tv_usec, &tmon_rcv,
+				topic, &null_ofs);
 			/* See http://blog.geeky-boy.com/2018/09/safe-sscanf-usage.html */
-			if (scanf_rtn != 9 || null_ofs == 0 || msg_c_str[null_ofs] != '\0') {
-				fprintf(stderr, "scanf_rtn=%d, null_ofs=%d, msg='%s'\n", scanf_rtn, null_ofs, msg_c_str); fflush(stderr);
+			if (scanf_rtn != 8 || null_ofs == 0 || msg_c_str[null_ofs] != '\0') {
+				fprintf(stderr, "Tmon: Error, scanf_rtn=%d, null_ofs=%d, msg='%s'\n", scanf_rtn, null_ofs, msg_c_str); fflush(stderr);
 			}
 			else {
-				printf("Receiver create\n"
+				tmon_decode_str(app_id, app_id);
+				tmon_decode_str(topic, topic);
+				printf("Tmon: receiver create\n"
 						"  app_id=%s\n"
 						"  ip=%s\n"
-						"  pid=%lx\n"
-						"  ctx=%llx\n"
-						"  tmon_rcv=%llx\n"
+						"  pid=%lu\n"
+						"  tmon_ctx=%lu\n"
+						"  tmon_rcv=%lu\n"
 						"  time=%s and %ld usec\n"
-						"  rcv_type=%d\n"
 						"  topic=%s\n",
-					app_id, ip, pid, ctx, tmon_rcv,
+					app_id, ip, pid, tmon_ctx, tmon_rcv,
 					tmon_ctime(asc_time, sizeof(asc_time), tv_sec), tv_usec,
-					rcv_type, topic);
+					topic);
 			}
 		}
-		break;
+		break;  /* case 'R' */
 
 		case 'r': {
 			int scanf_rtn;
 			char app_id[TMON_STR_BUF_LENS];
 			char ip[TMON_STR_BUF_LENS];
 			unsigned long pid;
-			unsigned long long ctx;
-			unsigned long long tmon_rcv;
+			unsigned long tmon_ctx;
 			long tv_sec;
 			long tv_usec;
-			int null_ofs;
+			unsigned long tmon_rcv;
+			int null_ofs = 0;
 			char asc_time[32];
 
 			scanf_rtn = sscanf(msg_c_str, "r,"
 				"%" STR(TMON_STR_BUF_LENS) "[^,],"  /* app_id */
 				"%" STR(TMON_STR_BUF_LENS) "[^,],"  /* ip */
-				"%lx,"   /* pid */
-				"%llx,"  /* ctx */
+				"%lu,"   /* pid */
+				"%lu,"   /* ctx */
 				"%lu,"   /* tv_sec */
 				"%lu,"   /* tv_usec */
-				"%llx"   /* tmon_rcv */
+				"%lu"    /* tmon_rcv */
 				"%n",    /* null_ofs */
-				app_id, ip, &pid, &ctx, &tv_sec, &tv_usec, &tmon_rcv,
+				app_id, ip, &pid, &tmon_ctx, &tv_sec, &tv_usec, &tmon_rcv,
 				&null_ofs);
 			/* See http://blog.geeky-boy.com/2018/09/safe-sscanf-usage.html */
 			if (scanf_rtn != 7 || null_ofs == 0 || msg_c_str[null_ofs] != '\0') {
-				fprintf(stderr, "scanf_rtn=%d, null_ofs=%d, msg='%s'\n", scanf_rtn, null_ofs, msg_c_str); fflush(stderr);
+				fprintf(stderr, "Tmon: Error, scanf_rtn=%d, null_ofs=%d, msg='%s'\n", scanf_rtn, null_ofs, msg_c_str); fflush(stderr);
 			}
 			else {
-				printf("Receiver delete\n"
+				tmon_decode_str(app_id, app_id);
+				printf("Tmon: receiver delete\n"
 						"  app_id=%s\n"
 						"  ip=%s\n"
-						"  pid=%lx\n"
-						"  ctx=%llx\n"
-						"  tmon_rcv=%llx\n"
+						"  pid=%lu\n"
+						"  tmon_ctx=%lu\n"
+						"  tmon_rcv=%lu\n"
 						"  time=%s and %ld usec\n",
-					app_id, ip, pid, ctx, tmon_rcv,
+					app_id, ip, pid, tmon_ctx, tmon_rcv,
 					tmon_ctime(asc_time, sizeof(asc_time), tv_sec), tv_usec);
 			}
 		}
-		break;
+		break;  /* case 'r' */
 
 		case 'W': {
 			int scanf_rtn;
 			char app_id[TMON_STR_BUF_LENS];
 			char ip[TMON_STR_BUF_LENS];
 			unsigned long pid;
-			unsigned long long ctx;
-			unsigned long long tmon_wrcv;
+			unsigned long tmon_ctx;
 			long tv_sec;
 			long tv_usec;
+			unsigned long tmon_rcv;
 			char pattern[TMON_STR_BUF_LENS];
 			int null_ofs = 0;
 			char asc_time[32];
@@ -697,86 +738,178 @@ void tmon_message_print(lbm_msg_t *msg)
 			scanf_rtn = sscanf(msg_c_str, "W,"
 				"%" STR(TMON_STR_BUF_LENS) "[^,],"  /* app_id */
 				"%" STR(TMON_STR_BUF_LENS) "[^,],"  /* ip */
-				"%lx,"   /* pid */
-				"%llx,"  /* ctx */
+				"%lu,"   /* pid */
+				"%lu,"   /* ctx */
 				"%lu,"   /* tv_sec */
 				"%lu,"   /* tv_usec */
-				"%llx,"  /* tmon_wrcv */
+				"%lu,"   /* tmon_rcv */
 				"%" STR(TMON_STR_BUF_LENS) "[^\n]" /* pattern */
 				"%n",    /* null_ofs */
-				app_id, ip, &pid, &ctx, &tv_sec, &tv_usec, &tmon_wrcv,
+				app_id, ip, &pid, &tmon_ctx, &tv_sec, &tv_usec, &tmon_rcv,
 				pattern, &null_ofs);
 			/* See http://blog.geeky-boy.com/2018/09/safe-sscanf-usage.html */
 			if (scanf_rtn != 8 || null_ofs == 0 || msg_c_str[null_ofs] != '\0') {
-				fprintf(stderr, "scanf_rtn=%d, null_ofs=%d, msg='%s'\n", scanf_rtn, null_ofs, msg_c_str); fflush(stderr);
+				fprintf(stderr, "Tmon: Error, scanf_rtn=%d, null_ofs=%d, msg='%s'\n", scanf_rtn, null_ofs, msg_c_str); fflush(stderr);
 			}
 			else {
-				printf("Wildcard receiver create\n"
+				tmon_decode_str(app_id, app_id);
+				tmon_decode_str(pattern, pattern);
+				printf("Tmon: wildcard receiver create\n"
 						"  app_id=%s\n"
 						"  ip=%s\n"
-						"  pid=%lx\n"
-						"  ctx=%llx\n"
-						"  tmon_wrcv=%llx\n"
+						"  pid=%lu\n"
+						"  tmon_ctx=%lu\n"
+						"  tmon_rcv=%lu\n"
 						"  time=%s and %ld usec\n"
 						"  pattern=%s\n",
-					app_id, ip, pid, ctx, tmon_wrcv,
+					app_id, ip, pid, tmon_ctx, tmon_rcv,
 					tmon_ctime(asc_time, sizeof(asc_time), tv_sec), tv_usec,
 					pattern);
 			}
 		}
-		break;
+		break;  /* case 'W' */
 
 		case 'w': {
 			int scanf_rtn;
 			char app_id[TMON_STR_BUF_LENS];
 			char ip[TMON_STR_BUF_LENS];
 			unsigned long pid;
-			unsigned long long ctx;
-			unsigned long long tmon_wrcv;
+			unsigned long tmon_ctx;
 			long tv_sec;
 			long tv_usec;
-			int null_ofs;
+			unsigned long tmon_rcv;
+			int null_ofs = 0;
 			char asc_time[32];
 
 			scanf_rtn = sscanf(msg_c_str, "w,"
 				"%" STR(TMON_STR_BUF_LENS) "[^,],"  /* app_id */
 				"%" STR(TMON_STR_BUF_LENS) "[^,],"  /* ip */
-				"%lx,"   /* pid */
-				"%llx,"  /* ctx */
+				"%lu,"   /* pid */
+				"%lu,"   /* ctx */
 				"%lu,"   /* tv_sec */
 				"%lu,"   /* tv_usec */
-				"%llx"   /* tmon_wrcv */
+				"%lu"    /* tmon_rcv */
 				"%n",    /* null_ofs */
-				app_id, ip, &pid, &ctx, &tv_sec, &tv_usec, &tmon_wrcv,
+				app_id, ip, &pid, &tmon_ctx, &tv_sec, &tv_usec, &tmon_rcv,
 				&null_ofs);
 			/* See http://blog.geeky-boy.com/2018/09/safe-sscanf-usage.html */
 			if (scanf_rtn != 7 || null_ofs == 0 || msg_c_str[null_ofs] != '\0') {
-				fprintf(stderr, "scanf_rtn=%d, null_ofs=%d, msg='%s'\n", scanf_rtn, null_ofs, msg_c_str); fflush(stderr);
+				fprintf(stderr, "Tmon: Error, scanf_rtn=%d, null_ofs=%d, msg='%s'\n", scanf_rtn, null_ofs, msg_c_str); fflush(stderr);
 			}
 			else {
-				printf("Wildcard receiver delete\n"
+				tmon_decode_str(app_id, app_id);
+				printf("Tmon: wildcard receiver delete\n"
 						"  app_id=%s\n"
 						"  ip=%s\n"
-						"  pid=%lx\n"
-						"  ctx=%llx\n"
-						"  tmon_wrcv=%llx\n"
+						"  pid=%lu\n"
+						"  tmon_ctx=%lu\n"
+						"  tmon_rcv=%lu\n"
 						"  time=%s and %ld usec\n",
-					app_id, ip, pid, ctx, tmon_wrcv,
+					app_id, ip, pid, tmon_ctx, tmon_rcv,
 					tmon_ctime(asc_time, sizeof(asc_time), tv_sec), tv_usec);
 			}
 		}
-		break;
+		break;  /* case 'w' */
+
+		case 'S': {
+			int scanf_rtn;
+			char app_id[TMON_STR_BUF_LENS];
+			char ip[TMON_STR_BUF_LENS];
+			unsigned long pid;
+			unsigned long tmon_ctx;
+			long tv_sec;
+			long tv_usec;
+			unsigned long tmon_src;
+			char topic[TMON_STR_BUF_LENS];
+			int null_ofs = 0;
+			char asc_time[32];
+
+			scanf_rtn = sscanf(msg_c_str, "S,"
+				"%" STR(TMON_STR_BUF_LENS) "[^,],"  /* app_id */
+				"%" STR(TMON_STR_BUF_LENS) "[^,],"  /* ip */
+				"%lu,"   /* pid */
+				"%lu,"   /* ctx */
+				"%lu,"   /* tv_sec */
+				"%lu,"   /* tv_usec */
+				"%lu,"   /* tmon_src */
+				"%" STR(TMON_STR_BUF_LENS) "[^\n]" /* topic */
+				"%n",    /* null_ofs */
+				app_id, ip, &pid, &tmon_ctx, &tv_sec, &tv_usec, &tmon_src,
+				topic, &null_ofs);
+			/* See http://blog.geeky-boy.com/2018/09/safe-sscanf-usage.html */
+			if (scanf_rtn != 8 || null_ofs == 0 || msg_c_str[null_ofs] != '\0') {
+				fprintf(stderr, "Tmon: Error, scanf_rtn=%d, null_ofs=%d, msg='%s'\n", scanf_rtn, null_ofs, msg_c_str); fflush(stderr);
+			}
+			else {
+				tmon_decode_str(app_id, app_id);
+				tmon_decode_str(topic, topic);
+				printf("Tmon: source create\n"
+						"  app_id=%s\n"
+						"  ip=%s\n"
+						"  pid=%lu\n"
+						"  tmon_ctx=%lu\n"
+						"  time=%s and %ld usec\n"
+						"  tmon_src=%lu\n"
+						"  topic=%s\n",
+					app_id, ip, pid, tmon_ctx,
+				 	tmon_ctime(asc_time, sizeof(asc_time), tv_sec), tv_usec,
+					tmon_src, topic);
+			}
+		}
+		break;  /* case 'S' */
+
+		case 's': {
+			int scanf_rtn;
+			char app_id[TMON_STR_BUF_LENS];
+			char ip[TMON_STR_BUF_LENS];
+			unsigned long pid;
+			unsigned long tmon_ctx;
+			long tv_sec;
+			long tv_usec;
+			unsigned long tmon_src;
+			int null_ofs = 0;
+			char asc_time[32];
+
+			scanf_rtn = sscanf(msg_c_str, "s,"
+				"%" STR(TMON_STR_BUF_LENS) "[^,],"  /* app_id */
+				"%" STR(TMON_STR_BUF_LENS) "[^,],"  /* ip */
+				"%lu,"   /* pid */
+				"%lu,"   /* ctx */
+				"%lu,"   /* tv_sec */
+				"%lu,"   /* tv_usec */
+				"%lu"    /* tmon_src */
+				"%n",    /* null_ofs */
+				app_id, ip, &pid, &tmon_ctx, &tv_sec, &tv_usec,
+				&tmon_src, &null_ofs);
+			/* See http://blog.geeky-boy.com/2018/09/safe-sscanf-usage.html */
+			if (scanf_rtn != 7 || null_ofs == 0 || msg_c_str[null_ofs] != '\0') {
+				fprintf(stderr, "Tmon: Error, scanf_rtn=%d, null_ofs=%d, msg='%s'\n", scanf_rtn, null_ofs, msg_c_str); fflush(stderr);
+			}
+			else {
+				tmon_decode_str(app_id, app_id);
+				printf("Tmon: source delete\n"
+						"  app_id=%s\n"
+						"  ip=%s\n"
+						"  pid=%lu\n"
+						"  tmon_ctx=%lu\n"
+						"  tmon_src=%lu\n"
+						"  time=%s and %ld usec\n",
+					app_id, ip, pid, tmon_ctx, tmon_src,
+					tmon_ctime(asc_time, sizeof(asc_time), tv_sec), tv_usec);
+			}
+		}
+		break;  /* case 's' */
 
 		case 'C': {
 			int scanf_rtn;
 			char app_id[TMON_STR_BUF_LENS];
 			char ip[TMON_STR_BUF_LENS];
 			unsigned long pid;
-			unsigned long long ctx;
-			unsigned long long tmon_rcv;
-			unsigned long long conn;
+			unsigned long tmon_ctx;
 			long tv_sec;
 			long tv_usec;
+			unsigned long tmon_rcv;
+			unsigned long tmon_conn;
 			char src_str[TMON_STR_BUF_LENS];
 			int null_ofs = 0;
 			char asc_time[32];
@@ -784,97 +917,103 @@ void tmon_message_print(lbm_msg_t *msg)
 			scanf_rtn = sscanf(msg_c_str, "C,"
 				"%" STR(TMON_STR_BUF_LENS) "[^,],"  /* app_id */
 				"%" STR(TMON_STR_BUF_LENS) "[^,],"  /* ip */
-				"%lx,"   /* pid */
-				"%llx,"  /* ctx */
+				"%lu,"   /* pid */
+				"%lu,"   /* ctx */
 				"%lu,"   /* tv_sec */
 				"%lu,"   /* tv_usec */
-				"%llx,"  /* tmon_rcv */
-				"%llx,"  /* conn */
+				"%lu,"   /* conn */
+				"%lu,"   /* tmon_rcv */
 				"%" STR(TMON_STR_BUF_LENS) "[^\n]" /* src_str */
 				"%n",    /* null_ofs */
-				app_id, ip, &pid, &ctx, &tv_sec, &tv_usec, &tmon_rcv, &conn,
+				app_id, ip, &pid, &tmon_ctx, &tv_sec, &tv_usec, &tmon_conn, &tmon_rcv,
 				src_str, &null_ofs);
 			/* See http://blog.geeky-boy.com/2018/09/safe-sscanf-usage.html */
 			if (scanf_rtn != 9 || null_ofs == 0 || msg_c_str[null_ofs] != '\0') {
-				fprintf(stderr, "scanf_rtn=%d, null_ofs=%d, msg='%s'\n", scanf_rtn, null_ofs, msg_c_str); fflush(stderr);
+				fprintf(stderr, "Tmon: Error, scanf_rtn=%d, null_ofs=%d, msg='%s'\n", scanf_rtn, null_ofs, msg_c_str); fflush(stderr);
 			}
 			else {
-				printf("Conn create\n"
+				tmon_decode_str(app_id, app_id);
+				tmon_decode_str(src_str, src_str);
+				printf("Tmon: connection create\n"
 						"  app_id=%s\n"
 						"  ip=%s\n"
-						"  pid=%lx\n"
-						"  ctx=%llx\n"
-						"  tmon_rcv=%llx\n"
-						"  conn=%llx\n"
+						"  pid=%lu\n"
+						"  tmon_ctx=%lu\n"
 						"  time=%s and %ld usec\n"
+						"  tmon_rcv=%lu\n"
+						"  tmon_conn=%lu\n"
 						"  src_str=%s\n",
-					app_id, ip, pid, ctx, tmon_rcv, conn,
+					app_id, ip, pid, tmon_ctx,
 					tmon_ctime(asc_time, sizeof(asc_time), tv_sec), tv_usec,
-					src_str);
+					tmon_rcv, tmon_conn, src_str);
 			}
 		}
-		break;
+		break;  /* case 'C' */
 
 		case 'c': {
 			int scanf_rtn;
 			char app_id[TMON_STR_BUF_LENS];
 			char ip[TMON_STR_BUF_LENS];
 			unsigned long pid;
-			unsigned long long ctx;
-			unsigned long long conn;
+			unsigned long tmon_ctx;
 			long tv_sec;
 			long tv_usec;
+			unsigned long tmon_conn;
 			long msg_count;
-			long unrec_count;
+			long loss_count;
 			long burst_count;
-			int null_ofs;
+			long dgrams_lost;
+			int null_ofs = 0;
 			char asc_time[32];
 
 			scanf_rtn = sscanf(msg_c_str, "c,"
 				"%" STR(TMON_STR_BUF_LENS) "[^,],"  /* app_id */
 				"%" STR(TMON_STR_BUF_LENS) "[^,],"  /* ip */
-				"%lx,"   /* pid */
-				"%llx,"  /* ctx */
+				"%lu,"   /* pid */
+				"%lu,"   /* ctx */
 				"%lu,"   /* tv_sec */
 				"%lu,"   /* tv_usec */
-				"%llx,"  /* conn */
+				"%lu,"   /* conn */
 				"%lu,"   /* msg_count */
-				"%lu,"   /* unrec_count */
-				"%lu"    /* burst_count */
+				"%lu,"   /* loss_count */
+				"%lu,"   /* burst_count */
+				"%lu"    /* dgrams_lost */
 				"%n",    /* null_ofs */
-				app_id, ip, &pid, &ctx, &tv_sec, &tv_usec, &conn,
-				&msg_count, &unrec_count, &burst_count, &null_ofs);
+				app_id, ip, &pid, &tmon_ctx, &tv_sec, &tv_usec, &tmon_conn,
+				&msg_count, &loss_count, &burst_count, &dgrams_lost, &null_ofs);
 			/* See http://blog.geeky-boy.com/2018/09/safe-sscanf-usage.html */
-			if (scanf_rtn != 10 || null_ofs == 0 || msg_c_str[null_ofs] != '\0') {
-				fprintf(stderr, "scanf_rtn=%d, null_ofs=%d, msg='%s'\n", scanf_rtn, null_ofs, msg_c_str); fflush(stderr);
+			if (scanf_rtn != 11 || null_ofs == 0 || msg_c_str[null_ofs] != '\0') {
+				fprintf(stderr, "Tmon: Error, scanf_rtn=%d, null_ofs=%d, msg='%s'\n", scanf_rtn, null_ofs, msg_c_str); fflush(stderr);
 			}
 			else {
-				printf("Conn delete\n"
+				tmon_decode_str(app_id, app_id);
+				printf("Tmon: connection delete\n"
 						"  app_id=%s\n"
 						"  ip=%s\n"
-						"  pid=%lx\n"
-						"  ctx=%llx\n"
-						"  conn=%llx\n"
+						"  pid=%lu\n"
+						"  tmon_ctx=%lu\n"
 						"  time=%s and %ld usec\n"
+						"  tmon_conn=%lu\n"
 						"  msg_count=%lu\n"
-						"  unrec_count=%lu\n"
-						"  burst_count=%lu\n",
-					app_id, ip, pid, ctx, conn,
+						"  loss_count=%lu\n"
+						"  burst_count=%lu\n"
+						"  dgrams_lost=%lu\n",
+					app_id, ip, pid, tmon_ctx,
 					tmon_ctime(asc_time, sizeof(asc_time), tv_sec), tv_usec,
-					msg_count, unrec_count, burst_count);
+					tmon_conn, msg_count, loss_count, burst_count, dgrams_lost);
 			}
 		}
-		break;
+		break;  /* case 'c' */
 
 		case 'B': {
 			int scanf_rtn;
 			char app_id[TMON_STR_BUF_LENS];
 			char ip[TMON_STR_BUF_LENS];
 			unsigned long pid;
-			unsigned long long ctx;
-			unsigned long long conn;
+			unsigned long tmon_ctx;
 			long tv_sec;
 			long tv_usec;
+			unsigned long tmon_conn;
 			char topic[TMON_STR_BUF_LENS];
 			int null_ofs = 0;
 			char asc_time[32];
@@ -882,95 +1021,197 @@ void tmon_message_print(lbm_msg_t *msg)
 			scanf_rtn = sscanf(msg_c_str, "B,"
 				"%" STR(TMON_STR_BUF_LENS) "[^,],"  /* app_id */
 				"%" STR(TMON_STR_BUF_LENS) "[^,],"  /* ip */
-				"%lx,"   /* pid */
-				"%llx,"  /* ctx */
+				"%lu,"   /* pid */
+				"%lu,"   /* ctx */
 				"%lu,"   /* tv_sec */
 				"%lu,"   /* tv_usec */
-				"%llx,"  /* conn */
+				"%lu,"   /* conn */
 				"%" STR(TMON_STR_BUF_LENS) "[^\n]" /* topic */
 				"%n",    /* null_ofs */
-				app_id, ip, &pid, &ctx, &tv_sec, &tv_usec, &conn,
+				app_id, ip, &pid, &tmon_ctx, &tv_sec, &tv_usec, &tmon_conn,
 				topic, &null_ofs);
 			/* See http://blog.geeky-boy.com/2018/09/safe-sscanf-usage.html */
 			if (scanf_rtn != 8 || null_ofs == 0 || msg_c_str[null_ofs] != '\0') {
-				fprintf(stderr, "scanf_rtn=%d, null_ofs=%d, msg='%s'\n", scanf_rtn, null_ofs, msg_c_str); fflush(stderr);
+				fprintf(stderr, "Tmon: Error, scanf_rtn=%d, null_ofs=%d, msg='%s'\n", scanf_rtn, null_ofs, msg_c_str); fflush(stderr);
 			}
 			else {
-				printf("BOS\n"
+				tmon_decode_str(app_id, app_id);
+				tmon_decode_str(topic, topic);
+				printf("Tmon: connection BOS\n"
 						"  app_id=%s\n"
 						"  ip=%s\n"
-						"  pid=%lx\n"
-						"  ctx=%llx\n"
-						"  conn=%llx\n"
+						"  pid=%lu\n"
+						"  tmon_ctx=%lu\n"
 						"  time=%s and %ld usec\n"
+						"  tmon_conn=%lu\n"
 						"  topic=%s\n",
-					app_id, ip, pid, ctx, conn,
+					app_id, ip, pid, tmon_ctx,
 					tmon_ctime(asc_time, sizeof(asc_time), tv_sec), tv_usec,
-                    topic);
+					tmon_conn, topic);
 			}
 		}
-		break;
+		break;  /* case 'B' */
 
 		case 'E': {
 			int scanf_rtn;
 			char app_id[TMON_STR_BUF_LENS];
 			char ip[TMON_STR_BUF_LENS];
 			unsigned long pid;
-			unsigned long long ctx;
-			unsigned long long conn;
+			unsigned long tmon_ctx;
 			long tv_sec;
 			long tv_usec;
+			unsigned long tmon_conn;
 			long msg_count;
-			long unrec_count;
+			long loss_count;
 			long burst_count;
+			long dgrams_lost;
 			char topic[TMON_STR_BUF_LENS];
-			int null_ofs;
+			int null_ofs = 0;
 			char asc_time[32];
 
 			scanf_rtn = sscanf(msg_c_str, "E,"
 				"%" STR(TMON_STR_BUF_LENS) "[^,],"  /* app_id */
 				"%" STR(TMON_STR_BUF_LENS) "[^,],"  /* ip */
-				"%lx,"   /* pid */
-				"%llx,"  /* ctx */
+				"%lu,"   /* pid */
+				"%lu,"   /* ctx */
 				"%lu,"   /* tv_sec */
 				"%lu,"   /* tv_usec */
-				"%llx,"  /* conn */
+				"%lu,"   /* conn */
 				"%lu,"   /* msg_count */
-				"%lu,"   /* unrec_count */
+				"%lu,"   /* loss_count */
 				"%lu,"   /* burst_count */
+				"%lu,"   /* dgrams_lost */
 				"%" STR(TMON_STR_BUF_LENS) "[^\n]" /* topic */
 				"%n",    /* null_ofs */
-				app_id, ip, &pid, &ctx, &tv_sec, &tv_usec, &conn,
-				&msg_count, &unrec_count, &burst_count, topic, &null_ofs);
+				app_id, ip, &pid, &tmon_ctx, &tv_sec, &tv_usec, &tmon_conn,
+				&msg_count, &loss_count, &burst_count, &dgrams_lost, topic, &null_ofs);
 			/* See http://blog.geeky-boy.com/2018/09/safe-sscanf-usage.html */
-			if (scanf_rtn != 11 || null_ofs == 0 || msg_c_str[null_ofs] != '\0') {
-				fprintf(stderr, "scanf_rtn=%d, null_ofs=%d, msg='%s'\n", scanf_rtn, null_ofs, msg_c_str); fflush(stderr);
+			if (scanf_rtn != 12 || null_ofs == 0 || msg_c_str[null_ofs] != '\0') {
+				fprintf(stderr, "Tmon: Error, scanf_rtn=%d, null_ofs=%d, msg='%s'\n", scanf_rtn, null_ofs, msg_c_str); fflush(stderr);
 			}
 			else {
-				printf("EOS\n"
+				tmon_decode_str(app_id, app_id);
+				tmon_decode_str(topic, topic);
+				printf("Tmon: connection EOS\n"
 						"  app_id=%s\n"
 						"  ip=%s\n"
-						"  pid=%lx\n"
-						"  ctx=%llx\n"
-						"  conn=%llx\n"
+						"  pid=%lu\n"
+						"  tmon_ctx=%lu\n"
 						"  time=%s and %ld usec\n"
+						"  tmon_conn=%lu\n"
 						"  msg_count=%lu\n"
-						"  unrec_count=%lu\n"
+						"  loss_count=%lu\n"
 						"  burst_count=%lu\n"
+						"  dgrams_lost=%lu\n"
 						"  topic=%s\n",
-					app_id, ip, pid, ctx, conn,
+					app_id, ip, pid, tmon_ctx,
 					tmon_ctime(asc_time, sizeof(asc_time), tv_sec), tv_usec,
-					msg_count, unrec_count, burst_count, topic);
+					tmon_conn, msg_count, loss_count, burst_count, dgrams_lost, topic);
 			}
 		}
-		break;
+		break;  /* case 'E' */
+
+		case 'L': {
+			int scanf_rtn;
+			char app_id[TMON_STR_BUF_LENS];
+			char ip[TMON_STR_BUF_LENS];
+			unsigned long pid;
+			unsigned long tmon_ctx;
+			long tv_sec;
+			long tv_usec;
+			unsigned long tmon_conn;
+			long sqn;
+			int null_ofs = 0;
+			char asc_time[32];
+
+			scanf_rtn = sscanf(msg_c_str, "L,"
+				"%" STR(TMON_STR_BUF_LENS) "[^,],"  /* app_id */
+				"%" STR(TMON_STR_BUF_LENS) "[^,],"  /* ip */
+				"%lu,"   /* pid */
+				"%lu,"   /* ctx */
+				"%lu,"   /* tv_sec */
+				"%lu,"   /* tv_usec */
+				"%lu,"   /* conn */
+				"%lu"    /* sqn */
+				"%n",    /* null_ofs */
+				app_id, ip, &pid, &tmon_ctx, &tv_sec, &tv_usec, &tmon_conn,
+				&sqn, &null_ofs);
+			/* See http://blog.geeky-boy.com/2018/09/safe-sscanf-usage.html */
+			if (scanf_rtn != 8 || null_ofs == 0 || msg_c_str[null_ofs] != '\0') {
+				fprintf(stderr, "Tmon: Error, scanf_rtn=%d, null_ofs=%d, msg='%s'\n", scanf_rtn, null_ofs, msg_c_str); fflush(stderr);
+			}
+			else {
+				tmon_decode_str(app_id, app_id);
+				printf("Tmon: message loss\n"
+						"  app_id=%s\n"
+						"  ip=%s\n"
+						"  pid=%lu\n"
+						"  tmon_ctx=%lu\n"
+						"  time=%s and %ld usec\n"
+						"  tmon_conn=%lu\n"
+						"  sqn=%lu\n",
+					app_id, ip, pid, tmon_ctx,
+					tmon_ctime(asc_time, sizeof(asc_time), tv_sec), tv_usec,
+					tmon_conn, sqn);
+			}
+		}
+		break;  /* case 'L' */
+
+		case 'l': {
+			int scanf_rtn;
+			char app_id[TMON_STR_BUF_LENS];
+			char ip[TMON_STR_BUF_LENS];
+			unsigned long pid;
+			unsigned long tmon_ctx;
+			long tv_sec;
+			long tv_usec;
+			unsigned long tmon_conn;
+			long sqn;
+			long burst_size;
+			int null_ofs = 0;
+			char asc_time[32];
+
+			scanf_rtn = sscanf(msg_c_str, "l,"
+				"%" STR(TMON_STR_BUF_LENS) "[^,],"  /* app_id */
+				"%" STR(TMON_STR_BUF_LENS) "[^,],"  /* ip */
+				"%lu,"   /* pid */
+				"%lu,"   /* ctx */
+				"%lu,"   /* tv_sec */
+				"%lu,"   /* tv_usec */
+				"%lu,"   /* conn */
+				"%lu,"   /* sqn */
+				"%lu"    /* burst_size */
+				"%n",    /* null_ofs */
+				app_id, ip, &pid, &tmon_ctx, &tv_sec, &tv_usec, &tmon_conn,
+				&sqn, &burst_size, &null_ofs);
+			/* See http://blog.geeky-boy.com/2018/09/safe-sscanf-usage.html */
+			if (scanf_rtn != 9 || null_ofs == 0 || msg_c_str[null_ofs] != '\0') {
+				fprintf(stderr, "Tmon: Error, scanf_rtn=%d, null_ofs=%d, msg='%s'\n", scanf_rtn, null_ofs, msg_c_str); fflush(stderr);
+			}
+			else {
+				tmon_decode_str(app_id, app_id);
+				printf("Tmon: message burst loss\n"
+						"  app_id=%s\n"
+						"  ip=%s\n"
+						"  pid=%lu\n"
+						"  tmon_ctx=%lu\n"
+						"  time=%s and %ld usec\n"
+						"  tmon_conn=%lu\n"
+						"  sqn=%lu\n"
+						"  burst_size=%lu\n",
+					app_id, ip, pid, tmon_ctx,
+					tmon_ctime(asc_time, sizeof(asc_time), tv_sec), tv_usec,
+					tmon_conn, sqn, burst_size);
+			}
+		}
+		break;  /* case 'l' */
 
 		case 'A': {
 			int scanf_rtn;
 			char app_id[TMON_STR_BUF_LENS];
 			char ip[TMON_STR_BUF_LENS];
 			unsigned long pid;
-			unsigned long long ctx;
+			unsigned long tmon_ctx;
 			long tv_sec;
 			long tv_usec;
 			char err_str[TMON_STR_BUF_LENS];
@@ -980,86 +1221,37 @@ void tmon_message_print(lbm_msg_t *msg)
 			scanf_rtn = sscanf(msg_c_str, "A,"
 				"%" STR(TMON_STR_BUF_LENS) "[^,],"  /* app_id */
 				"%" STR(TMON_STR_BUF_LENS) "[^,],"  /* ip */
-				"%lx,"   /* pid */
-				"%llx,"  /* ctx */
+				"%lu,"   /* pid */
+				"%lu,"   /* ctx */
 				"%lu,"   /* tv_sec */
 				"%lu,"   /* tv_usec */
 				"%" STR(TMON_STR_BUF_LENS) "[^\n]"  /* err_str */
 				"%n",    /* null_ofs */
-				app_id, ip, &pid, &ctx, &tv_sec, &tv_usec,
+				app_id, ip, &pid, &tmon_ctx, &tv_sec, &tv_usec,
 				err_str, &null_ofs);
 			/* See http://blog.geeky-boy.com/2018/09/safe-sscanf-usage.html */
 			if (scanf_rtn != 7 || null_ofs == 0 || msg_c_str[null_ofs] != '\0') {
-				fprintf(stderr, "scanf_rtn=%d, null_ofs=%d, msg='%s'\n", scanf_rtn, null_ofs, msg_c_str); fflush(stderr);
+				fprintf(stderr, "Tmon: Error, scanf_rtn=%d, null_ofs=%d, msg='%s'\n", scanf_rtn, null_ofs, msg_c_str); fflush(stderr);
 			}
 			else {
-				printf("Alarm\n"
+				tmon_decode_str(app_id, app_id);
+				tmon_decode_str(err_str, err_str);
+				printf("Tmon: alarm\n"
 						"  app_id=%s\n"
 						"  ip=%s\n"
-						"  pid=%lx\n"
-						"  ctx=%llx\n"
+						"  pid=%lu\n"
+						"  tmon_ctx=%lu\n"
 						"  time=%s and %ld usec\n"
 						"  err_str=%s\n",
-					app_id, ip, pid, ctx,
+					app_id, ip, pid, tmon_ctx,
 					tmon_ctime(asc_time, sizeof(asc_time), tv_sec), tv_usec,
 					err_str);
 			}
 		}
-		break;
-
-		case 'L': {
-			int scanf_rtn;
-			char app_id[TMON_STR_BUF_LENS];
-			char ip[TMON_STR_BUF_LENS];
-			unsigned long pid;
-			unsigned long long ctx;
-			unsigned long long conn;
-			long tv_sec;
-			long tv_usec;
-			long msg_count;
-			long unrec_count;
-			long burst_count;
-			int null_ofs;
-			char asc_time[32];
-
-			scanf_rtn = sscanf(msg_c_str, "L,"
-				"%" STR(TMON_STR_BUF_LENS) "[^,],"  /* app_id */
-				"%" STR(TMON_STR_BUF_LENS) "[^,],"  /* ip */
-				"%lx,"   /* pid */
-				"%llx,"  /* ctx */
-				"%lu,"   /* tv_sec */
-				"%lu,"   /* tv_usec */
-				"%llx,"  /* conn */
-				"%lu,"   /* msg_count */
-				"%lu,"   /* unrec_count */
-				"%lu"    /* burst_count */
-				"%n",    /* null_ofs */
-				app_id, ip, &pid, &ctx, &tv_sec, &tv_usec, &conn,
-				&msg_count, &unrec_count, &burst_count, &null_ofs);
-			/* See http://blog.geeky-boy.com/2018/09/safe-sscanf-usage.html */
-			if (scanf_rtn != 10 || null_ofs == 0 || msg_c_str[null_ofs] != '\0') {
-				fprintf(stderr, "scanf_rtn=%d, null_ofs=%d, msg='%s'\n", scanf_rtn, null_ofs, msg_c_str); fflush(stderr);
-			}
-			else {
-				printf("Loss\n"
-						"  app_id=%s\n"
-						"  ip=%s\n"
-						"  pid=%lx\n"
-						"  ctx=%llx\n"
-						"  conn=%llx\n"
-						"  time=%s and %ld usec\n"
-						"  msg_count=%lu\n"
-						"  unrec_count=%lu\n"
-						"  burst_count=%lu\n",
-					app_id, ip, pid, ctx, conn,
-					tmon_ctime(asc_time, sizeof(asc_time), tv_sec), tv_usec,
-					msg_count, unrec_count, burst_count);
-			}
-		}
-		break;
+		break;  /* case 'A' */
 
 		default:
-			printf("Unrecognized msg=%s\n", msg_c_str);
+			fprintf(stderr, "Tmon: Error, Unrecognized msg=%s\n", msg_c_str); fflush(stderr);
 	}
 	fflush(stdout);
 }  /* tmon_message_print */
@@ -1067,14 +1259,21 @@ void tmon_message_print(lbm_msg_t *msg)
 
 int tmon_message_rcv(lbm_rcv_t *rcv, lbm_msg_t *msg, void *clientd)
 {
+	MUTEX_LOCK(output_lock);
+
 	switch (msg->type) {
 	case LBM_MSG_DATA:
 		tmon_message_print(msg);
+		break;
+	case LBM_MSG_BOS:
+		break;
+	case LBM_MSG_EOS:
 		break;
 	default:
 		printf("tmon_message_rcv: msg->type=%d\n", msg->type);
 	}
 
+	MUTEX_UNLOCK(output_lock);
 	return 0;
 }  /* tmon_message_rcv */
 
@@ -1120,6 +1319,8 @@ int main(int argc, char **argv)
 	 */
 	signal(SIGPIPE, SIG_IGN);
 #endif /* _WIN32 */
+
+	MUTEX_INIT(output_lock);
 
 	lbm_log(log_callback, NULL);
 
@@ -1269,7 +1470,7 @@ int main(int argc, char **argv)
 	}
 	lbmmon_rctl_attr_delete(attr);
 
-	tmon_ctx = tmon_create_context(topic_str, config_file, TMON_STR_BUF_LENS,
+	tmon_ctx = tmon_create_monctx(topic_str, config_file, NULL, TMON_STR_BUF_LENS,
 	  transport_options);
 	tmon_rcv = tmon_create_monrcv(tmon_ctx, topic_str, config_file,
 	  transport_options, tmon_message_rcv, NULL, NULL);
