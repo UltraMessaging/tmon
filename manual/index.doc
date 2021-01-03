@@ -253,7 +253,6 @@ B - BOS        : b,app_id,IP,PID,tmon_ctx,tv_sec,tv_usec,conn,topic_name
 E - EOS        : e,app_id,IP,PID,tmon_ctx,tv_sec,tv_usec,conn,msg_cnt,loss_cnt,burst_cnt,dgrams_lost,topic
 L - loss       : L,app_id,IP,PID,tmon_ctx,tv_sec,tv_usec,conn,sqn
 l - burst_loss : L,app_id,IP,PID,tmon_ctx,tv_sec,tv_usec,conn,sqn,burst_size
-A - Alarm      : A,app_id,IP,PID,tmon_ctx,tv_sec,tv_usec,err_str
 </pre>
 
 

@@ -31,14 +31,17 @@ namespace TmonExample
   {
     private int _messagesReceived;
     TmonGetTimeOfDay _timeOfDay = null;
+    private readonly object _logLock = new object();
 
     void Log(String s) {
-      _timeOfDay.NewTimeStamp();
-      string oline = String.Format("{0}.{1,6:000000}: {2}",
-          _timeOfDay.GetSec(),
-          _timeOfDay.GetUsec(),
-          s);
-      Console.WriteLine(oline);
+      lock (_logLock) {
+        _timeOfDay.NewTimeStamp();
+        string oline = String.Format("{0}.{1,6:000000}: {2}",
+            _timeOfDay.GetSec(),
+            _timeOfDay.GetUsec(),
+            s);
+        Console.WriteLine(oline);
+      }
     }
 
     void Run(string[] args) {
@@ -54,6 +57,9 @@ namespace TmonExample
       else if (args.Length != 0) {
         throw new TmonException("TmonExample: bad arg count ("+args.Length+")");
       }
+
+      LBM lbm = new LBM();
+      lbm.setLogger(this.Logger);
 
       _timeOfDay = new TmonGetTimeOfDay();
 
@@ -74,7 +80,7 @@ namespace TmonExample
       rcvAttr.setSourceNotificationCallbacks(this.onDeliveryControllerCreate,
           this.onDeliveryControllerDelete, tmonWRcv);
       LBMWildcardReceiver wrcv = new LBMWildcardReceiver(ctx, "^.*2$", rcvAttr,
-          null, this.onReceive, null);
+          null, this.OnReceive, null);
 
       Log("Creating rcv for 'src\\1' (will resolv, rcv msg)");
       TmonReceiver tmonRcv1 = tmonContext.ReceiverCreate(ReceiverType.Regular, "src\\1");
@@ -82,7 +88,7 @@ namespace TmonExample
       rcvAttr.setSourceNotificationCallbacks(this.onDeliveryControllerCreate,
           this.onDeliveryControllerDelete, tmonRcv1);
       LBMReceiver rcv1 = new LBMReceiver(ctx, ctx.lookupTopic("src\\1", rcvAttr),
-          this.onReceive, null, null);
+          this.OnReceive, null, null);
 
       Log("Creating rcv for 'src3' (will resolve, no msg)");
       TmonReceiver tmonRcv3 = tmonContext.ReceiverCreate(ReceiverType.Regular, "src3");
@@ -90,7 +96,7 @@ namespace TmonExample
       rcvAttr.setSourceNotificationCallbacks(this.onDeliveryControllerCreate,
           this.onDeliveryControllerDelete, tmonRcv3);
       LBMReceiver rcv3 = new LBMReceiver(ctx, ctx.lookupTopic("src3", rcvAttr),
-          this.onReceive, null, null);
+          this.OnReceive, null, null);
 
       Log("Creating rcv for 'srcx' (will not resolve)");
       TmonReceiver tmonRcvx = tmonContext.ReceiverCreate(ReceiverType.Regular, "srcx");
@@ -98,7 +104,7 @@ namespace TmonExample
       rcvAttr.setSourceNotificationCallbacks(this.onDeliveryControllerCreate,
           this.onDeliveryControllerDelete, tmonRcvx);
       LBMReceiver rcvx = new LBMReceiver(ctx, ctx.lookupTopic("srcx", rcvAttr),
-          this.onReceive, null, null);
+          this.OnReceive, null, null);
 
       Log("Creating src for 'src\\1' (will resolve, send msg)");
       TmonSource tmonSrc1 = tmonContext.SourceCreate("src\\1");
@@ -177,48 +183,36 @@ namespace TmonExample
       Log("Generate BOS on srcx and msg");
       LBM.setLbtrmSrcLossRate(0);
       msg = "1";
-Log("???send 1");
       srcx.send(Encoding.ASCII.GetBytes(msg), msg.Length, 0);  // Trigger BOS.
       Thread.Sleep(100);
 
       Log("Generate unrecoverable loss on srcx");
-Log("???loss rate 100");
       LBM.setLbtrmSrcLossRate(100);
       msg = "2";
-Log("???send 2");
       srcx.send(Encoding.ASCII.GetBytes(msg), msg.Length, 0);  // Lost pkt.
       Thread.Sleep(100);
-Log("???loss rate 0");
       LBM.setLbtrmSrcLossRate(0);
       msg = "3";
-Log("???send 3");
       srcx.send(Encoding.ASCII.GetBytes(msg), msg.Length, 0);  // gap.
       Thread.Sleep(200);  // 2*nak gen ivl.
       msg = "4";
-Log("???send 4");
       srcx.send(Encoding.ASCII.GetBytes(msg), msg.Length, 0);  // push out loss event.
       Thread.Sleep(100);
 
       Log("Generate suppressed unrecoverable loss");
       LBM.setLbtrmSrcLossRate(0);
       msg = "1";
-Log("???send 1");
       srcx.send(Encoding.ASCII.GetBytes(msg), msg.Length, 0);  // Trigger BOS.
       Thread.Sleep(100);
-Log("???loss rate 100");
       LBM.setLbtrmSrcLossRate(100);
       msg = "2";
-Log("???send 2");
       srcx.send(Encoding.ASCII.GetBytes(msg), msg.Length, 0);  // Lost pkt.
       Thread.Sleep(100);
-Log("???loss rate 0");
       LBM.setLbtrmSrcLossRate(0);
       msg = "3";
-Log("???send 3");
       srcx.send(Encoding.ASCII.GetBytes(msg), msg.Length, 0);  // gap.
       Thread.Sleep(200);  // 2*nak gen ivl.
       msg = "4";
-Log("???send 4");
       srcx.send(Encoding.ASCII.GetBytes(msg), msg.Length, 0);  // push out loss event.
       Thread.Sleep(100);
 
@@ -227,21 +221,16 @@ Log("???send 4");
       Log("Generate unrecoverable burst loss");
       LBM.setLbtrmSrcLossRate(100);
       msg = "5";
-Log("???send 5");
       srcx.send(Encoding.ASCII.GetBytes(msg), msg.Length, 0);  // Lost pkt.
       msg = "6";
-Log("???send 6");
       srcx.send(Encoding.ASCII.GetBytes(msg), msg.Length, 0);  // Lost pkt.
       msg = "7";
-Log("???send 7");
       srcx.send(Encoding.ASCII.GetBytes(msg), msg.Length, 0);  // Lost pkt.
       msg = "8";
-Log("???send 8");
       srcx.send(Encoding.ASCII.GetBytes(msg), msg.Length, 0);  // Lost pkt.
       Thread.Sleep(100);
       LBM.setLbtrmSrcLossRate(0);
       msg = "9";
-Log("???send 9");
       srcx.send(Encoding.ASCII.GetBytes(msg), msg.Length, 0);  // gap.
       Thread.Sleep(200);  // Wait for BURST.
 
@@ -269,7 +258,22 @@ Log("???send 9");
     }  // Main
 
 
-    public int onReceive(object cbArg, LBMMessage msg) {
+    private void Logger(int logLevel, string message) {
+      switch (logLevel) {
+        case LBM.LOG_ALERT: Log("Alert: " + message); break;
+        case LBM.LOG_CRIT: Log("Critical: " + message); break;
+        case LBM.LOG_DEBUG: Log("Debug: " + message); break;
+        case LBM.LOG_EMERG: Log("Emergency: " + message); break;
+        case LBM.LOG_ERR: Log("Error: " + message); break;
+        case LBM.LOG_INFO: Log("Info: " + message); break;
+        case LBM.LOG_NOTICE: Log("Note: " + message); break;
+        case LBM.LOG_WARNING: Log("Warning: " + message); break;
+        default: Log("Unknown: " + message); break;
+      }
+    }  // Logger
+
+
+    public int OnReceive(object cbArg, LBMMessage msg) {
       TmonConnection conn = (TmonConnection)msg.sourceClientObject();
       if (conn != null) {
         conn.ReceiverEvent(msg);
@@ -314,7 +318,7 @@ Log("???send 9");
       }  // switch
 
       return 0;
-    }  // onReceive
+    }  // OnReceive
 
 
     public object onDeliveryControllerCreate(string sourceName, object cbArg) {
