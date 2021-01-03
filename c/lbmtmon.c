@@ -565,7 +565,7 @@ void tmon_message_print(lbm_msg_t *msg)
 				"%" STR(TMON_STR_BUF_LENS) "[^,],"  /* app_id */
 				"%" STR(TMON_STR_BUF_LENS) "[^,],"  /* ip */
 				"%lu,"   /* pid */
-				"%lu,"   /* ctx */
+				"%lu,"   /* tmon_ctx */
 				"%lu,"   /* tv_sec */
 				"%lu,"   /* tv_usec */
 				"%" STR(TMON_STR_BUF_LENS) "[^\n]" /* app_ctx_name */
@@ -609,7 +609,7 @@ void tmon_message_print(lbm_msg_t *msg)
 				"%" STR(TMON_STR_BUF_LENS) "[^,],"  /* app_id */
 				"%" STR(TMON_STR_BUF_LENS) "[^,],"  /* ip */
 				"%lu,"   /* pid */
-				"%lu,"   /* ctx */
+				"%lu,"   /* tmon_ctx */
 				"%lu,"   /* tv_sec */
 				"%lu"    /* tv_usec */
 				"%n",    /* null_ofs */
@@ -650,7 +650,7 @@ void tmon_message_print(lbm_msg_t *msg)
 				"%" STR(TMON_STR_BUF_LENS) "[^,],"  /* app_id */
 				"%" STR(TMON_STR_BUF_LENS) "[^,],"  /* ip */
 				"%lu,"   /* pid */
-				"%lu,"   /* ctx */
+				"%lu,"   /* tmon_ctx */
 				"%lu,"   /* tv_sec */
 				"%lu,"   /* tv_usec */
 				"%lu,"   /* tmon_rcv */
@@ -670,12 +670,12 @@ void tmon_message_print(lbm_msg_t *msg)
 						"  ip=%s\n"
 						"  pid=%lu\n"
 						"  tmon_ctx=%lu\n"
-						"  tmon_rcv=%lu\n"
 						"  time=%s and %ld usec\n"
+						"  tmon_rcv=%lu\n"
 						"  topic=%s\n",
-					app_id, ip, pid, tmon_ctx, tmon_rcv,
+					app_id, ip, pid, tmon_ctx,
 					tmon_ctime(asc_time, sizeof(asc_time), tv_sec), tv_usec,
-					topic);
+					tmon_rcv, topic);
 			}
 		}
 		break;  /* case 'R' */
@@ -696,7 +696,7 @@ void tmon_message_print(lbm_msg_t *msg)
 				"%" STR(TMON_STR_BUF_LENS) "[^,],"  /* app_id */
 				"%" STR(TMON_STR_BUF_LENS) "[^,],"  /* ip */
 				"%lu,"   /* pid */
-				"%lu,"   /* ctx */
+				"%lu,"   /* tmon_ctx */
 				"%lu,"   /* tv_sec */
 				"%lu,"   /* tv_usec */
 				"%lu"    /* tmon_rcv */
@@ -714,10 +714,11 @@ void tmon_message_print(lbm_msg_t *msg)
 						"  ip=%s\n"
 						"  pid=%lu\n"
 						"  tmon_ctx=%lu\n"
-						"  tmon_rcv=%lu\n"
-						"  time=%s and %ld usec\n",
-					app_id, ip, pid, tmon_ctx, tmon_rcv,
-					tmon_ctime(asc_time, sizeof(asc_time), tv_sec), tv_usec);
+						"  time=%s and %ld usec\n"
+						"  tmon_rcv=%lu\n",
+					app_id, ip, pid, tmon_ctx,
+					tmon_ctime(asc_time, sizeof(asc_time), tv_sec), tv_usec,
+					tmon_rcv);
 			}
 		}
 		break;  /* case 'r' */
@@ -739,7 +740,7 @@ void tmon_message_print(lbm_msg_t *msg)
 				"%" STR(TMON_STR_BUF_LENS) "[^,],"  /* app_id */
 				"%" STR(TMON_STR_BUF_LENS) "[^,],"  /* ip */
 				"%lu,"   /* pid */
-				"%lu,"   /* ctx */
+				"%lu,"   /* tmon_ctx */
 				"%lu,"   /* tv_sec */
 				"%lu,"   /* tv_usec */
 				"%lu,"   /* tmon_rcv */
@@ -759,12 +760,12 @@ void tmon_message_print(lbm_msg_t *msg)
 						"  ip=%s\n"
 						"  pid=%lu\n"
 						"  tmon_ctx=%lu\n"
-						"  tmon_rcv=%lu\n"
 						"  time=%s and %ld usec\n"
+						"  tmon_rcv=%lu\n"
 						"  pattern=%s\n",
-					app_id, ip, pid, tmon_ctx, tmon_rcv,
+					app_id, ip, pid, tmon_ctx,
 					tmon_ctime(asc_time, sizeof(asc_time), tv_sec), tv_usec,
-					pattern);
+					tmon_rcv, pattern);
 			}
 		}
 		break;  /* case 'W' */
@@ -785,7 +786,7 @@ void tmon_message_print(lbm_msg_t *msg)
 				"%" STR(TMON_STR_BUF_LENS) "[^,],"  /* app_id */
 				"%" STR(TMON_STR_BUF_LENS) "[^,],"  /* ip */
 				"%lu,"   /* pid */
-				"%lu,"   /* ctx */
+				"%lu,"   /* tmon_ctx */
 				"%lu,"   /* tv_sec */
 				"%lu,"   /* tv_usec */
 				"%lu"    /* tmon_rcv */
@@ -803,10 +804,11 @@ void tmon_message_print(lbm_msg_t *msg)
 						"  ip=%s\n"
 						"  pid=%lu\n"
 						"  tmon_ctx=%lu\n"
-						"  tmon_rcv=%lu\n"
-						"  time=%s and %ld usec\n",
-					app_id, ip, pid, tmon_ctx, tmon_rcv,
-					tmon_ctime(asc_time, sizeof(asc_time), tv_sec), tv_usec);
+						"  time=%s and %ld usec\n"
+						"  tmon_rcv=%lu\n",
+					app_id, ip, pid, tmon_ctx,
+					tmon_ctime(asc_time, sizeof(asc_time), tv_sec), tv_usec,
+					tmon_rcv);
 			}
 		}
 		break;  /* case 'w' */
@@ -828,7 +830,7 @@ void tmon_message_print(lbm_msg_t *msg)
 				"%" STR(TMON_STR_BUF_LENS) "[^,],"  /* app_id */
 				"%" STR(TMON_STR_BUF_LENS) "[^,],"  /* ip */
 				"%lu,"   /* pid */
-				"%lu,"   /* ctx */
+				"%lu,"   /* tmon_ctx */
 				"%lu,"   /* tv_sec */
 				"%lu,"   /* tv_usec */
 				"%lu,"   /* tmon_src */
@@ -874,7 +876,7 @@ void tmon_message_print(lbm_msg_t *msg)
 				"%" STR(TMON_STR_BUF_LENS) "[^,],"  /* app_id */
 				"%" STR(TMON_STR_BUF_LENS) "[^,],"  /* ip */
 				"%lu,"   /* pid */
-				"%lu,"   /* ctx */
+				"%lu,"   /* tmon_ctx */
 				"%lu,"   /* tv_sec */
 				"%lu,"   /* tv_usec */
 				"%lu"    /* tmon_src */
@@ -892,10 +894,11 @@ void tmon_message_print(lbm_msg_t *msg)
 						"  ip=%s\n"
 						"  pid=%lu\n"
 						"  tmon_ctx=%lu\n"
-						"  tmon_src=%lu\n"
-						"  time=%s and %ld usec\n",
-					app_id, ip, pid, tmon_ctx, tmon_src,
-					tmon_ctime(asc_time, sizeof(asc_time), tv_sec), tv_usec);
+						"  time=%s and %ld usec\n"
+						"  tmon_src=%lu\n",
+					app_id, ip, pid, tmon_ctx,
+					tmon_ctime(asc_time, sizeof(asc_time), tv_sec), tv_usec,
+					tmon_src);
 			}
 		}
 		break;  /* case 's' */
@@ -918,10 +921,10 @@ void tmon_message_print(lbm_msg_t *msg)
 				"%" STR(TMON_STR_BUF_LENS) "[^,],"  /* app_id */
 				"%" STR(TMON_STR_BUF_LENS) "[^,],"  /* ip */
 				"%lu,"   /* pid */
-				"%lu,"   /* ctx */
+				"%lu,"   /* tmon_ctx */
 				"%lu,"   /* tv_sec */
 				"%lu,"   /* tv_usec */
-				"%lu,"   /* conn */
+				"%lu,"   /* tmon_conn */
 				"%lu,"   /* tmon_rcv */
 				"%" STR(TMON_STR_BUF_LENS) "[^\n]" /* src_str */
 				"%n",    /* null_ofs */
@@ -940,12 +943,12 @@ void tmon_message_print(lbm_msg_t *msg)
 						"  pid=%lu\n"
 						"  tmon_ctx=%lu\n"
 						"  time=%s and %ld usec\n"
-						"  tmon_rcv=%lu\n"
 						"  tmon_conn=%lu\n"
+						"  tmon_rcv=%lu\n"
 						"  src_str=%s\n",
 					app_id, ip, pid, tmon_ctx,
 					tmon_ctime(asc_time, sizeof(asc_time), tv_sec), tv_usec,
-					tmon_rcv, tmon_conn, src_str);
+					tmon_conn, tmon_rcv, src_str);
 			}
 		}
 		break;  /* case 'C' */
@@ -970,10 +973,10 @@ void tmon_message_print(lbm_msg_t *msg)
 				"%" STR(TMON_STR_BUF_LENS) "[^,],"  /* app_id */
 				"%" STR(TMON_STR_BUF_LENS) "[^,],"  /* ip */
 				"%lu,"   /* pid */
-				"%lu,"   /* ctx */
+				"%lu,"   /* tmon_ctx */
 				"%lu,"   /* tv_sec */
 				"%lu,"   /* tv_usec */
-				"%lu,"   /* conn */
+				"%lu,"   /* tmon_conn */
 				"%lu,"   /* msg_count */
 				"%lu,"   /* loss_count */
 				"%lu,"   /* burst_count */
@@ -1022,10 +1025,10 @@ void tmon_message_print(lbm_msg_t *msg)
 				"%" STR(TMON_STR_BUF_LENS) "[^,],"  /* app_id */
 				"%" STR(TMON_STR_BUF_LENS) "[^,],"  /* ip */
 				"%lu,"   /* pid */
-				"%lu,"   /* ctx */
+				"%lu,"   /* tmon_ctx */
 				"%lu,"   /* tv_sec */
 				"%lu,"   /* tv_usec */
-				"%lu,"   /* conn */
+				"%lu,"   /* tmon_conn */
 				"%" STR(TMON_STR_BUF_LENS) "[^\n]" /* topic */
 				"%n",    /* null_ofs */
 				app_id, ip, &pid, &tmon_ctx, &tv_sec, &tv_usec, &tmon_conn,
@@ -1073,10 +1076,10 @@ void tmon_message_print(lbm_msg_t *msg)
 				"%" STR(TMON_STR_BUF_LENS) "[^,],"  /* app_id */
 				"%" STR(TMON_STR_BUF_LENS) "[^,],"  /* ip */
 				"%lu,"   /* pid */
-				"%lu,"   /* ctx */
+				"%lu,"   /* tmon_ctx */
 				"%lu,"   /* tv_sec */
 				"%lu,"   /* tv_usec */
-				"%lu,"   /* conn */
+				"%lu,"   /* tmon_conn */
 				"%lu,"   /* msg_count */
 				"%lu,"   /* loss_count */
 				"%lu,"   /* burst_count */
@@ -1128,10 +1131,10 @@ void tmon_message_print(lbm_msg_t *msg)
 				"%" STR(TMON_STR_BUF_LENS) "[^,],"  /* app_id */
 				"%" STR(TMON_STR_BUF_LENS) "[^,],"  /* ip */
 				"%lu,"   /* pid */
-				"%lu,"   /* ctx */
+				"%lu,"   /* tmon_ctx */
 				"%lu,"   /* tv_sec */
 				"%lu,"   /* tv_usec */
-				"%lu,"   /* conn */
+				"%lu,"   /* tmon_conn */
 				"%lu"    /* sqn */
 				"%n",    /* null_ofs */
 				app_id, ip, &pid, &tmon_ctx, &tv_sec, &tv_usec, &tmon_conn,
@@ -1175,10 +1178,10 @@ void tmon_message_print(lbm_msg_t *msg)
 				"%" STR(TMON_STR_BUF_LENS) "[^,],"  /* app_id */
 				"%" STR(TMON_STR_BUF_LENS) "[^,],"  /* ip */
 				"%lu,"   /* pid */
-				"%lu,"   /* ctx */
+				"%lu,"   /* tmon_ctx */
 				"%lu,"   /* tv_sec */
 				"%lu,"   /* tv_usec */
-				"%lu,"   /* conn */
+				"%lu,"   /* tmon_conn */
 				"%lu,"   /* sqn */
 				"%lu"    /* burst_size */
 				"%n",    /* null_ofs */
@@ -1205,50 +1208,6 @@ void tmon_message_print(lbm_msg_t *msg)
 			}
 		}
 		break;  /* case 'l' */
-
-		case 'A': {
-			int scanf_rtn;
-			char app_id[TMON_STR_BUF_LENS];
-			char ip[TMON_STR_BUF_LENS];
-			unsigned long pid;
-			unsigned long tmon_ctx;
-			long tv_sec;
-			long tv_usec;
-			char err_str[TMON_STR_BUF_LENS];
-			int null_ofs = 0;
-			char asc_time[32];
-
-			scanf_rtn = sscanf(msg_c_str, "A,"
-				"%" STR(TMON_STR_BUF_LENS) "[^,],"  /* app_id */
-				"%" STR(TMON_STR_BUF_LENS) "[^,],"  /* ip */
-				"%lu,"   /* pid */
-				"%lu,"   /* ctx */
-				"%lu,"   /* tv_sec */
-				"%lu,"   /* tv_usec */
-				"%" STR(TMON_STR_BUF_LENS) "[^\n]"  /* err_str */
-				"%n",    /* null_ofs */
-				app_id, ip, &pid, &tmon_ctx, &tv_sec, &tv_usec,
-				err_str, &null_ofs);
-			/* See http://blog.geeky-boy.com/2018/09/safe-sscanf-usage.html */
-			if (scanf_rtn != 7 || null_ofs == 0 || msg_c_str[null_ofs] != '\0') {
-				fprintf(stderr, "Tmon: Error, scanf_rtn=%d, null_ofs=%d, msg='%s'\n", scanf_rtn, null_ofs, msg_c_str); fflush(stderr);
-			}
-			else {
-				tmon_decode_str(app_id, app_id);
-				tmon_decode_str(err_str, err_str);
-				printf("Tmon: alarm\n"
-						"  app_id=%s\n"
-						"  ip=%s\n"
-						"  pid=%lu\n"
-						"  tmon_ctx=%lu\n"
-						"  time=%s and %ld usec\n"
-						"  err_str=%s\n",
-					app_id, ip, pid, tmon_ctx,
-					tmon_ctime(asc_time, sizeof(asc_time), tv_sec), tv_usec,
-					err_str);
-			}
-		}
-		break;  /* case 'A' */
 
 		default:
 			fprintf(stderr, "Tmon: Error, Unrecognized msg=%s\n", msg_c_str); fflush(stderr);

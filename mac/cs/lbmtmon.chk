@@ -1,38 +1,38 @@
 Tmon: context create  app_id=tmon_example_1  ip=b  pid=c  tmon_ctx=1  time=a  app_context_name=tmon_example_ctx
-Tmon: wildcard receiver create  app_id=tmon_example_1  ip=b  pid=c  tmon_ctx=1  tmon_rcv=2  time=a  pattern=^.*2$
-Tmon: receiver create  app_id=tmon_example_1  ip=b  pid=c  tmon_ctx=1  tmon_rcv=3  time=a  topic=src\1
-Tmon: receiver create  app_id=tmon_example_1  ip=b  pid=c  tmon_ctx=1  tmon_rcv=4  time=a  topic=src3
-Tmon: receiver create  app_id=tmon_example_1  ip=b  pid=c  tmon_ctx=1  tmon_rcv=5  time=a  topic=srcx
+Tmon: wildcard receiver create  app_id=tmon_example_1  ip=b  pid=c  tmon_ctx=1  time=a  tmon_rcv=2  pattern=^.*2$
+Tmon: receiver create  app_id=tmon_example_1  ip=b  pid=c  tmon_ctx=1  time=a  tmon_rcv=3  topic=src\1
+Tmon: receiver create  app_id=tmon_example_1  ip=b  pid=c  tmon_ctx=1  time=a  tmon_rcv=4  topic=src3
+Tmon: receiver create  app_id=tmon_example_1  ip=b  pid=c  tmon_ctx=1  time=a  tmon_rcv=5  topic=srcx
 Tmon: source create  app_id=tmon_example_1  ip=b  pid=c  tmon_ctx=1  time=a  tmon_src=6  topic=src\1
-Tmon: connection create  app_id=tmon_example_1  ip=b  pid=c  tmon_ctx=1  time=a  tmon_rcv=3  tmon_conn=7  src_str=d
+Tmon: connection create  app_id=tmon_example_1  ip=b  pid=c  tmon_ctx=1  time=a  tmon_conn=7  tmon_rcv=3  src_str=d
 Tmon: source create  app_id=tmon_example_1  ip=b  pid=c  tmon_ctx=1  time=a  tmon_src=8  topic=src,2
-Tmon: connection create  app_id=tmon_example_1  ip=b  pid=c  tmon_ctx=1  time=a  tmon_rcv=2  tmon_conn=9  src_str=d
+Tmon: connection create  app_id=tmon_example_1  ip=b  pid=c  tmon_ctx=1  time=a  tmon_conn=9  tmon_rcv=2  src_str=d
 Tmon: source create  app_id=tmon_example_1  ip=b  pid=c  tmon_ctx=1  time=a  tmon_src=10  topic=src3
-Tmon: connection create  app_id=tmon_example_1  ip=b  pid=c  tmon_ctx=1  time=a  tmon_rcv=4  tmon_conn=11  src_str=d
+Tmon: connection create  app_id=tmon_example_1  ip=b  pid=c  tmon_ctx=1  time=a  tmon_conn=11  tmon_rcv=4  src_str=d
 Tmon: connection delete  app_id=tmon_example_1  ip=b  pid=c  tmon_ctx=1  time=a  tmon_conn=9  msg_count=0  loss_count=0  burst_count=0  dgrams_lost=0
-Tmon: wildcard receiver delete  app_id=tmon_example_1  ip=b  pid=c  tmon_ctx=1  tmon_rcv=2  time=a
+Tmon: wildcard receiver delete  app_id=tmon_example_1  ip=b  pid=c  tmon_ctx=1  time=a  tmon_rcv=2
 Tmon: connection BOS  app_id=tmon_example_1  ip=b  pid=c  tmon_ctx=1  time=a  tmon_conn=7  topic=src\1
 Tmon: connection BOS  app_id=tmon_example_1  ip=b  pid=c  tmon_ctx=1  time=a  tmon_conn=11  topic=src3
 Tmon: connection delete  app_id=tmon_example_1  ip=b  pid=c  tmon_ctx=1  time=a  tmon_conn=11  msg_count=0  loss_count=0  burst_count=0  dgrams_lost=0
-Tmon: receiver delete  app_id=tmon_example_1  ip=b  pid=c  tmon_ctx=1  tmon_rcv=4  time=a
-Tmon: source delete  app_id=tmon_example_1  ip=b  pid=c  tmon_ctx=1  tmon_src=6  time=a
-Tmon: source delete  app_id=tmon_example_1  ip=b  pid=c  tmon_ctx=1  tmon_src=8  time=a
-Tmon: source delete  app_id=tmon_example_1  ip=b  pid=c  tmon_ctx=1  tmon_src=10  time=a
+Tmon: receiver delete  app_id=tmon_example_1  ip=b  pid=c  tmon_ctx=1  time=a  tmon_rcv=4
+Tmon: source delete  app_id=tmon_example_1  ip=b  pid=c  tmon_ctx=1  time=a  tmon_src=6
+Tmon: source delete  app_id=tmon_example_1  ip=b  pid=c  tmon_ctx=1  time=a  tmon_src=8
+Tmon: source delete  app_id=tmon_example_1  ip=b  pid=c  tmon_ctx=1  time=a  tmon_src=10
 Tmon: connection EOS  app_id=tmon_example_1  ip=b  pid=c  tmon_ctx=1  time=a  tmon_conn=7  msg_count=1  loss_count=0  burst_count=0  dgrams_lost=0  topic=src\1
 Tmon: connection delete  app_id=tmon_example_1  ip=b  pid=c  tmon_ctx=1  time=a  tmon_conn=7  msg_count=1  loss_count=0  burst_count=0  dgrams_lost=0
-Tmon: receiver delete  app_id=tmon_example_1  ip=b  pid=c  tmon_ctx=1  tmon_rcv=3  time=a
+Tmon: receiver delete  app_id=tmon_example_1  ip=b  pid=c  tmon_ctx=1  time=a  tmon_rcv=3
 Tmon: source create  app_id=tmon_example_1  ip=b  pid=c  tmon_ctx=1  time=a  tmon_src=12  topic=srcx
-Tmon: connection create  app_id=tmon_example_1  ip=b  pid=c  tmon_ctx=1  time=a  tmon_rcv=5  tmon_conn=13  src_str=d
+Tmon: connection create  app_id=tmon_example_1  ip=b  pid=c  tmon_ctx=1  time=a  tmon_conn=13  tmon_rcv=5  src_str=d
 Tmon: connection EOS  app_id=tmon_example_1  ip=b  pid=c  tmon_ctx=1  time=a  tmon_conn=13  msg_count=0  loss_count=0  burst_count=0  dgrams_lost=0  topic=srcx
 Tmon: connection delete  app_id=tmon_example_1  ip=b  pid=c  tmon_ctx=1  time=a  tmon_conn=13  msg_count=0  loss_count=0  burst_count=0  dgrams_lost=0
-Tmon: connection create  app_id=tmon_example_1  ip=b  pid=c  tmon_ctx=1  time=a  tmon_rcv=5  tmon_conn=14  src_str=d
+Tmon: connection create  app_id=tmon_example_1  ip=b  pid=c  tmon_ctx=1  time=a  tmon_conn=14  tmon_rcv=5  src_str=d
 Tmon: connection EOS  app_id=tmon_example_1  ip=b  pid=c  tmon_ctx=1  time=a  tmon_conn=14  msg_count=0  loss_count=0  burst_count=0  dgrams_lost=0  topic=srcx
 Tmon: connection delete  app_id=tmon_example_1  ip=b  pid=c  tmon_ctx=1  time=a  tmon_conn=14  msg_count=0  loss_count=0  burst_count=0  dgrams_lost=0
-Tmon: connection create  app_id=tmon_example_1  ip=b  pid=c  tmon_ctx=1  time=a  tmon_rcv=5  tmon_conn=15  src_str=d
+Tmon: connection create  app_id=tmon_example_1  ip=b  pid=c  tmon_ctx=1  time=a  tmon_conn=15  tmon_rcv=5  src_str=d
 Tmon: connection BOS  app_id=tmon_example_1  ip=b  pid=c  tmon_ctx=1  time=a  tmon_conn=15  topic=srcx
 Tmon: message loss  app_id=tmon_example_1  ip=b  pid=c  tmon_ctx=1  time=a  tmon_conn=15  sqn=2
 Tmon: message burst loss  app_id=tmon_example_1  ip=b  pid=c  tmon_ctx=1  time=a  tmon_conn=15  sqn=12  burst_size=4
 Tmon: connection delete  app_id=tmon_example_1  ip=b  pid=c  tmon_ctx=1  time=a  tmon_conn=15  msg_count=7  loss_count=2  burst_count=1  dgrams_lost=0
-Tmon: receiver delete  app_id=tmon_example_1  ip=b  pid=c  tmon_ctx=1  tmon_rcv=5  time=a
-Tmon: source delete  app_id=tmon_example_1  ip=b  pid=c  tmon_ctx=1  tmon_src=12  time=a
+Tmon: receiver delete  app_id=tmon_example_1  ip=b  pid=c  tmon_ctx=1  time=a  tmon_rcv=5
+Tmon: source delete  app_id=tmon_example_1  ip=b  pid=c  tmon_ctx=1  time=a  tmon_src=12
 Tmon: context delete  app_id=tmon_example_1  ip=b  pid=c  tmon_ctx=1  time=a
