@@ -54,6 +54,38 @@ extern "C" {
 #define TMON_RCV_TYPE_REGULAR 1
 #define TMON_RCV_TYPE_WILDCARD 2
 
+/*! \brief Portable atomic increment. Returns the incremented value.
+ */
+#if defined(_WIN32)
+__inline static LONG tmon_inline_atomic_long_incr(LONG *value)
+#elif defined(__TANDEM)
+inline static long tmon_inline_atomic_long_incr(volatile long *value)
+#else
+__inline static long tmon_inline_atomic_long_incr(volatile long *value)
+#endif
+{
+#if defined(_WIN32)
+  return InterlockedIncrement(value);
+#elif defined(__xlc__)
+  return  __atomic_add_fetch(value,1,__ATOMIC_RELAXED);
+#elif defined(HAVE_GCC_SYNC_ADD_AND_FETCH)
+  return __sync_add_and_fetch(value, 1);
+#elif defined(__GNUC__) && defined(HAVE_PENTIUM_PROCESSOR)
+  long tmp = 1;
+  unsigned long addr = (unsigned long)value;
+  __asm__ volatile ("lock ; xadd %0, (%1)" : "+r"(tmp) : "r"(addr) : "memory");
+  return tmp + 1;
+#elif defined(__VMS)
+  /* builtin returns old value. We want new value so add 1 */
+  return __ATOMIC_INCREMENT_LONG(value) + 1;
+#elif defined(SOLARIS) && defined(HAVE_SYS_ATOMIC_H)
+  return atomic_inc_ulong_nv((ulong_t *) value);
+#else
+  #error Unrecognized platform.
+#endif
+}  /* tmon_inline_atomic_long_incr */
+
+
 /*! \brief Simple, "easy" string object, used internally by tmon.
  * Not intended as a supported API.
  */

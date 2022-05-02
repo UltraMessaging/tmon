@@ -411,6 +411,15 @@ static void tmon_get_settings(tmon_ctx_t *tmon_ctx)
 }  /* tmon_get_settings */
 
 
+/* Give each Tmon object a unique ID using atomic increment. */
+static long current_object_count = 0;
+
+void tmon_get_next_object_id()
+{
+  return tmon_inline_atomic_long_incr(&current_object_count);
+}  /* tmon_get_next_object_id */
+
+
 /* Parse transport_opts string and create context.
  * Called by monitoring tool.
  * Pass back topic string and config file, and return context. */
